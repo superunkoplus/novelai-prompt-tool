@@ -51,7 +51,6 @@
       text-align: left;
     }
 
-    /* プロンプト欄を画面上部に固定 */
     #promptArea {
       position: sticky;
       top: 0;
@@ -358,27 +357,257 @@
 
     <h1>表情</h1>
 
+    <button class="menuButton" onclick="showPage('sexyExpressionPage')">
+      セクシー
+    </button>
+
+    <button class="menuButton" onclick="showPage('smilePage')">
+      笑顔
+    </button>
+
+    <button class="menuButton" onclick="showPage('sadnessPage')">
+      悲しみ
+    </button>
+
+    <button class="menuButton" onclick="showPage('angerPage')">
+      怒り
+    </button>
+
+    <button class="menuButton" onclick="showPage('fearPage')">
+      恐怖
+    </button>
+
+    <button class="menuButton" onclick="showPage('shynessPage')">
+      恥じらい
+    </button>
+
+    <button class="menuButton" onclick="showPage('disgustPage')">
+      嫌悪
+    </button>
+
+    <button class="menuButton" onclick="showPage('exasperationPage')">
+      呆れ
+    </button>
+
+  </div>
+
+
+  <!-- セクシー -->
+  <div id="sexyExpressionPage" class="page">
+
+    <button class="backButton" onclick="showPage('expressionPage')">
+      ← 戻る
+    </button>
+
+    <h1>セクシー</h1>
+
+  </div>
+
+
+  <!-- 笑顔 -->
+  <div id="smilePage" class="page">
+
+    <button class="backButton" onclick="showPage('expressionPage')">
+      ← 戻る
+    </button>
+
+    <h1>笑顔</h1>
+
     <div class="buttons">
 
-      <button onclick="addPrompt('smile')">
-        笑顔
-      </button>
+      <button onclick="addPrompt('smiling')">笑顔</button>
+      <button onclick="addPrompt('soft smile')">柔らかい笑顔</button>
+      <button onclick="addPrompt('shy smile')">照れた笑顔</button>
+      <button onclick="addPrompt('bashful smile')">はにかんだ笑顔</button>
+      <button onclick="addPrompt('awkward smile')">気まずい笑顔</button>
+      <button onclick="addPrompt('embarrassed smile')">恥ずかしそうな笑顔</button>
+      <button onclick="addPrompt('wry smile')">苦笑い</button>
+      <button onclick="addPrompt('forced smile')">作り笑い</button>
+      <button onclick="addPrompt('business smile')">ビジネススマイル</button>
+      <button onclick="addPrompt('mischievous smile')">悪戯っぽい笑顔</button>
+      <button onclick="addPrompt('teasing smile')">からかうような笑顔</button>
+      <button onclick="addPrompt('seductive smile')">誘惑する笑顔</button>
+      <button onclick="addPrompt('mysterious smile')">謎めいた笑顔</button>
+      <button onclick="addPrompt('knowing smile')">意味深な笑顔</button>
+      <button onclick="addPrompt('tearful smile')">涙ぐみながらの笑顔</button>
+      <button onclick="addPrompt('sneering')">侮蔑の笑顔</button>
+      <button onclick="addPrompt('smiling through tears')">涙を流しながら笑う</button>
+      <button onclick="addPrompt('laughing')">声を出して笑う</button>
+      <button onclick="addPrompt('laughing hard')">腹を抱えて笑う</button>
+      <button onclick="addPrompt('giggling')">クスクス笑う</button>
+      <button onclick="addPrompt('chuckling')">小さめに笑う</button>
+      <button onclick="addPrompt('covering mouth while laughing')">口を手で覆って笑う</button>
+      <button onclick="addPrompt('eyes closed from laughing')">笑いすぎて目を細める</button>
+      <button onclick="addPrompt('teeth showing smile')">歯が見える笑顔</button>
+      <button onclick="addPrompt('one-sided smile')">片側だけ上がった笑顔</button>
 
-      <button onclick="addPrompt('angry')">
-        怒り
-      </button>
+    </div>
 
-      <button onclick="addPrompt('crying')">
-        泣き顔
-      </button>
+  </div>
 
-      <button onclick="addPrompt('smirk')">
-        にやり
-      </button>
 
-      <button onclick="addPrompt('wry smile')">
-        苦笑い
-      </button>
+  <!-- 悲しみ -->
+  <div id="sadnessPage" class="page">
+
+    <button class="backButton" onclick="showPage('expressionPage')">
+      ← 戻る
+    </button>
+
+    <h1>悲しみ</h1>
+
+    <div class="buttons">
+
+      <button onclick="addPrompt('crying')">泣く</button>
+      <button onclick="addPrompt('sobbing')">すすり泣き</button>
+      <button onclick="addPrompt('weeping')">しくしく泣く</button>
+      <button onclick="addPrompt('teary-eyed')">今にも泣きそう</button>
+      <button onclick="addPrompt('tears streaming down face')">涙が頬を伝って流れる</button>
+      <button onclick="addPrompt('single tear rolling down cheek')">一筋の涙が頬を伝う</button>
+      <button onclick="addPrompt('crying with open mouth')">子供っぽく泣く</button>
+      <button onclick="addPrompt('crying with closed eyes')">目を閉じて泣く</button>
+      <button onclick="addPrompt('silently crying')">声を出さず泣く</button>
+      <button onclick="addPrompt('sniffing')">泣いた後鼻をすする</button>
+      <button onclick="addPrompt('red-rimmed eyes')">泣いた後の顔</button>
+      <button onclick="addPrompt('puffy eyes from crying')">泣いて目が腫れる</button>
+      <button onclick="addPrompt('devastated look')">打ちのめされた顔</button>
+      <button onclick="addPrompt('empty eyes')">虚ろな目</button>
+      <button onclick="addPrompt('looking down sadly')">悲しそうに下を向く</button>
+      <button onclick="addPrompt('biting lip in sadness')">悲しさで唇を噛む</button>
+
+    </div>
+
+  </div>
+
+
+  <!-- 怒り -->
+  <div id="angerPage" class="page">
+
+    <button class="backButton" onclick="showPage('expressionPage')">
+      ← 戻る
+    </button>
+
+    <h1>怒り</h1>
+
+    <div class="buttons">
+
+      <button onclick="addPrompt('angry glare')">睨む</button>
+      <button onclick="addPrompt('furrowed brows')">眉間に皺を寄せる</button>
+      <button onclick="addPrompt('clenched teeth')">歯を食いしばる</button>
+      <button onclick="addPrompt('flushed with anger')">怒りで顔を赤くする</button>
+      <button onclick="addPrompt('cold stare')">感情を殺した怒り</button>
+      <button onclick="addPrompt('icy expression')">冷たい表情</button>
+      <button onclick="addPrompt('irritated look')">イライラした顔</button>
+      <button onclick="addPrompt('annoyed face')">うんざりした顔</button>
+      <button onclick="addPrompt('looking down on someone')">上から目線</button>
+      <button onclick="addPrompt('tight-lipped anger')">唇を結び怒りを堪える</button>
+
+    </div>
+
+  </div>
+
+
+  <!-- 恐怖 -->
+  <div id="fearPage" class="page">
+
+    <button class="backButton" onclick="showPage('expressionPage')">
+      ← 戻る
+    </button>
+
+    <h1>恐怖</h1>
+
+    <div class="buttons">
+
+      <button onclick="addPrompt('eyes wide open')">目を大きく見開く</button>
+      <button onclick="addPrompt('raised eyebrows')">眉を上げる</button>
+      <button onclick="addPrompt('mouth agape')">口を開け放している</button>
+      <button onclick="addPrompt('stunned expression')">呆然とした顔</button>
+      <button onclick="addPrompt('stiff expression')">強張った顔</button>
+      <button onclick="addPrompt('pale face')">青ざめた顔</button>
+      <button onclick="addPrompt('frightened eyes')">怯えた目</button>
+      <button onclick="addPrompt('trembling')">震える</button>
+      <button onclick="addPrompt('sweating nervously')">緊張で汗をかく</button>
+      <button onclick="addPrompt('covering mouth in shock')">ショックで口を手で覆う</button>
+      <button onclick="addPrompt('biting nails')">爪を噛む</button>
+
+    </div>
+
+  </div>
+
+
+  <!-- 恥じらい -->
+  <div id="shynessPage" class="page">
+
+    <button class="backButton" onclick="showPage('expressionPage')">
+      ← 戻る
+    </button>
+
+    <h1>恥じらい</h1>
+
+    <div class="buttons">
+
+      <button onclick="addPrompt('blushing')">照れ</button>
+      <button onclick="addPrompt('heavy blush')">強い赤面</button>
+      <button onclick="addPrompt('red face')">顔全体が赤い</button>
+      <button onclick="addPrompt('looking away shyly')">恥ずかしそうに目を逸らす</button>
+      <button onclick="addPrompt('glancing sideways')">横目でちらっと見る</button>
+      <button onclick="addPrompt('peeking through fingers')">指の隙間から覗く</button>
+      <button onclick="addPrompt('covering face with hands')">両手で顔を隠す</button>
+      <button onclick="addPrompt('fidgeting')">そわそわする</button>
+      <button onclick="addPrompt('looking down bashfully')">はにかんで下を向く</button>
+
+    </div>
+
+  </div>
+
+
+  <!-- 嫌悪 -->
+  <div id="disgustPage" class="page">
+
+    <button class="backButton" onclick="showPage('expressionPage')">
+      ← 戻る
+    </button>
+
+    <h1>嫌悪</h1>
+
+    <div class="buttons">
+
+      <button onclick="addPrompt('reluctant face')">嫌がる</button>
+      <button onclick="addPrompt('unwilling face')">気の進まない</button>
+      <button onclick="addPrompt('pained expression')">苦しそうな顔</button>
+      <button onclick="addPrompt('distressed face')">困惑した顔</button>
+      <button onclick="addPrompt('grimacing')">しかめ面</button>
+      <button onclick="addPrompt('averted gaze')">視線を逸らす</button>
+      <button onclick="addPrompt('tightly closed mouth')">口を固く閉じる</button>
+      <button onclick="addPrompt('embarrassed reluctant')">恥ずかしそうに嫌がる</button>
+      <button onclick="addPrompt('resisting expression')">抵抗する顔</button>
+      <button onclick="addPrompt('shaking head')">首を横に振る</button>
+      <button onclick="addPrompt('sweat drop')">冷や汗</button>
+
+    </div>
+
+  </div>
+
+
+  <!-- 呆れ -->
+  <div id="exasperationPage" class="page">
+
+    <button class="backButton" onclick="showPage('expressionPage')">
+      ← 戻る
+    </button>
+
+    <h1>呆れ</h1>
+
+    <div class="buttons">
+
+      <button onclick="addPrompt('exasperated')">うんざり</button>
+      <button onclick="addPrompt('disappointed')">失望</button>
+      <button onclick="addPrompt('tired expression')">疲れた顔</button>
+      <button onclick="addPrompt('unamused')">面白くなさそう</button>
+      <button onclick="addPrompt('sighing')">ため息をつく</button>
+      <button onclick="addPrompt('furrowed brow')">眉をひそめる</button>
+      <button onclick="addPrompt('narrowed eyes')">目を細める</button>
+      <button onclick="addPrompt('slight frown')">軽く眉を下げる</button>
+      <button onclick="addPrompt('deadpan')">無表情</button>
 
     </div>
 
