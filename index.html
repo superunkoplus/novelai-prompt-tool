@@ -107,13 +107,10 @@ button.var-btn:hover{background:#fef08a}
 <div id="viewPage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
   <h1>視点</h1>
-  <h2>基本の視点</h2>
+  <h2>基本の視点（詳細選択あり）</h2>
   <div class="buttons">
-    <button onclick="addPrompt('eye-level view')">目線の高さ</button>
-    <button onclick="addPrompt('low-angle view')">下から見上げる</button>
-    <button onclick="addPrompt('high-angle view')">上から見下ろす</button>
-    <button onclick="addPrompt(&quot;bird's-eye view&quot;)">真上から見下ろす</button>
-    <button onclick="addPrompt(&quot;worm's-eye view&quot;)">かなり低い位置から見上げる</button>
+    <button class="var-btn" onclick="openVariation('view_angle')">アングル</button>
+    <button class="var-btn" onclick="openVariation('shot_size')">ショットサイズ</button>
   </div>
   <h2>カメラの位置</h2>
   <div class="buttons">
@@ -126,11 +123,6 @@ button.var-btn:hover{background:#fef08a}
     <button onclick="addPrompt('from behind')">後方</button>
     <button onclick="addPrompt('from above')">上方</button>
     <button onclick="addPrompt('from below')">下方</button>
-    <button onclick="addPrompt('wide shot')">引いた構図</button>
-    <button onclick="addPrompt('medium shot')">中距離</button>
-    <button onclick="addPrompt('long shot')">全身+周囲</button>
-    <button onclick="addPrompt('close-up')">近距離</button>
-    <button onclick="addPrompt('extreme close-up')">かなり寄る</button>
   </div>
 </div>
 
@@ -155,33 +147,18 @@ button.var-btn:hover{background:#fef08a}
 <div id="situationPage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
   <h1>状況</h1>
-  <h2>基本</h2>
+  <h2>場所（詳細選択あり）</h2>
+  <div class="buttons">
+    <button class="var-btn" onclick="openVariation('place_indoor')">室内系</button>
+    <button class="var-btn" onclick="openVariation('place_outdoor')">屋外系</button>
+    <button class="var-btn" onclick="openVariation('place_special')">特殊な場所</button>
+  </div>
+  <h2>時間帯</h2>
   <div class="buttons">
     <button onclick="addPrompt('night')">夜</button>
     <button onclick="addPrompt('day')">昼</button>
     <button onclick="addPrompt('evening')">夕方</button>
     <button onclick="addPrompt('morning')">朝</button>
-    <button onclick="addPrompt('indoors')">室内</button>
-    <button onclick="addPrompt('outdoors')">屋外</button>
-    <button onclick="addPrompt('bedroom')">寝室</button>
-    <button onclick="addPrompt('classroom')">教室</button>
-    <button onclick="addPrompt('bathroom')">浴室</button>
-    <button onclick="addPrompt('shower')">シャワー</button>
-    <button onclick="addPrompt('kitchen')">キッチン</button>
-    <button onclick="addPrompt('living room')">リビング</button>
-    <button onclick="addPrompt('stylish room')">おしゃれな部屋</button>
-    <button onclick="addPrompt('office')">オフィス</button>
-    <button onclick="addPrompt('hotel room')">ホテルの部屋</button>
-    <button onclick="addPrompt('beach')">ビーチ</button>
-    <button onclick="addPrompt('pool')">プール</button>
-    <button onclick="addPrompt('park')">公園</button>
-    <button onclick="addPrompt('street')">街中</button>
-    <button onclick="addPrompt('rooftop')">屋上</button>
-    <button onclick="addPrompt('train')">電車内</button>
-    <button onclick="addPrompt('car interior')">車内</button>
-    <button onclick="addPrompt('locker room')">更衣室</button>
-    <button onclick="addPrompt('library')">図書館</button>
-    <button onclick="addPrompt('stage')">ステージ</button>
   </div>
   <h2>道具（詳細選択）</h2>
   <div class="buttons">
@@ -194,7 +171,6 @@ button.var-btn:hover{background:#fef08a}
   </div>
 </div>
 
-<!-- 性行（旧体位） -->
 <div id="sexPage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
   <h1>性行</h1>
@@ -252,7 +228,6 @@ button.var-btn:hover{background:#fef08a}
   </div>
 </div>
 
-<!-- 身体描写（体液＋ポーズ統合） -->
 <div id="bodyPage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
   <h1>身体描写</h1>
@@ -341,56 +316,17 @@ button.var-btn:hover{background:#fef08a}
 
 <div id="smilePage" class="page">
   <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
-  <h1>笑顔</h1>
+  <h1>笑顔（詳細選択あり）</h1>
   <div class="buttons">
-    <button onclick="addPrompt('smiling')">笑顔</button>
-    <button onclick="addPrompt('soft smile')">柔らかい笑顔</button>
-    <button onclick="addPrompt('shy smile')">照れた笑顔</button>
-    <button onclick="addPrompt('bashful smile')">はにかんだ笑顔</button>
-    <button onclick="addPrompt('awkward smile')">気まずい笑顔</button>
-    <button onclick="addPrompt('embarrassed smile')">恥ずかしそうな笑顔</button>
-    <button onclick="addPrompt('wry smile')">苦笑い</button>
-    <button onclick="addPrompt('forced smile')">作り笑い</button>
-    <button onclick="addPrompt('business smile')">ビジネススマイル</button>
-    <button onclick="addPrompt('mischievous smile')">悪戯っぽい笑顔</button>
-    <button onclick="addPrompt('teasing smile')">からかうような笑顔</button>
-    <button onclick="addPrompt('seductive smile')">誘惑する笑顔</button>
-    <button onclick="addPrompt('mysterious smile')">謎めいた笑顔</button>
-    <button onclick="addPrompt('knowing smile')">意味深な笑顔</button>
-    <button onclick="addPrompt('tearful smile')">涙ぐみながらの笑顔</button>
-    <button onclick="addPrompt('sneering')">侮蔑の笑顔</button>
-    <button onclick="addPrompt('smiling through tears')">涙を流しながら笑う</button>
-    <button onclick="addPrompt('laughing')">声を出して笑う</button>
-    <button onclick="addPrompt('laughing hard')">腹を抱えて笑う</button>
-    <button onclick="addPrompt('giggling')">クスクス笑う</button>
-    <button onclick="addPrompt('chuckling')">小さめに笑う</button>
-    <button onclick="addPrompt('covering mouth while laughing')">口を手で覆って笑う</button>
-    <button onclick="addPrompt('eyes closed from laughing')">笑いすぎて目を細める</button>
-    <button onclick="addPrompt('teeth showing smile')">歯が見える笑顔</button>
-    <button onclick="addPrompt('one-sided smile')">片側だけ上がった笑顔</button>
+    <button class="var-btn" onclick="openVariation('smile')">笑顔の種類</button>
   </div>
 </div>
 
 <div id="sadnessPage" class="page">
   <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
-  <h1>悲しみ</h1>
+  <h1>悲しみ（詳細選択あり）</h1>
   <div class="buttons">
-    <button onclick="addPrompt('crying')">泣く</button>
-    <button onclick="addPrompt('sobbing')">すすり泣き</button>
-    <button onclick="addPrompt('weeping')">しくしく泣く</button>
-    <button onclick="addPrompt('teary-eyed')">今にも泣きそう</button>
-    <button onclick="addPrompt('tears streaming down face')">涙が頬を伝って流れる</button>
-    <button onclick="addPrompt('single tear rolling down cheek')">一筋の涙が頬を伝う</button>
-    <button onclick="addPrompt('crying with open mouth')">子供っぽく泣く</button>
-    <button onclick="addPrompt('crying with closed eyes')">目を閉じて泣く</button>
-    <button onclick="addPrompt('silently crying')">声を出さず泣く</button>
-    <button onclick="addPrompt('sniffing')">泣いた後鼻をすする</button>
-    <button onclick="addPrompt('red-rimmed eyes')">泣いた後の顔</button>
-    <button onclick="addPrompt('puffy eyes from crying')">泣いて目が腫れる</button>
-    <button onclick="addPrompt('devastated look')">打ちのめされた顔</button>
-    <button onclick="addPrompt('empty eyes')">虚ろな目</button>
-    <button onclick="addPrompt('looking down sadly')">悲しそうに下を向く</button>
-    <button onclick="addPrompt('biting lip in sadness')">悲しさで唇を噛む</button>
+    <button class="var-btn" onclick="openVariation('sad')">悲しみの強さ</button>
   </div>
 </div>
 
@@ -479,7 +415,6 @@ button.var-btn:hover{background:#fef08a}
   </div>
 </div>
 
-<!-- 外見（旧見た目） -->
 <div id="appearancePage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
   <h1>外見</h1>
@@ -523,22 +458,10 @@ button.var-btn:hover{background:#fef08a}
 
 <div id="hairstylePage" class="page">
   <button class="backButton" onclick="showPage('appearancePage')">← 戻る</button>
-  <h1>髪型</h1>
+  <h1>髪型（詳細選択あり）</h1>
   <div class="buttons">
-    <button onclick="addPrompt('ponytail')">ポニーテール</button>
-    <button onclick="addPrompt('high ponytail')">ハイポニテ</button>
-    <button onclick="addPrompt('low ponytail')">ローポニテ</button>
-    <button onclick="addPrompt('side ponytail')">サイドポニテ</button>
-    <button onclick="addPrompt('hair bun')">お団子</button>
-    <button onclick="addPrompt('twin tails')">ツインテール</button>
-    <button onclick="addPrompt('long hair')">ロングヘア</button>
-    <button onclick="addPrompt('short hair')">ショートヘア</button>
-    <button onclick="addPrompt('medium hair')">ミディアムヘア</button>
-    <button onclick="addPrompt('braided hair')">三つ編み</button>
-    <button onclick="addPrompt('messy hair')">ボサボサ髪</button>
-    <button onclick="addPrompt('wet hair')">濡れた髪</button>
-    <button onclick="addPrompt('hair over one eye')">片目隠れ</button>
-    <button onclick="addPrompt('ahoge')">アホ毛</button>
+    <button class="var-btn" onclick="openVariation('hair_style')">髪型の種類</button>
+    <button class="var-btn" onclick="openVariation('hair_state')">髪の状態</button>
   </div>
 </div>
 
@@ -615,6 +538,85 @@ button.var-btn:hover{background:#fef08a}
 let prompts=[],currentWeightIndex=-1;
 const WEIGHTS=[0.8,1.0,1.1,1.2,1.3,1.5];
 const VARIATIONS={
+/* 視点 */
+view_angle:{title:"アングル",options:[
+{label:"目線の高さ",prompt:"eye-level view",desc:"普通の目線"},
+{label:"下から見上げる",prompt:"low-angle view",desc:"ローアングル"},
+{label:"上から見下ろす",prompt:"high-angle view",desc:"ハイアングル"},
+{label:"真上から",prompt:"bird's-eye view",desc:"真上"},
+{label:"かなり低い位置から",prompt:"worm's-eye view",desc:"虫の視点"}
+]},
+shot_size:{title:"ショットサイズ",options:[
+{label:"かなり寄る",prompt:"extreme close-up",desc:"顔や局部のアップ"},
+{label:"近距離",prompt:"close-up",desc:"バストアップ程度"},
+{label:"中距離",prompt:"medium shot",desc:"腰から上"},
+{label:"全身+周囲",prompt:"long shot",desc:"全身が入る"},
+{label:"引いた構図",prompt:"wide shot",desc:"広く写す"}
+]},
+/* 状況・場所 */
+place_indoor:{title:"室内の場所",options:[
+{label:"寝室",prompt:"bedroom",desc:"ベッドのある部屋"},
+{label:"おしゃれな部屋",prompt:"stylish room, modern room",desc:"きれいな室内"},
+{label:"教室",prompt:"classroom",desc:"学校の教室"},
+{label:"浴室・シャワー",prompt:"bathroom, shower",desc:"お風呂・シャワー"},
+{label:"リビング",prompt:"living room",desc:"居間"},
+{label:"オフィス",prompt:"office",desc:"会社"},
+{label:"ホテルの部屋",prompt:"hotel room",desc:"ホテル"},
+{label:"更衣室",prompt:"locker room",desc:"ロッカールーム"},
+{label:"図書館",prompt:"library",desc:"静かな場所"}
+]},
+place_outdoor:{title:"屋外の場所",options:[
+{label:"ビーチ",prompt:"beach, seaside",desc:"海辺"},
+{label:"プール",prompt:"pool, swimming pool",desc:"プールサイド"},
+{label:"公園",prompt:"park",desc:"公園"},
+{label:"街中",prompt:"street, city street",desc:"道路・街角"},
+{label:"屋上",prompt:"rooftop",desc:"ビルの屋上"}
+]},
+place_special:{title:"特殊な場所",options:[
+{label:"電車内",prompt:"train, inside train",desc:"電車の中"},
+{label:"車内",prompt:"car interior, inside car",desc:"車の中"},
+{label:"ステージ",prompt:"stage",desc:"舞台の上"},
+{label:"キッチン",prompt:"kitchen",desc:"台所"}
+]},
+/* 髪型 */
+hair_style:{title:"髪型の種類",options:[
+{label:"ポニーテール",prompt:"ponytail",desc:"普通のポニテ"},
+{label:"ハイポニーテール",prompt:"high ponytail",desc:"高めの位置"},
+{label:"ローポニーテール",prompt:"low ponytail",desc:"低めの位置"},
+{label:"サイドポニーテール",prompt:"side ponytail",desc:"横結び"},
+{label:"ツインテール",prompt:"twin tails, twintails",desc:"二つ結び"},
+{label:"お団子",prompt:"hair bun, bun",desc:"お団子ヘア"},
+{label:"三つ編み",prompt:"braided hair, braid",desc:"編んでいる"},
+{label:"ロングヘア",prompt:"long hair",desc:"長い髪"},
+{label:"ショートヘア",prompt:"short hair",desc:"短い髪"},
+{label:"ミディアム",prompt:"medium hair",desc:"肩くらいの長さ"}
+]},
+hair_state:{title:"髪の状態",options:[
+{label:"普通",prompt:"neat hair",desc:"整っている"},
+{label:"ボサボサ",prompt:"messy hair, disheveled hair",desc:"乱れている"},
+{label:"濡れた髪",prompt:"wet hair",desc:"水で濡れている"},
+{label:"片目隠れ",prompt:"hair over one eye",desc:"片目が隠れている"},
+{label:"アホ毛",prompt:"ahoge",desc:"一本跳ねている"}
+]},
+/* 表情 */
+smile:{title:"笑顔の種類",options:[
+{label:"普通の笑顔",prompt:"smiling, smile",desc:"自然な笑顔"},
+{label:"柔らかい笑顔",prompt:"soft smile",desc:"穏やか"},
+{label:"照れた笑顔",prompt:"shy smile, bashful smile",desc:"恥ずかしそう"},
+{label:"悪戯っぽい笑顔",prompt:"mischievous smile, teasing smile",desc:"いたずらっ子"},
+{label:"誘惑する笑顔",prompt:"seductive smile",desc:"色気のある笑顔"},
+{label:"歯が見える笑顔",prompt:"teeth showing smile, grinning",desc:"歯を見せて笑う"},
+{label:"作り笑い",prompt:"forced smile, business smile",desc:"無理した笑顔"}
+]},
+sad:{title:"悲しみの強さ",options:[
+{label:"今にも泣きそう",prompt:"teary-eyed, about to cry",desc:"目に涙"},
+{label:"泣いている",prompt:"crying, tears",desc:"普通に泣く"},
+{label:"すすり泣き",prompt:"sobbing, weeping",desc:"声を出して泣く"},
+{label:"涙が流れる",prompt:"tears streaming down face",desc:"涙が頬を伝う"},
+{label:"泣き腫らした顔",prompt:"puffy eyes from crying, red-rimmed eyes",desc:"泣いた後の顔"},
+{label:"虚ろな目",prompt:"empty eyes, vacant eyes",desc:"感情が抜けた目"}
+]},
+/* 以下は既存のエロ系（省略せず維持） */
 condom:{title:"コンドームの状態",options:[{label:"付けている途中",prompt:"putting on condom, rolling condom onto penis",desc:"装着しようとしている"},{label:"装着済み",prompt:"wearing condom, condom on penis",desc:"すでに付いている"},{label:"使用済み・廃棄",prompt:"used condom, discarded condom",desc:"使い終わって捨ててある"},{label:"包装を開けている",prompt:"opening condom package, condom wrapper",desc:"袋を破っている"},{label:"精液が入っている",prompt:"used condom filled with semen",desc:"中に精液が溜まっている"}]},
 dildo:{title:"ディルドの使い方",options:[{label:"膣に挿入中",prompt:"dildo insertion, dildo in pussy",desc:"膣に入っている"},{label:"アナルに挿入",prompt:"anal dildo, dildo in ass",desc:"アナルに入っている"},{label:"持っている・見せている",prompt:"holding dildo, presenting dildo",desc:"手に持って見せている"},{label:"舐める・咥える",prompt:"sucking dildo, licking dildo",desc:"口で扱っている"},{label:"置いてある",prompt:"dildo on floor, dildo on table",desc:"置かれている"}]},
 vibrator:{title:"バイブの使い方",options:[{label:"膣に挿入中",prompt:"vibrator in pussy, vibrating",desc:"中で振動している"},{label:"クリトリスに当てている",prompt:"vibrator on clitoris, clitoral stimulation",desc:"外側で刺激"},{label:"アナルに挿入",prompt:"anal vibrator, vibrator in ass",desc:"アナル使用"},{label:"遠隔操作中",prompt:"remote controlled vibrator, public vibrator",desc:"遠隔で動かされている"},{label:"持っている",prompt:"holding vibrator",desc:"手に持っている"}]},
