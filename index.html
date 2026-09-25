@@ -94,6 +94,12 @@ button.var-btn:hover{background:#fef08a}
     <button onclick="addPrompt('multiple girls')">multiple girls</button>
     <button onclick="addPrompt('solo')">solo</button>
   </div>
+  <h2>役割分担（複数キャラ用）</h2>
+  <div class="buttons">
+    <button class="var-btn" onclick="openVariation('role_position')">上下関係・体位</button>
+    <button class="var-btn" onclick="openVariation('role_dominance')">攻め・受け</button>
+    <button class="var-btn" onclick="openVariation('role_gaze')">視線の関係</button>
+  </div>
   <h2>基本</h2>
   <div class="buttons">
     <button onclick="addPrompt('anime coloring, {{official art}}, highres, promotional art, 4K, highly detailed, Curated, masterpiece, simple background, depth of field')">ベース</button>
@@ -214,7 +220,6 @@ button.var-btn:hover{background:#fef08a}
     <button onclick="addPrompt('one leg raised')">片脚を上げる</button>
     <button onclick="addPrompt('arching back')">背中を反らす</button>
   </div>
-
   <h2>前戯（詳細選択あり）</h2>
   <div class="buttons">
     <button class="var-btn" onclick="openVariation('kiss')">キス</button>
@@ -233,7 +238,6 @@ button.var-btn:hover{background:#fef08a}
     <button onclick="addPrompt('body licking, licking body')">体を舐める</button>
     <button onclick="addPrompt('ear licking, whispering')">耳舐め・囁き</button>
   </div>
-
   <h2>性交体位（詳細選択あり）</h2>
   <div class="buttons">
     <button class="var-btn" onclick="openVariation('missionary')">正常位</button>
@@ -251,7 +255,6 @@ button.var-btn:hover{background:#fef08a}
     <button onclick="addPrompt('amazon position, woman on top dominating')">アマゾネス体位</button>
     <button onclick="addPrompt('pile driver, legs over head')">倒置位</button>
   </div>
-
   <h2>エフェクト・反応</h2>
   <div class="buttons">
     <button class="var-btn" onclick="openVariation('thrust')">腰振り・ピストン</button>
@@ -501,24 +504,7 @@ button.var-btn:hover{background:#fef08a}
 <div id="clothingPage" class="page">
   <button class="backButton" onclick="showPage('appearancePage')">← 戻る</button>
   <h1>服装</h1>
-  <h3>色指定</h3>
-  <div class="buttons">
-    <button onclick="addPrompt('black')">黒</button>
-    <button onclick="addPrompt('white')">白</button>
-    <button onclick="addPrompt('red')">赤</button>
-    <button onclick="addPrompt('pink')">ピンク</button>
-    <button onclick="addPrompt('blue')">青</button>
-    <button onclick="addPrompt('navy')">ネイビー</button>
-    <button onclick="addPrompt('purple')">紫</button>
-    <button onclick="addPrompt('green')">緑</button>
-    <button onclick="addPrompt('yellow')">黄</button>
-    <button onclick="addPrompt('orange')">オレンジ</button>
-    <button onclick="addPrompt('brown')">茶</button>
-    <button onclick="addPrompt('gray')">グレー</button>
-    <button onclick="addPrompt('beige')">ベージュ</button>
-    <button onclick="addPrompt('transparent, see-through')">透明・透け</button>
-  </div>
-  <h3>基本（状態選択あり）</h3>
+  <h3>基本（色＋状態を選択）</h3>
   <div class="buttons">
     <button onclick="addPrompt('Plain white T-shirt')">白の無地のTシャツ</button>
     <button class="var-btn" onclick="openVariation('lingerie')">ランジェリー</button>
@@ -643,6 +629,91 @@ button.var-btn:hover{background:#fef08a}
 let prompts=[],currentWeightIndex=-1;
 const WEIGHTS=[0.8,1.0,1.1,1.2,1.3,1.5];
 const VARIATIONS={
+/* 役割分担 */
+role_position:{title:"上下関係・体位",options:[
+{label:"男性が上",prompt:"man on top, male on top",desc:"男性が上にいる"},
+{label:"女性が上",prompt:"woman on top, female on top",desc:"女性が上にいる"},
+{label:"対面",prompt:"face to face, facing each other",desc:"お互いを見ている体勢"},
+{label:"後ろから",prompt:"from behind, rear entry",desc:"後ろから"}
+]},
+role_dominance:{title:"攻め・受け",options:[
+{label:"男性が攻め",prompt:"dominant male, male dominant",desc:"男性が主導"},
+{label:"女性が攻め",prompt:"dominant female, female dominant",desc:"女性が主導"},
+{label:"互いに積極的",prompt:"mutual, equal participation",desc:"どちらも積極的"}
+]},
+role_gaze:{title:"視線の関係",options:[
+{label:"お互いを見つめ合う",prompt:"looking at each other, eye contact",desc:"視線を合わせる"},
+{label:"男性が女性を見る",prompt:"man looking at woman",desc:"男性視点"},
+{label:"女性が男性を見る",prompt:"woman looking at man",desc:"女性視点"},
+{label:"どちらも上を向く",prompt:"both looking up",desc:"快感で上を向く"}
+]},
+/* 服装（色込み） */
+lingerie:{title:"ランジェリー（色・状態）",options:[
+{label:"黒ランジェリー",prompt:"black lingerie",desc:""},
+{label:"白ランジェリー",prompt:"white lingerie",desc:""},
+{label:"ピンクランジェリー",prompt:"pink lingerie",desc:""},
+{label:"赤ランジェリー",prompt:"red lingerie",desc:""},
+{label:"ずらしている",prompt:"lingerie aside, panties aside, pulled aside",desc:"ずらす"},
+{label:"はだけている",prompt:"open lingerie, disheveled lingerie",desc:"乱れている"},
+{label:"半分脱がされている",prompt:"half-removed lingerie, lingerie around thighs",desc:""},
+{label:"破れている",prompt:"torn lingerie, ripped lingerie",desc:""}
+]},
+bikini:{title:"ビキニ（色・状態）",options:[
+{label:"黒ビキニ",prompt:"black bikini, micro bikini",desc:""},
+{label:"白ビキニ",prompt:"white bikini, micro bikini",desc:""},
+{label:"ピンクビキニ",prompt:"pink bikini, micro bikini",desc:""},
+{label:"赤ビキニ",prompt:"red bikini, micro bikini",desc:""},
+{label:"ネイビービキニ",prompt:"navy bikini, micro bikini",desc:""},
+{label:"紐を解いている",prompt:"untied bikini, bikini strings undone",desc:""},
+{label:"ずらしている",prompt:"bikini aside, pulled aside bikini",desc:""},
+{label:"濡れている",prompt:"wet bikini, see-through bikini",desc:""},
+{label:"半分脱げている",prompt:"half-removed bikini, bikini around ankles",desc:""}
+]},
+school_swimsuit:{title:"スクール水着（色・状態）",options:[
+{label:"ネイビーのスクール水着",prompt:"navy school swimsuit",desc:"定番色"},
+{label:"黒のスクール水着",prompt:"black school swimsuit",desc:""},
+{label:"白のスクール水着",prompt:"white school swimsuit",desc:""},
+{label:"ずらしている",prompt:"school swimsuit aside, pulled aside",desc:""},
+{label:"ずり下げ",prompt:"school swimsuit pulled down, around thighs",desc:""},
+{label:"濡れている",prompt:"wet school swimsuit, see-through school swimsuit",desc:""},
+{label:"破れている",prompt:"torn school swimsuit",desc:""}
+]},
+uniform:{title:"制服（色・状態）",options:[
+{label:"普通の制服",prompt:"school uniform, short skirt",desc:""},
+{label:"紺の制服",prompt:"navy school uniform, short skirt",desc:""},
+{label:"黒の制服",prompt:"black school uniform, short skirt",desc:""},
+{label:"シャツはだけ",prompt:"open shirt, unbuttoned blouse, school uniform",desc:""},
+{label:"スカートめくれ",prompt:"skirt lift, lifted skirt, upskirt",desc:""},
+{label:"乱れている",prompt:"disheveled uniform, messy clothes",desc:""},
+{label:"半脱ぎ",prompt:"half-undressed, clothes around waist",desc:""}
+]},
+nurse_maid:{title:"ナース・メイド（色・状態）",options:[
+{label:"白ナース",prompt:"white nurse outfit",desc:""},
+{label:"ピンクナース",prompt:"pink nurse outfit",desc:""},
+{label:"黒メイド",prompt:"black maid outfit",desc:""},
+{label:"白メイド",prompt:"white maid outfit",desc:""},
+{label:"はだけている",prompt:"open nurse outfit, unbuttoned, cleavage",desc:""},
+{label:"スカートめくれ",prompt:"skirt lift, maid outfit, upskirt",desc:""},
+{label:"乱れている",prompt:"disheveled nurse outfit, messy clothes",desc:""}
+]},
+office:{title:"OL・スーツ（色・状態）",options:[
+{label:"黒スーツ",prompt:"black suit, office lady, tight skirt",desc:""},
+{label:"グレーのスーツ",prompt:"gray suit, office lady, tight skirt",desc:""},
+{label:"ネイビーのスーツ",prompt:"navy suit, office lady, tight skirt",desc:""},
+{label:"ブラウスはだけ",prompt:"suit, unbuttoned blouse, open shirt",desc:""},
+{label:"タイトスカートめくれ",prompt:"skirt lift, tight skirt, upskirt",desc:""},
+{label:"乱れている",prompt:"disheveled office lady, messy clothes",desc:""}
+]},
+clothing_state:{title:"着衣の状態（汎用）",options:[
+{label:"はだけている",prompt:"open clothes, unbuttoned, disheveled clothes",desc:""},
+{label:"ずらしている",prompt:"clothes aside, pulled aside",desc:""},
+{label:"半分脱がされている",prompt:"half-undressed, clothes around waist or thighs",desc:""},
+{label:"破れている",prompt:"torn clothes, ripped clothes",desc:""},
+{label:"濡れている",prompt:"wet clothes, see-through clothes",desc:""},
+{label:"全裸",prompt:"completely nude, naked",desc:""},
+{label:"下着だけ",prompt:"underwear only, in underwear",desc:""}
+]},
+/* 以下既存のエロ系を維持 */
 condom:{title:"コンドームの状態",options:[{label:"付けている途中",prompt:"putting on condom, rolling condom onto penis",desc:"装着しようとしている"},{label:"装着済み",prompt:"wearing condom, condom on penis",desc:"すでに付いている"},{label:"使用済み・廃棄",prompt:"used condom, discarded condom",desc:"使い終わって捨ててある"},{label:"包装を開けている",prompt:"opening condom package, condom wrapper",desc:"袋を破っている"},{label:"精液が入っている",prompt:"used condom filled with semen",desc:"中に精液が溜まっている"}]},
 dildo:{title:"ディルドの使い方",options:[{label:"膣に挿入中",prompt:"dildo insertion, dildo in pussy",desc:"膣に入っている"},{label:"アナルに挿入",prompt:"anal dildo, dildo in ass",desc:"アナルに入っている"},{label:"持っている・見せている",prompt:"holding dildo, presenting dildo",desc:"手に持って見せている"},{label:"舐める・咥える",prompt:"sucking dildo, licking dildo",desc:"口で扱っている"},{label:"置いてある",prompt:"dildo on floor, dildo on table",desc:"置かれている"}]},
 vibrator:{title:"バイブの使い方",options:[{label:"膣に挿入中",prompt:"vibrator in pussy, vibrating",desc:"中で振動している"},{label:"クリトリスに当てている",prompt:"vibrator on clitoris, clitoral stimulation",desc:"外側で刺激"},{label:"アナルに挿入",prompt:"anal vibrator, vibrator in ass",desc:"アナル使用"},{label:"遠隔操作中",prompt:"remote controlled vibrator, public vibrator",desc:"遠隔で動かされている"},{label:"持っている",prompt:"holding vibrator",desc:"手に持っている"}]},
@@ -667,13 +738,6 @@ ekiben:{title:"駅弁",options:[{label:"基本の駅弁",prompt:"ekiben, standin
 thrust:{title:"腰振り・ピストン",options:[{label:"激しく腰を振っている",prompt:"thrusting, intense thrusting, pistoning",desc:"激しいピストン"},{label:"ゆっくり腰を動かす",prompt:"slow thrusting, grinding",desc:"ゆっくりとした動き"},{label:"深く突き上げる",prompt:"deep thrust, deep penetration, bottoming out",desc:"奥まで突いている"},{label:"浅いピストン",prompt:"shallow thrusting, teasing thrusts",desc:"浅く動いている"}]},
 bounce:{title:"揺れ・バウンス",options:[{label:"おっぱいが揺れている",prompt:"bouncing breasts, jiggle",desc:"胸が揺れている"},{label:"尻が揺れている",prompt:"bouncing ass, jiggling butt",desc:"尻が揺れている"},{label:"体全体が揺れている",prompt:"body bounce, bouncing",desc:"体がバウンドしている"}]},
 body_reaction:{title:"身体の反応",options:[{label:"腰が浮かる",prompt:"hips rising, arching from pleasure",desc:"快感で腰が浮く"},{label:"足が震える",prompt:"trembling legs, shaking legs",desc:"足ががくがくする"},{label:"力が入る・踏ん張る",prompt:"clenching, tensing up, gripping",desc:"力を入れている"},{label:"体をくねらせる",prompt:"writhing, squirming from pleasure",desc:"くねくね動く"},{label:"背中を大きく反らす",prompt:"arching back strongly, extreme arch",desc:"大きく反る"}]},
-lingerie:{title:"ランジェリーの状態",options:[{label:"普通に着ている",prompt:"lingerie, wearing lingerie",desc:"きちんと着ている"},{label:"ずらしている",prompt:"lingerie aside, panties aside, pulled aside",desc:"挿入しやすいようにずらす"},{label:"はだけている",prompt:"open lingerie, unbuttoned lingerie, disheveled lingerie",desc:"乱れている"},{label:"半分脱がされている",prompt:"half-removed lingerie, lingerie around thighs",desc:"途中まで脱がされている"},{label:"破れている",prompt:"torn lingerie, ripped lingerie",desc:"破れている"}]},
-bikini:{title:"ビキニの状態",options:[{label:"普通に着ている",prompt:"bikini, micro bikini",desc:"普通に着ている"},{label:"紐を解いている",prompt:"untied bikini, bikini strings undone",desc:"紐が解けている"},{label:"ずらしている",prompt:"bikini aside, pulled aside bikini",desc:"ずらされている"},{label:"濡れている",prompt:"wet bikini, see-through bikini",desc:"水で透けている"},{label:"半分脱げている",prompt:"half-removed bikini, bikini around ankles",desc:"途中まで脱げている"},{label:"マイクロビキニ",prompt:"micro bikini",desc:"かなり小さいビキニ"},{label:"紐ビキニ",prompt:"string bikini",desc:"紐タイプ"}]},
-school_swimsuit:{title:"スクール水着の状態",options:[{label:"普通に着ている",prompt:"school swimsuit",desc:"普通に着ている"},{label:"ずらしている",prompt:"school swimsuit aside, pulled aside",desc:"局部を出している"},{label:"ずり下げ",prompt:"school swimsuit pulled down, around thighs",desc:"腰まで下げている"},{label:"濡れている",prompt:"wet school swimsuit, see-through school swimsuit",desc:"濡れて透けている"},{label:"破れている",prompt:"torn school swimsuit",desc:"破れている"}]},
-uniform:{title:"制服の状態",options:[{label:"きちんと着ている",prompt:"school uniform, short skirt",desc:"普通に着ている"},{label:"シャツはだけ",prompt:"open shirt, unbuttoned blouse, school uniform",desc:"ボタンを外している"},{label:"スカートめくれ",prompt:"skirt lift, lifted skirt, upskirt",desc:"スカートがめくれている"},{label:"乱れている",prompt:"disheveled uniform, messy clothes",desc:"服が乱れている"},{label:"半脱ぎ",prompt:"half-undressed, clothes around waist",desc:"途中まで脱がされている"}]},
-nurse_maid:{title:"ナース・メイドの状態",options:[{label:"普通に着ている",prompt:"nurse outfit",desc:"ナース服"},{label:"メイド服",prompt:"maid outfit",desc:"メイド服"},{label:"はだけている",prompt:"open nurse outfit, unbuttoned, cleavage",desc:"胸元が開いている"},{label:"スカートめくれ",prompt:"skirt lift, maid outfit, upskirt",desc:"スカートが上がっている"},{label:"乱れている",prompt:"disheveled nurse outfit, messy clothes",desc:"服が乱れている"}]},
-office:{title:"OL・スーツの状態",options:[{label:"きちんと着ている",prompt:"office lady, tight skirt, suit",desc:"普通のOL"},{label:"ブラウスはだけ",prompt:"suit, unbuttoned blouse, open shirt",desc:"ボタンを外している"},{label:"タイトスカートめくれ",prompt:"skirt lift, tight skirt, upskirt",desc:"スカートが上がっている"},{label:"乱れている",prompt:"disheveled office lady, messy clothes",desc:"服が乱れている"}]},
-clothing_state:{title:"着衣の状態（汎用）",options:[{label:"はだけている",prompt:"open clothes, unbuttoned, disheveled clothes",desc:"服が開いている"},{label:"ずらしている",prompt:"clothes aside, pulled aside",desc:"局部を出すようにずらす"},{label:"半分脱がされている",prompt:"half-undressed, clothes around waist or thighs",desc:"途中まで脱げている"},{label:"破れている",prompt:"torn clothes, ripped clothes",desc:"破れている"},{label:"濡れている",prompt:"wet clothes, see-through clothes",desc:"濡れて透けている"},{label:"全裸",prompt:"completely nude, naked",desc:"何も着ていない"},{label:"下着だけ",prompt:"underwear only, in underwear",desc:"下着姿"}]},
 breasts:{title:"おっぱいの描写",options:[{label:"大きいおっぱい",prompt:"large breasts, big breasts",desc:"サイズ強調"},{label:"垂れたおっぱい",prompt:"sagging breasts, soft breasts",desc:"柔らかい・垂れている"},{label:"ピンと張ったおっぱい",prompt:"perky breasts, firm breasts",desc:"ハリがある"},{label:"揺れおっぱい",prompt:"bouncing breasts, jiggle",desc:"動いている・揺れている"},{label:"強調・寄せている",prompt:"cleavage, squeezed breasts, pressed breasts",desc:"寄せて谷間を作っている"},{label:"乳首が見えている",prompt:"nipples visible, erect nipples",desc:"勃起した乳首が見える"},{label:"おっぱいを掴まれている",prompt:"groping breasts, hands on breasts",desc:"触られている"}]},
 ass:{title:"お尻・太ももの描写",options:[{label:"大きなお尻",prompt:"large ass, big butt, thick thighs",desc:"ボリュームのある尻・太もも"},{label:"桃尻",prompt:"peach ass, round ass",desc:"丸くて形の良い尻"},{label:"尻を強調",prompt:"ass focus, presenting ass",desc:"尻を向けている・強調"},{label:"尻を掴まれている",prompt:"groping ass, hands on ass",desc:"触られている"},{label:"太ももに手",prompt:"hands on thighs, stroking thighs",desc:"太ももを触っている"}]},
 pussy:{title:"性器の描写",options:[{label:"濡れている",prompt:"wet pussy, dripping pussy, soaked",desc:"愛液で濡れている"},{label:"開いている",prompt:"spread pussy, open pussy, gaping",desc:"開いている状態"},{label:"挿入されている",prompt:"penis in pussy, penetration, vaginal penetration",desc:"挿入中"},{label:"クリトリス強調",prompt:"visible clitoris, swollen clitoris",desc:"クリトリスが目立つ"},{label:"性器アップ",prompt:"pussy focus, close-up pussy",desc:"局部を強調した構図"}]},
@@ -693,7 +757,7 @@ function formatPrompt(p){return p.weight===1.0?p.text:`(${p.text}:${p.weight})`}
 function checkConflicts(){const texts=prompts.map(p=>p.text.toLowerCase()),found=[];CONFLICT_PAIRS.forEach(([a,b])=>{if(texts.some(t=>t.includes(a.toLowerCase()))&&texts.some(t=>t.includes(b.toLowerCase())))found.push(a+" と "+b)});const w=document.getElementById("conflictWarning");if(found.length){w.textContent="⚠ 矛盾の可能性: "+found.join(" / ");w.classList.add("active")}else{w.classList.remove("active");w.textContent=""}}
 function updatePrompt(){const el=document.getElementById("prompt"),c=document.getElementById("promptCount");if(!prompts.length)el.innerHTML='<span class="placeholder">ここに選択したプロンプトが表示されます</span>';else el.innerHTML=prompts.map((p,i)=>{const b=p.weight!==1.0?`<span class="weight">${p.weight}</span>`:"";return `<span class="prompt-chip" draggable="true" data-index="${i}" title="長押しで重み変更 / ドラッグで並び替え / ×で削除">${escapeHtml(p.text)}${b}<span class="remove" data-remove="${i}">×</span></span>`}).join("");c.textContent=prompts.length+" 個選択中";checkConflicts();attachChipEvents()}
 function escapeHtml(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML}
-function openVariation(k){const d=VARIATIONS[k];if(!d)return;document.getElementById("variationTitle").textContent=d.title;document.getElementById("variationList").innerHTML=d.options.map(o=>`<button onclick="selectVariation(\`${o.prompt.replace(/`/g,"\\`")}\`)">${o.label}<span class="desc">${o.desc}</span></button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
+function openVariation(k){const d=VARIATIONS[k];if(!d)return;document.getElementById("variationTitle").textContent=d.title;document.getElementById("variationList").innerHTML=d.options.map(o=>`<button onclick="selectVariation(\`${o.prompt.replace(/`/g,"\\`")}\`)">${o.label}<span class="desc">${o.desc||""}</span></button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
 function selectVariation(t){addPrompt(t);closeVariationPanel()}
 function closeVariationPanel(){document.getElementById("variationOverlay").classList.remove("active")}
 function attachChipEvents(){const chips=document.querySelectorAll(".prompt-chip");let dragSrc=null,isDragging=false;chips.forEach(chip=>{const rm=chip.querySelector(".remove");if(rm){rm.addEventListener("click",e=>{e.stopPropagation();e.preventDefault();removePrompt(+rm.dataset.remove)});rm.addEventListener("mousedown",e=>e.stopPropagation());rm.addEventListener("touchstart",e=>e.stopPropagation(),{passive:true})}let timer=null;const start=e=>{if(e.target.classList.contains("remove"))return;isDragging=false;timer=setTimeout(()=>{if(!isDragging)openWeightPanel(+chip.dataset.index)},500)};const cancel=()=>clearTimeout(timer);chip.addEventListener("mousedown",start);chip.addEventListener("mouseup",cancel);chip.addEventListener("mouseleave",cancel);chip.addEventListener("touchstart",start,{passive:true});chip.addEventListener("touchend",cancel);chip.addEventListener("touchcancel",cancel);chip.addEventListener("dragstart",e=>{if(e.target.classList.contains("remove")){e.preventDefault();return}isDragging=true;dragSrc=+chip.dataset.index;chip.classList.add("dragging");e.dataTransfer.effectAllowed="move";clearTimeout(timer)});chip.addEventListener("dragend",()=>{chip.classList.remove("dragging");chips.forEach(c=>c.classList.remove("drag-over"));isDragging=false;dragSrc=null});chip.addEventListener("dragover",e=>{e.preventDefault();e.dataTransfer.dropEffect="move";chip.classList.add("drag-over")});chip.addEventListener("dragleave",()=>chip.classList.remove("drag-over"));chip.addEventListener("drop",e=>{e.preventDefault();chip.classList.remove("drag-over");const t=+chip.dataset.index;if(dragSrc!==null&&dragSrc!==t){const item=prompts.splice(dragSrc,1)[0];prompts.splice(t,0,item);updatePrompt();savePrompts()}dragSrc=null;isDragging=false})})}
