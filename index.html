@@ -6,9 +6,7 @@
   <title>NovelAI Prompt Tool</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
@@ -19,31 +17,11 @@
       line-height: 1.5;
     }
 
-    h1 {
-      font-size: 22px;
-      margin: 0 0 20px;
-      font-weight: 700;
-    }
+    h1 { font-size: 22px; margin: 0 0 20px; font-weight: 700; }
+    h2 { font-size: 16px; margin: 24px 0 12px; color: #444; border-left: 4px solid #4a90d9; padding-left: 10px; }
+    h3 { font-size: 15px; margin: 20px 0 10px; color: #555; }
 
-    h2 {
-      font-size: 16px;
-      margin: 24px 0 12px;
-      color: #444;
-      border-left: 4px solid #4a90d9;
-      padding-left: 10px;
-    }
-
-    h3 {
-      font-size: 15px;
-      margin: 20px 0 10px;
-      color: #555;
-    }
-
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+    .buttons { display: flex; flex-wrap: wrap; gap: 8px; }
 
     button {
       border: none;
@@ -56,14 +34,8 @@
       transition: transform 0.1s, background 0.15s;
       color: #222;
     }
-
-    button:active {
-      transform: scale(0.96);
-    }
-
-    button:hover {
-      background: #f8f9fa;
-    }
+    button:active { transform: scale(0.96); }
+    button:hover { background: #f8f9fa; }
 
     .menuButton {
       width: 100%;
@@ -79,7 +51,6 @@
       top: 0;
       z-index: 1000;
       background: #f0f2f5;
-      padding-bottom: 12px;
       margin: -16px -16px 16px;
       padding: 16px;
       border-bottom: 1px solid #e0e0e0;
@@ -99,11 +70,7 @@
       align-items: flex-start;
     }
 
-    #prompt .placeholder {
-      color: #999;
-      font-size: 14px;
-      padding: 4px 0;
-    }
+    #prompt .placeholder { color: #999; font-size: 14px; padding: 4px 0; }
 
     .prompt-chip {
       display: inline-flex;
@@ -117,13 +84,20 @@
       max-width: 100%;
       word-break: break-all;
       cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
       transition: background 0.15s;
+      position: relative;
     }
-
-    .prompt-chip:hover {
-      background: #d2e3fc;
+    .prompt-chip:hover { background: #d2e3fc; }
+    .prompt-chip .weight {
+      font-size: 11px;
+      background: #1a73e8;
+      color: #fff;
+      border-radius: 10px;
+      padding: 1px 6px;
+      margin-left: 2px;
     }
-
     .prompt-chip .remove {
       font-size: 16px;
       line-height: 1;
@@ -131,60 +105,67 @@
       font-weight: bold;
     }
 
-    .prompt-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-    }
+    .prompt-actions { display: flex; gap: 10px; margin-top: 12px; }
 
-    #copyButton,
-    #clearButton {
+    #copyButton, #clearButton {
       flex: 1;
       margin-top: 0;
       padding: 13px;
       font-size: 15px;
       font-weight: 600;
     }
+    #copyButton { background: #1a73e8; color: white; }
+    #copyButton:hover { background: #1557b0; }
+    #clearButton { background: #fff; color: #d93025; border: 1px solid #fad2cf; }
+    #clearButton:hover { background: #fce8e6; }
 
-    #copyButton {
-      background: #1a73e8;
-      color: white;
-    }
+    .backButton { margin-bottom: 16px; background: #fff; padding: 10px 16px; font-size: 14px; }
 
-    #copyButton:hover {
-      background: #1557b0;
-    }
+    .page { display: none; }
+    .page.active { display: block; }
 
-    #clearButton {
-      background: #fff;
-      color: #d93025;
-      border: 1px solid #fad2cf;
-    }
+    .count { font-size: 13px; color: #666; margin-top: 6px; text-align: right; }
 
-    #clearButton:hover {
-      background: #fce8e6;
-    }
-
-    .backButton {
-      margin-bottom: 16px;
-      background: #fff;
-      padding: 10px 16px;
-      font-size: 14px;
-    }
-
-    .page {
+    /* 重み選択オーバーレイ */
+    #weightOverlay {
       display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
     }
-
-    .page.active {
-      display: block;
+    #weightOverlay.active { display: flex; }
+    #weightPanel {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      width: 90%;
+      max-width: 320px;
+      text-align: center;
     }
-
-    .count {
-      font-size: 13px;
-      color: #666;
-      margin-top: 6px;
-      text-align: right;
+    #weightPanel h3 { margin: 0 0 16px; font-size: 16px; }
+    #weightPanel .weight-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    #weightPanel .weight-btns button {
+      min-width: 56px;
+      padding: 12px 10px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    #weightPanel .weight-btns button.active {
+      background: #1a73e8;
+      color: #fff;
+    }
+    #weightPanel .cancel {
+      margin-top: 16px;
+      width: 100%;
+      background: #f1f3f4;
     }
   </style>
 </head>
@@ -203,23 +184,33 @@
     </div>
   </div>
 
+  <!-- 重み変更オーバーレイ -->
+  <div id="weightOverlay">
+    <div id="weightPanel">
+      <h3>重みを変更</h3>
+      <div class="weight-btns" id="weightButtons"></div>
+      <button class="cancel" onclick="closeWeightPanel()">キャンセル</button>
+    </div>
+  </div>
+
 
   <!-- トップページ -->
   <div id="homePage" class="page active">
-    <button class="menuButton" onclick="showPage('basePage')">ベースプロンプト</button>
+    <button class="menuButton" onclick="showPage('basePage')">ベース</button>
     <button class="menuButton" onclick="showPage('viewPage')">視点</button>
     <button class="menuButton" onclick="showPage('subjectViewPage')">視点（被写体側）</button>
     <button class="menuButton" onclick="showPage('expressionPage')">表情</button>
     <button class="menuButton" onclick="showPage('appearancePage')">見た目</button>
     <button class="menuButton" onclick="showPage('posePage')">体位</button>
+    <button class="menuButton" onclick="showPage('situationPage')">状況</button>
     <button class="menuButton" onclick="showPage('characterPage')">キャラクター</button>
   </div>
 
 
-  <!-- ベースプロンプト -->
+  <!-- ベース -->
   <div id="basePage" class="page">
     <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
-    <h1>ベースプロンプト</h1>
+    <h1>ベース</h1>
 
     <h2>ベース</h2>
     <div class="buttons">
@@ -496,7 +487,7 @@
   </div>
 
 
-  <!-- 服装 -->
+  <!-- 服装（AV・セクシー系を基本に統合） -->
   <div id="clothingPage" class="page">
     <button class="backButton" onclick="showPage('appearancePage')">← 戻る</button>
     <h1>服装</h1>
@@ -505,17 +496,6 @@
     <div class="buttons">
       <button onclick="addPrompt('Plain white T-shirt')">白の無地のTシャツ</button>
       <button onclick="addPrompt('School Swimsuit')">スクール水着</button>
-    </div>
-
-    <h3>特殊</h3>
-    <div class="buttons">
-      <button onclick="addPrompt('kitauji school uniform')">北宇治高校制服</button>
-      <button onclick="addPrompt('hatsuboshi gakuen school uniform')">初星学園制服</button>
-      <button onclick="addPrompt('kimi to semi blue (idolmaster)')">君とセミブルー</button>
-    </div>
-
-    <h3>AV・セクシー系</h3>
-    <div class="buttons">
       <button onclick="addPrompt('lingerie')">ランジェリー</button>
       <button onclick="addPrompt('black lingerie')">黒ランジェリー</button>
       <button onclick="addPrompt('white lingerie')">白ランジェリー</button>
@@ -546,6 +526,13 @@
       <button onclick="addPrompt('fishnet stockings')">網タイツ</button>
       <button onclick="addPrompt('collar')">首輪</button>
       <button onclick="addPrompt('choker')">チョーカー</button>
+    </div>
+
+    <h3>特殊</h3>
+    <div class="buttons">
+      <button onclick="addPrompt('kitauji school uniform')">北宇治高校制服</button>
+      <button onclick="addPrompt('hatsuboshi gakuen school uniform')">初星学園制服</button>
+      <button onclick="addPrompt('kimi to semi blue (idolmaster)')">君とセミブルー</button>
     </div>
   </div>
 
@@ -583,6 +570,32 @@
       <button onclick="addPrompt('standing')">立つ</button>
       <button onclick="addPrompt('sitting')">座る</button>
       <button onclick="addPrompt('lying')">横になる</button>
+      <button onclick="addPrompt('kneeling')">膝立ち</button>
+      <button onclick="addPrompt('crouching')">しゃがむ</button>
+      <button onclick="addPrompt('on all fours')">四つん這い</button>
+      <button onclick="addPrompt('leaning forward')">前かがみ</button>
+      <button onclick="addPrompt('arms up')">両腕を上げる</button>
+      <button onclick="addPrompt('arms behind back')">両手を後ろに</button>
+      <button onclick="addPrompt('hands on hips')">腰に手</button>
+      <button onclick="addPrompt('crossed arms')">腕組み</button>
+      <button onclick="addPrompt('legs spread')">脚を開く</button>
+      <button onclick="addPrompt('one leg raised')">片脚を上げる</button>
+      <button onclick="addPrompt('arching back')">背中を反らす</button>
+    </div>
+
+    <h2>前戯</h2>
+    <div class="buttons">
+      <button onclick="addPrompt('fellatio, oral, sucking penis')">フェラチオ</button>
+      <button onclick="addPrompt('cunnilingus, oral, licking pussy')">クンニリングス</button>
+      <button onclick="addPrompt('handjob, stroking penis')">手コキ</button>
+      <button onclick="addPrompt('paizuri, titjob, breast sex')">パイズリ</button>
+      <button onclick="addPrompt('footjob')">足コキ</button>
+      <button onclick="addPrompt('kissing, deep kiss')">ディープキス</button>
+      <button onclick="addPrompt('neck kissing, licking neck')">首筋を舐める</button>
+      <button onclick="addPrompt('licking nipple, nipple play')">乳首を舐める</button>
+      <button onclick="addPrompt('fingering, fingering pussy')">指入れ</button>
+      <button onclick="addPrompt('grinding, dry humping')">素股</button>
+      <button onclick="addPrompt('teasing, light touching')">焦らし</button>
     </div>
 
     <h2>性交体位</h2>
@@ -604,6 +617,41 @@
       <button onclick="addPrompt('spooning position, both lying on their side, man behind')">側位</button>
       <button onclick="addPrompt('side by side facing each other, legs intertwined')">側位対面</button>
       <button onclick="addPrompt('69 position, mutual oral, one on top of the other')">69</button>
+    </div>
+  </div>
+
+
+  <!-- 状況（新規） -->
+  <div id="situationPage" class="page">
+    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
+    <h1>状況</h1>
+
+    <h2>基本</h2>
+    <div class="buttons">
+      <button onclick="addPrompt('night')">夜</button>
+      <button onclick="addPrompt('day')">昼</button>
+      <button onclick="addPrompt('evening')">夕方</button>
+      <button onclick="addPrompt('morning')">朝</button>
+      <button onclick="addPrompt('indoors')">室内</button>
+      <button onclick="addPrompt('outdoors')">屋外</button>
+      <button onclick="addPrompt('bedroom')">寝室</button>
+      <button onclick="addPrompt('classroom')">教室</button>
+      <button onclick="addPrompt('bathroom')">浴室</button>
+      <button onclick="addPrompt('shower')">シャワー</button>
+      <button onclick="addPrompt('kitchen')">キッチン</button>
+      <button onclick="addPrompt('living room')">リビング</button>
+      <button onclick="addPrompt('office')">オフィス</button>
+      <button onclick="addPrompt('hotel room')">ホテルの部屋</button>
+      <button onclick="addPrompt('beach')">ビーチ</button>
+      <button onclick="addPrompt('pool')">プール</button>
+      <button onclick="addPrompt('park')">公園</button>
+      <button onclick="addPrompt('street')">街中</button>
+      <button onclick="addPrompt('rooftop')">屋上</button>
+      <button onclick="addPrompt('train')">電車内</button>
+      <button onclick="addPrompt('car interior')">車内</button>
+      <button onclick="addPrompt('locker room')">更衣室</button>
+      <button onclick="addPrompt('library')">図書館</button>
+      <button onclick="addPrompt('stage')">ステージ</button>
     </div>
   </div>
 
@@ -684,11 +732,14 @@
 
 
   <script>
+    // プロンプトは { text: string, weight: number } の配列で管理
     let prompts = [];
+    let currentWeightIndex = -1;
+    const WEIGHTS = [0.8, 1.0, 1.1, 1.2, 1.3, 1.5];
 
     // ローカルストレージから復元
     try {
-      const saved = localStorage.getItem('novelai_prompts');
+      const saved = localStorage.getItem('novelai_prompts_v2');
       if (saved) {
         prompts = JSON.parse(saved);
       }
@@ -696,17 +747,14 @@
 
     function savePrompts() {
       try {
-        localStorage.setItem('novelai_prompts', JSON.stringify(prompts));
+        localStorage.setItem('novelai_prompts_v2', JSON.stringify(prompts));
       } catch (e) {}
     }
 
-    function addPrompt(prompt) {
-      // 同一プロンプトの重複を防止
-      if (prompts.includes(prompt)) {
-        // 既にある場合は何もしない（または軽いフィードバック）
-        return;
-      }
-      prompts.push(prompt);
+    function addPrompt(text) {
+      // 同一テキストの重複を防止（重みは無視してテキストで判定）
+      if (prompts.some(p => p.text === text)) return;
+      prompts.push({ text: text, weight: 1.0 });
       updatePrompt();
       savePrompts();
     }
@@ -717,6 +765,11 @@
       savePrompts();
     }
 
+    function formatPrompt(p) {
+      if (p.weight === 1.0) return p.text;
+      return `(${p.text}:${p.weight})`;
+    }
+
     function updatePrompt() {
       const promptElement = document.getElementById("prompt");
       const countElement = document.getElementById("promptCount");
@@ -724,15 +777,19 @@
       if (prompts.length === 0) {
         promptElement.innerHTML = '<span class="placeholder">ここに選択したプロンプトが表示されます</span>';
       } else {
-        promptElement.innerHTML = prompts.map((p, i) => 
-          `<span class="prompt-chip" onclick="removePrompt(${i})" title="タップで削除">
-            ${escapeHtml(p)}
+        promptElement.innerHTML = prompts.map((p, i) => {
+          const weightBadge = p.weight !== 1.0
+            ? `<span class="weight">${p.weight}</span>`
+            : '';
+          return `<span class="prompt-chip" data-index="${i}" title="タップで削除 / 長押しで重み変更">
+            ${escapeHtml(p.text)}${weightBadge}
             <span class="remove">×</span>
-          </span>`
-        ).join('');
+          </span>`;
+        }).join('');
       }
 
       countElement.textContent = prompts.length + ' 個選択中';
+      attachChipEvents();
     }
 
     function escapeHtml(text) {
@@ -741,8 +798,68 @@
       return div.innerHTML;
     }
 
+    // チップのイベント（タップ＝削除、長押し＝重み変更）
+    function attachChipEvents() {
+      document.querySelectorAll('.prompt-chip').forEach(chip => {
+        let pressTimer = null;
+        let longPressed = false;
+
+        const start = (e) => {
+          longPressed = false;
+          pressTimer = setTimeout(() => {
+            longPressed = true;
+            const index = parseInt(chip.dataset.index, 10);
+            openWeightPanel(index);
+          }, 500); // 500ms 長押し
+        };
+
+        const end = (e) => {
+          clearTimeout(pressTimer);
+          if (!longPressed) {
+            const index = parseInt(chip.dataset.index, 10);
+            removePrompt(index);
+          }
+        };
+
+        const cancel = () => clearTimeout(pressTimer);
+
+        chip.addEventListener('mousedown', start);
+        chip.addEventListener('mouseup', end);
+        chip.addEventListener('mouseleave', cancel);
+
+        chip.addEventListener('touchstart', start, { passive: true });
+        chip.addEventListener('touchend', end);
+        chip.addEventListener('touchcancel', cancel);
+      });
+    }
+
+    function openWeightPanel(index) {
+      currentWeightIndex = index;
+      const current = prompts[index].weight;
+      const container = document.getElementById('weightButtons');
+      container.innerHTML = WEIGHTS.map(w => {
+        const active = w === current ? 'active' : '';
+        return `<button class="${active}" onclick="setWeight(${w})">${w}</button>`;
+      }).join('');
+      document.getElementById('weightOverlay').classList.add('active');
+    }
+
+    function setWeight(w) {
+      if (currentWeightIndex >= 0) {
+        prompts[currentWeightIndex].weight = w;
+        updatePrompt();
+        savePrompts();
+      }
+      closeWeightPanel();
+    }
+
+    function closeWeightPanel() {
+      document.getElementById('weightOverlay').classList.remove('active');
+      currentWeightIndex = -1;
+    }
+
     function copyPrompt() {
-      const text = prompts.join(', ');
+      const text = prompts.map(formatPrompt).join(', ');
       if (!text) {
         alert('プロンプトがありません');
         return;
@@ -750,7 +867,6 @@
       navigator.clipboard.writeText(text).then(() => {
         alert('コピーしました！');
       }).catch(() => {
-        // フォールバック
         const textarea = document.createElement('textarea');
         textarea.value = text;
         document.body.appendChild(textarea);
@@ -771,11 +887,8 @@
     }
 
     function showPage(pageId) {
-      const pages = document.querySelectorAll(".page");
-      pages.forEach(function(page) {
-        page.classList.remove("active");
-      });
-      document.getElementById(pageId).classList.add("active");
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
       window.scrollTo(0, 0);
     }
 
