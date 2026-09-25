@@ -263,28 +263,64 @@
 </div>
 
 
-  <!-- 視点（被写体側） -->
-  <div id="subjectViewPage" class="page">
+<!-- 視点（被写体側） -->
+<div id="subjectViewPage" class="page">
 
-    <button class="backButton" onclick="showPage('homePage')">
-      ← 戻る
+  <button class="backButton" onclick="showPage('homePage')">
+    ← 戻る
+  </button>
+
+  <h1>視点（被写体側）</h1>
+
+  <div class="buttons">
+
+    <button onclick="addPrompt('looking at viewer')">
+      カメラ目線
     </button>
 
-    <h1>視点（被写体側）</h1>
+    <button onclick="addPrompt('looking away')">
+      視線を外す
+    </button>
 
-    <div class="buttons">
+    <button onclick="addPrompt('looking into the distance')">
+      遠くを見ている
+    </button>
 
-      <button onclick="addPrompt('looking at viewer')">
-        こちらを見る
-      </button>
+    <button onclick="addPrompt('looking to the side')">
+      横を見る
+    </button>
 
-      <button onclick="addPrompt('looking away')">
-        目をそらす
-      </button>
+    <button onclick="addPrompt('looking back')">
+      振り返る
+    </button>
 
-    </div>
+    <button onclick="addPrompt('looking up')">
+      上を見る
+    </button>
+
+    <button onclick="addPrompt('upturned eyes')">
+      上目遣い
+    </button>
+
+    <button onclick="addPrompt('looking down')">
+      下を見る
+    </button>
+
+    <button onclick="addPrompt('downcast eyes')">
+      うつむく
+    </button>
+
+    <button onclick="addPrompt('looking diagonally upward')">
+      斜め上を見る
+    </button>
+
+    <button onclick="addPrompt('looking diagonally downward')">
+      斜め下を見る
+    </button>
 
   </div>
+
+</div>
 
 
   <!-- 表情 -->
