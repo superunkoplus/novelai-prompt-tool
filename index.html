@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>NovelAI Prompt Tool</title>
 <style>
-:root{--bg:#f0f2f5;--text:#222;--card:#fff;--border:#e0e0e0;--accent:#1a73e8;--accent-soft:#e8f0fe;--var-bg:#fef9c3;--var-border:#fde68a;--danger:#d93025;--muted:#666;--shadow:0 1px 4px rgba(0,0,0,.08)}
-body.dark{--bg:#1a1a1a;--text:#e8e8e8;--card:#2d2d2d;--border:#404040;--accent:#8ab4f8;--accent-soft:#1e3a5f;--var-bg:#4a3f1a;--var-border:#6b5a1e;--danger:#f28b82;--muted:#aaa;--shadow:0 1px 4px rgba(0,0,0,.4)}
+:root{--bg:#f0f2f5;--text:#222;--card:#fff;--border:#e0e0e0;--accent:#1a73e8;--accent-soft:#e8f0fe;--var-bg:#fef9c3;--var-border:#fde68a;--danger:#d93025;--danger-soft:#fce8e6;--muted:#666;--shadow:0 1px 4px rgba(0,0,0,.08)}
+body.dark{--bg:#1a1a1a;--text:#e8e8e8;--card:#2d2d2d;--border:#404040;--accent:#8ab4f8;--accent-soft:#1e3a5f;--var-bg:#4a3f1a;--var-border:#6b5a1e;--danger:#f28b82;--danger-soft:#5c2b2b;--muted:#aaa;--shadow:0 1px 4px rgba(0,0,0,.4)}
 *{box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;margin:0;padding:16px;background:var(--bg);color:var(--text);line-height:1.5}
 h1{font-size:22px;margin:0 0 20px;font-weight:700}
@@ -17,6 +17,7 @@ button{border:none;border-radius:10px;padding:11px 16px;font-size:15px;backgroun
 button:active{transform:scale(.96)}
 button.var-btn{background:var(--var-bg);border:1px solid var(--var-border)}
 button.selected{opacity:.45;pointer-events:none;text-decoration:line-through}
+button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!important;border:1px solid var(--danger)!important}
 .menuButton{width:100%;margin-bottom:10px;padding:15px 18px;font-size:16px;text-align:left;font-weight:500}
 #promptArea{position:sticky;top:0;z-index:1000;background:var(--bg);margin:-16px -16px 16px;padding:16px;border-bottom:1px solid var(--border)}
 #prompt{margin:0;padding:14px;background:var(--card);border-radius:12px;min-height:56px;word-break:break-word;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;max-height:120px;overflow:hidden;transition:max-height .25s}
@@ -28,8 +29,7 @@ button.selected{opacity:.45;pointer-events:none;text-decoration:line-through}
 .prompt-chip .weight{font-size:11px;background:var(--accent);color:#fff;border-radius:10px;padding:1px 6px}
 .prompt-chip .move-btn{font-size:11px;line-height:1;padding:4px 5px;opacity:.7;border-radius:6px;background:transparent;border:none;color:var(--accent);cursor:pointer;box-shadow:none}
 .prompt-chip .remove{font-size:15px;line-height:1;opacity:.7;font-weight:bold;padding:2px 5px;cursor:pointer;border-radius:50%}
-#conflictWarning{display:none;margin-top:8px;padding:8px 12px;background:#fce8e6;color:#c5221f;border-radius:8px;font-size:13px}
-body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
+#conflictWarning{display:none;margin-top:8px;padding:8px 12px;background:var(--danger-soft);color:var(--danger);border-radius:8px;font-size:13px}
 #conflictWarning.active{display:block}
 .prompt-actions{display:flex;gap:8px;margin-top:12px;align-items:center}
 #copyButton,#clearButton{flex:1;padding:13px;font-size:15px;font-weight:600}
@@ -113,7 +113,6 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button onclick="addPrompt('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated')">ネガティブ</button>
     <button onclick="addPrompt('nsfw, mosaic censoring')">モザイク</button>
     <button onclick="addPrompt('black pubic hair')">陰毛</button>
-    <button onclick="addPrompt('faceless')">顔なし</button>
   </div>
 </div>
 
@@ -146,6 +145,8 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button onclick="addPrompt('extreme close-up')">かなり寄る</button>
     <button onclick="addPrompt('dutch angle')">ダッチアングル</button>
     <button onclick="addPrompt('over the shoulder')">肩越し</button>
+    <button onclick="addPrompt('fisheye')">魚眼</button>
+    <button onclick="addPrompt('cinematic angle')">シネマティック</button>
   </div>
 </div>
 
@@ -166,13 +167,21 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button onclick="addPrompt('looking diagonally downward')">斜め下を見る</button>
     <button onclick="addPrompt('eyes closed')">目を閉じる</button>
     <button onclick="addPrompt('half-closed eyes')">半目</button>
+    <button onclick="addPrompt('winking')">ウインク</button>
   </div>
 </div>
 
 <div id="situationPage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
   <h1>状況</h1>
-  <h2>基本</h2>
+  <button class="menuButton" onclick="showPage('placePage')">場所</button>
+  <button class="menuButton" onclick="showPage('backgroundPage')">背景</button>
+  <button class="menuButton" onclick="showPage('propsPage')">道具</button>
+</div>
+
+<div id="placePage" class="page">
+  <button class="backButton" onclick="showPage('situationPage')">← 戻る</button>
+  <h1>場所</h1>
   <div class="buttons">
     <button onclick="addPrompt('night')">夜</button>
     <button onclick="addPrompt('day')">昼</button>
@@ -204,8 +213,45 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button onclick="addPrompt('elevator')">エレベーター</button>
     <button onclick="addPrompt('alley')">路地</button>
     <button onclick="addPrompt('rain')">雨</button>
+    <button onclick="addPrompt('cafe')">カフェ</button>
+    <button onclick="addPrompt('restaurant')">レストラン</button>
+    <button onclick="addPrompt('classroom after school')">放課後の教室</button>
+    <button onclick="addPrompt('gym storage')">体育倉庫</button>
+    <button onclick="addPrompt('rooftop at night')">夜の屋上</button>
+    <button onclick="addPrompt('bed')">ベッドの上</button>
+    <button onclick="addPrompt('floor')">床の上</button>
+    <button onclick="addPrompt('against wall')">壁際</button>
   </div>
-  <h2>道具</h2>
+</div>
+
+<div id="backgroundPage" class="page">
+  <button class="backButton" onclick="showPage('situationPage')">← 戻る</button>
+  <h1>背景</h1>
+  <div class="buttons">
+    <button onclick="addPrompt('blurred background')">ぼかされた背景</button>
+    <button onclick="addPrompt('minimal background')">情報を減らす</button>
+    <button onclick="addPrompt('simple background')">シンプル背景</button>
+    <button onclick="addPrompt('white background')">白背景</button>
+    <button onclick="addPrompt('black background')">黒背景</button>
+    <button onclick="addPrompt('gradient background')">グラデーション背景</button>
+    <button onclick="addPrompt('detailed background')">詳細な背景</button>
+    <button onclick="addPrompt('bokeh')">ボケ</button>
+    <button onclick="addPrompt('depth of field')">被写界深度</button>
+    <button onclick="addPrompt('no background')">背景なし</button>
+    <button onclick="addPrompt('scenery')">風景</button>
+    <button onclick="addPrompt('cityscape')">街並み</button>
+    <button onclick="addPrompt('nature')">自然</button>
+    <button onclick="addPrompt('indoor lighting')">室内照明</button>
+    <button onclick="addPrompt('dramatic lighting')">ドラマチック照明</button>
+    <button onclick="addPrompt('soft lighting')">柔らかい光</button>
+    <button onclick="addPrompt('backlighting')">逆光</button>
+    <button onclick="addPrompt('neon lights')">ネオン</button>
+  </div>
+</div>
+
+<div id="propsPage" class="page">
+  <button class="backButton" onclick="showPage('situationPage')">← 戻る</button>
+  <h1>道具</h1>
   <div class="buttons">
     <button class="var-btn" onclick="openVariation('condom')">コンドーム</button>
     <button class="var-btn" onclick="openVariation('dildo')">ディルド</button>
@@ -241,6 +287,9 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button onclick="addPrompt('navel licking')">へそ舐め</button>
     <button onclick="addPrompt('kissing while fingering')">キスしながら指入れ</button>
     <button onclick="addPrompt('mutual masturbation')">相互オナニー</button>
+    <button onclick="addPrompt('spanking')">お尻を叩く</button>
+    <button onclick="addPrompt('hair pulling')">髪を掴む</button>
+    <button onclick="addPrompt('choking lightly')">首を軽く締める</button>
   </div>
   <h2>性交体位</h2>
   <div class="buttons">
@@ -260,6 +309,8 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button onclick="addPrompt('lotus position, sitting face to face, legs wrapped')">座位（密着）</button>
     <button onclick="addPrompt('against wall, standing sex')">壁ドン立位</button>
     <button onclick="addPrompt('table sex, bent over table')">机の上</button>
+    <button onclick="addPrompt('suspended congress')">吊り下げ体位</button>
+    <button onclick="addPrompt('reverse missionary')">逆正常位</button>
   </div>
   <h2>エフェクト・反応</h2>
   <div class="buttons">
@@ -273,6 +324,8 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button onclick="addPrompt('twitching, convulsing')">痙攣・ピクピク</button>
     <button onclick="addPrompt('orgasm, climax')">絶頂中</button>
     <button onclick="addPrompt('afterglow')">余韻</button>
+    <button onclick="addPrompt('creampie')">中出し</button>
+    <button onclick="addPrompt('cum overflow')">溢れ出す精液</button>
   </div>
 </div>
 
@@ -319,6 +372,8 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button onclick="addPrompt('stretching, body stretch')">体を伸ばす</button>
     <button onclick="addPrompt('wariza, seiza')">正座・あぐら</button>
     <button onclick="addPrompt('hands on knees')">膝に手</button>
+    <button onclick="addPrompt('reaching out')">手を伸ばす</button>
+    <button onclick="addPrompt('hugging knees')">膝を抱える</button>
   </div>
 </div>
 
@@ -365,6 +420,8 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button onclick="addPrompt('moaning')">喘ぎ</button>
     <button onclick="addPrompt('crying from pleasure')">快感で泣く</button>
     <button onclick="addPrompt('confused arousal')">戸惑いながらの興奮</button>
+    <button onclick="addPrompt('pleasure face')">快感の表情</button>
+    <button onclick="addPrompt('fucked silly')">理性が飛ぶ</button>
   </div>
 </div>
 
@@ -526,9 +583,8 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button class="var-btn" onclick="openClothingColor('school_swimsuit')">スクール水着</button>
     <button class="var-btn" onclick="openClothingColor('uniform')">制服</button>
     <button class="var-btn" onclick="openClothingColor('nurse_maid')">ナース・メイド</button>
-    <button onclick="addPrompt('bunny suit')">バニー衣装</button>
-    <button onclick="addPrompt('china dress')">チャイナドレス</button>
-    <button onclick="addPrompt('qipao')">旗袍</button>
+    <button class="var-btn" onclick="openVariation('bunny')">バニー衣装</button>
+    <button class="var-btn" onclick="openClothingColor('china')">チャイナドレス</button>
     <button onclick="addPrompt('gym uniform')">体操服</button>
     <button onclick="addPrompt('bloomers')">ブルマ</button>
     <button class="var-btn" onclick="openClothingColor('office')">OL・スーツ</button>
@@ -542,6 +598,9 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button onclick="addPrompt('apron')">エプロン</button>
     <button onclick="addPrompt('lab coat')">白衣</button>
     <button onclick="addPrompt('cheerleader outfit')">チア衣装</button>
+    <button onclick="addPrompt('swimsuit')">水着</button>
+    <button onclick="addPrompt('towel')">タオルだけ</button>
+    <button onclick="addPrompt('open shirt')">シャツ一枚</button>
   </div>
   <h3>特殊</h3>
   <div class="buttons">
@@ -572,14 +631,49 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
     <button onclick="addPrompt('ahoge')">アホ毛</button>
     <button onclick="addPrompt('hair down')">下ろした髪</button>
     <button onclick="addPrompt('disheveled hair')">乱れた髪</button>
+    <button onclick="addPrompt('bob cut')">ボブ</button>
+    <button onclick="addPrompt('curly hair')">巻き髪</button>
   </div>
 </div>
 
 <div id="characterPage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
   <h1>キャラクター</h1>
+  <button class="menuButton" onclick="showPage('malePage')">竿役</button>
   <button class="menuButton" onclick="showPage('idolmasterPage')">学園アイドルマスター</button>
   <button class="menuButton" onclick="showPage('euphoniumPage')">響け！ユーフォニアム</button>
+</div>
+
+<div id="malePage" class="page">
+  <button class="backButton" onclick="showPage('characterPage')">← 戻る</button>
+  <h1>竿役</h1>
+  <h2>基本</h2>
+  <div class="buttons">
+    <button onclick="addPrompt('boy')">男性</button>
+    <button onclick="addPrompt('teenage boy')">若い男性</button>
+    <button onclick="addPrompt('young man')">青年</button>
+    <button onclick="addPrompt('adult male')">成人男性</button>
+    <button onclick="addPrompt('faceless')">顔なし</button>
+    <button onclick="addPrompt('faceless male')">顔なし男性</button>
+  </div>
+  <h2>体型</h2>
+  <div class="buttons">
+    <button onclick="addPrompt('average build')">普通体型</button>
+    <button onclick="addPrompt('muscular')">筋肉質</button>
+    <button onclick="addPrompt('slim')">スリム</button>
+    <button onclick="addPrompt('athletic')">アスリート体型</button>
+    <button onclick="addPrompt('tall')">長身</button>
+    <button onclick="addPrompt('short')">低め</button>
+    <button onclick="addPrompt('broad shoulders')">広い肩幅</button>
+  </div>
+  <h2>その他</h2>
+  <div class="buttons">
+    <button onclick="addPrompt('male focus')">男性フォーカス</button>
+    <button onclick="addPrompt('from male pov')">男性視点</button>
+    <button onclick="addPrompt('erect penis')">勃起</button>
+    <button onclick="addPrompt('large penis')">大きい</button>
+    <button onclick="addPrompt('veiny penis')">血管が浮いた</button>
+  </div>
 </div>
 
 <div id="idolmasterPage" class="page">
@@ -648,13 +742,34 @@ body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
 <script>
 let prompts=[],currentWeightIndex=-1,pendingClothing=null,promptExpanded=false;
 const WEIGHTS=[0.8,1.0,1.1,1.2,1.3,1.5],SEARCH_INDEX=[],COLLAPSE_THRESHOLD=5;
-const CLOTHING_COLORS={lingerie:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"紫",value:"purple"}],bikini:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"ネイビー",value:"navy"},{label:"青",value:"blue"}],school_swimsuit:[{label:"ネイビー",value:"navy"},{label:"黒",value:"black"},{label:"白",value:"white"}],uniform:[{label:"紺",value:"navy"},{label:"黒",value:"black"},{label:"指定なし",value:""}],nurse_maid:[{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"黒",value:"black"}],office:[{label:"黒",value:"black"},{label:"グレー",value:"gray"},{label:"ネイビー",value:"navy"}]};
-const CLOTHING_STATES={lingerie:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", lingerie aside, panties aside, pulled aside"},{label:"はだけている",suffix:", open lingerie, disheveled lingerie"},{label:"半分脱がされている",suffix:", half-removed lingerie, lingerie around thighs"},{label:"破れている",suffix:", torn lingerie, ripped lingerie"}],bikini:[{label:"普通に着ている",suffix:""},{label:"マイクロビキニ",suffix:", micro bikini"},{label:"紐ビキニ",suffix:", string bikini"},{label:"紐を解いている",suffix:", untied bikini, bikini strings undone"},{label:"ずらしている",suffix:", bikini aside, pulled aside bikini"},{label:"濡れている",suffix:", wet bikini, see-through bikini"},{label:"半分脱げている",suffix:", half-removed bikini, bikini around ankles"}],school_swimsuit:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", school swimsuit aside, pulled aside"},{label:"ずり下げ",suffix:", school swimsuit pulled down, around thighs"},{label:"濡れている",suffix:", wet school swimsuit, see-through school swimsuit"},{label:"破れている",suffix:", torn school swimsuit"}],uniform:[{label:"普通に着ている",suffix:", short skirt"},{label:"シャツはだけ",suffix:", open shirt, unbuttoned blouse, short skirt"},{label:"スカートめくれ",suffix:", skirt lift, lifted skirt, upskirt"},{label:"乱れている",suffix:", disheveled uniform, messy clothes"},{label:"半脱ぎ",suffix:", half-undressed, clothes around waist"}],nurse_maid:[{label:"普通に着ている",suffix:""},{label:"はだけている",suffix:", open, unbuttoned, cleavage"},{label:"スカートめくれ",suffix:", skirt lift, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],office:[{label:"普通に着ている",suffix:", tight skirt"},{label:"ブラウスはだけ",suffix:", unbuttoned blouse, open shirt, tight skirt"},{label:"スカートめくれ",suffix:", skirt lift, tight skirt, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}]};
-const CLOTHING_BASE={lingerie:"lingerie",bikini:"bikini",school_swimsuit:"school swimsuit",uniform:"school uniform",nurse_maid:"nurse outfit",office:"office lady, suit"};
+function toKanaNorm(s){return s.replace(/[\u3041-\u3096]/g,ch=>String.fromCharCode(ch.charCodeAt(0)+0x60))}
+function matchSearch(q,text){const nq=toKanaNorm(q.toLowerCase()),nt=toKanaNorm((text||"").toLowerCase());return nt.includes(nq)||(text||"").toLowerCase().includes(q.toLowerCase())}
+
+const CLOTHING_COLORS={
+  lingerie:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"紫",value:"purple"}],
+  bikini:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"ネイビー",value:"navy"},{label:"青",value:"blue"}],
+  school_swimsuit:[{label:"ネイビー",value:"navy"},{label:"黒",value:"black"},{label:"白",value:"white"}],
+  uniform:[{label:"紺",value:"navy"},{label:"黒",value:"black"},{label:"指定なし",value:""}],
+  nurse_maid:[{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"黒",value:"black"}],
+  office:[{label:"黒",value:"black"},{label:"グレー",value:"gray"},{label:"ネイビー",value:"navy"}],
+  china:[{label:"赤",value:"red"},{label:"青",value:"blue"},{label:"黄",value:"yellow"},{label:"紫",value:"purple"},{label:"白",value:"white"}]
+};
+const CLOTHING_STATES={
+  lingerie:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", lingerie aside, panties aside, pulled aside"},{label:"はだけている",suffix:", open lingerie, disheveled lingerie"},{label:"半分脱がされている",suffix:", half-removed lingerie, lingerie around thighs"},{label:"破れている",suffix:", torn lingerie, ripped lingerie"}],
+  bikini:[{label:"普通に着ている",suffix:""},{label:"マイクロビキニ",suffix:", micro bikini"},{label:"紐ビキニ",suffix:", string bikini"},{label:"紐を解いている",suffix:", untied bikini, bikini strings undone"},{label:"ずらしている",suffix:", bikini aside, pulled aside bikini"},{label:"濡れている",suffix:", wet bikini, see-through bikini"},{label:"半分脱げている",suffix:", half-removed bikini, bikini around ankles"}],
+  school_swimsuit:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", school swimsuit aside, pulled aside"},{label:"ずり下げ",suffix:", school swimsuit pulled down, around thighs"},{label:"濡れている",suffix:", wet school swimsuit, see-through school swimsuit"},{label:"破れている",suffix:", torn school swimsuit"}],
+  uniform:[{label:"普通に着ている",suffix:", short skirt"},{label:"シャツはだけ",suffix:", open shirt, unbuttoned blouse, short skirt"},{label:"スカートめくれ",suffix:", skirt lift, lifted skirt, upskirt"},{label:"乱れている",suffix:", disheveled uniform, messy clothes"},{label:"半脱ぎ",suffix:", half-undressed, clothes around waist"}],
+  nurse_maid:[{label:"普通に着ている",suffix:""},{label:"はだけている",suffix:", open, unbuttoned, cleavage"},{label:"スカートめくれ",suffix:", skirt lift, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],
+  office:[{label:"普通に着ている",suffix:", tight skirt"},{label:"ブラウスはだけ",suffix:", unbuttoned blouse, open shirt, tight skirt"},{label:"スカートめくれ",suffix:", skirt lift, tight skirt, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],
+  china:[{label:"普通に着ている",suffix:""},{label:"スリット高め",suffix:", high slit"},{label:"はだけている",suffix:", open china dress"},{label:"乱れている",suffix:", disheveled china dress"}]
+};
+const CLOTHING_BASE={lingerie:"lingerie",bikini:"bikini",school_swimsuit:"school swimsuit",uniform:"school uniform",nurse_maid:"nurse outfit",office:"office lady, suit",china:"china dress"};
+
 const VARIATIONS={
 role_position:{title:"上下関係・体位",options:[{label:"男性が上",prompt:"man on top, male on top",desc:"男性が上にいる"},{label:"女性が上",prompt:"woman on top, female on top",desc:"女性が上にいる"},{label:"対面",prompt:"face to face, facing each other",desc:"お互いを見ている体勢"},{label:"後ろから",prompt:"from behind, rear entry",desc:"後ろから"}]},
 role_dominance:{title:"攻め・受け",options:[{label:"男性が攻め",prompt:"dominant male, male dominant",desc:"男性が主導"},{label:"女性が攻め",prompt:"dominant female, female dominant",desc:"女性が主導"},{label:"互いに積極的",prompt:"mutual, equal participation",desc:"どちらも積極的"}]},
 role_gaze:{title:"視線の関係",options:[{label:"お互いを見つめ合う",prompt:"looking at each other, eye contact",desc:"視線を合わせる"},{label:"男性が女性を見る",prompt:"man looking at woman",desc:"男性視点"},{label:"女性が男性を見る",prompt:"woman looking at man",desc:"女性視点"},{label:"どちらも上を向く",prompt:"both looking up",desc:"快感で上を向く"}]},
+bunny:{title:"バニー衣装",options:[{label:"通常のバニー",prompt:"bunny suit, bunny ears, playboy bunny",desc:"定番のバニー"},{label:"逆バニー",prompt:"reverse bunny suit, reverse bunny",desc:"胸と股が開いた逆バニー"},{label:"黒バニー",prompt:"black bunny suit, bunny ears",desc:"黒"},{label:"白バニー",prompt:"white bunny suit, bunny ears",desc:"白"},{label:"ピンクバニー",prompt:"pink bunny suit, bunny ears",desc:"ピンク"}]},
 clothing_state:{title:"着衣の状態（汎用）",options:[{label:"はだけている",prompt:"open clothes, unbuttoned, disheveled clothes",desc:"服が開いている"},{label:"ずらしている",prompt:"clothes aside, pulled aside",desc:"局部を出すようにずらす"},{label:"半分脱がされている",prompt:"half-undressed, clothes around waist or thighs",desc:"途中まで脱げている"},{label:"破れている",prompt:"torn clothes, ripped clothes",desc:"破れている"},{label:"濡れている",prompt:"wet clothes, see-through clothes",desc:"濡れて透けている"},{label:"全裸",prompt:"completely nude, naked",desc:"何も着ていない"},{label:"下着だけ",prompt:"underwear only, in underwear",desc:"下着姿"}]},
 condom:{title:"コンドーム",options:[{label:"付けている途中",prompt:"putting on condom, rolling condom onto penis",desc:"装着しようとしている"},{label:"装着済み",prompt:"wearing condom, condom on penis",desc:"すでに付いている"},{label:"使用済み・廃棄",prompt:"used condom, discarded condom",desc:"使い終わって捨ててある"},{label:"包装を開けている",prompt:"opening condom package, condom wrapper",desc:"袋を破っている"},{label:"精液が入っている",prompt:"used condom filled with semen",desc:"中に精液が溜まっている"}]},
 dildo:{title:"ディルド",options:[{label:"膣に挿入中",prompt:"dildo insertion, dildo in pussy",desc:"膣に入っている"},{label:"アナルに挿入",prompt:"anal dildo, dildo in ass",desc:"アナルに入っている"},{label:"持っている・見せている",prompt:"holding dildo, presenting dildo",desc:"手に持って見せている"},{label:"舐める・咥える",prompt:"sucking dildo, licking dildo",desc:"口で扱っている"},{label:"置いてある",prompt:"dildo on floor, dildo on table",desc:"置かれている"}]},
@@ -690,7 +805,9 @@ semen:{title:"精液",options:[{label:"顔にかかっている",prompt:"facial,
 saliva:{title:"よだれ・唾液",options:[{label:"よだれが垂れている",prompt:"drool, drooling, saliva",desc:"口から垂れている"},{label:"舌に唾液",prompt:"saliva on tongue, wet tongue",desc:"舌が湿っている"},{label:"キスで唾液交換",prompt:"saliva trail, string of saliva, deep kiss",desc:"糸を引くキス"}]},
 sweat:{title:"汗",options:[{label:"汗だく",prompt:"sweat, sweaty body, covered in sweat",desc:"全身汗"},{label:"額の汗",prompt:"sweat on forehead, beads of sweat",desc:"額に汗"},{label:"汗で肌が光る",prompt:"glistening sweat, shiny with sweat",desc:"汗でテカっている"}]}
 };
-const CONFLICT_PAIRS=[["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],["solo","2girls"],["solo","1boy 1girl"],["solo","multiple girls"],["1girl","2girls"],["1girl","3girls"],["day","night"],["morning","night"],["indoors","outdoors"]];
+
+const CONFLICT_PAIRS=[["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],["solo","2girls"],["solo","1boy 1girl"],["solo","multiple girls"],["1girl","2girls"],["1girl","3girls"],["day","night"],["morning","night"],["indoors","outdoors"],["white background","black background"],["simple background","detailed background"]];
+
 try{const s=localStorage.getItem("novelai_prompts_v2");if(s)prompts=JSON.parse(s)}catch(e){}
 try{if(localStorage.getItem("novelai_theme")==="dark")document.body.classList.add("dark")}catch(e){}
 function savePrompts(){try{localStorage.setItem("novelai_prompts_v2",JSON.stringify(prompts))}catch(e){}}
@@ -701,7 +818,19 @@ function removePrompt(i){prompts.splice(i,1);updatePrompt();savePrompts()}
 function movePrompt(i,dir){const j=i+dir;if(j<0||j>=prompts.length)return;const t=prompts[i];prompts[i]=prompts[j];prompts[j]=t;updatePrompt();savePrompts()}
 function formatPrompt(p){return p.weight===1.0?p.text:`(${p.text}:${p.weight})`}
 function checkConflicts(){const texts=prompts.map(p=>p.text.toLowerCase()),found=[];CONFLICT_PAIRS.forEach(([a,b])=>{if(texts.some(t=>t.includes(a.toLowerCase()))&&texts.some(t=>t.includes(b.toLowerCase())))found.push(a+" と "+b)});const w=document.getElementById("conflictWarning");if(found.length){w.textContent="⚠ 矛盾の可能性: "+found.join(" / ");w.classList.add("active")}else{w.classList.remove("active");w.textContent=""}}
-function updateSelectedButtons(){document.querySelectorAll("button[onclick*='addPrompt']").forEach(btn=>{const m=btn.getAttribute("onclick").match(/addPrompt\('([^']+)'\)|addPrompt\("([^"]+)"\)|addPrompt\(&quot;([^&]+)&quot;\)/);let text=null;if(m)text=m[1]||m[2]||m[3];if(text)btn.classList.toggle("selected",prompts.some(p=>p.text===text))})}
+function getConflictKeywords(){const texts=prompts.map(p=>p.text.toLowerCase()),keys=new Set();CONFLICT_PAIRS.forEach(([a,b])=>{const hasA=texts.some(t=>t.includes(a.toLowerCase())),hasB=texts.some(t=>t.includes(b.toLowerCase()));if(hasA&&!hasB)keys.add(b.toLowerCase());if(hasB&&!hasA)keys.add(a.toLowerCase())});return keys}
+function updateSelectedButtons(){
+  const conflictKeys=getConflictKeywords();
+  document.querySelectorAll("button[onclick*='addPrompt']").forEach(btn=>{
+    const m=btn.getAttribute("onclick").match(/addPrompt\('([^']+)'\)|addPrompt\("([^"]+)"\)|addPrompt\(&quot;([^&]+)&quot;\)/);
+    let text=null;if(m)text=m[1]||m[2]||m[3];
+    if(!text)return;
+    const exists=prompts.some(p=>p.text===text);
+    btn.classList.toggle("selected",exists);
+    const isConflict=!exists&&[...conflictKeys].some(k=>text.toLowerCase().includes(k));
+    btn.classList.toggle("conflict-btn",isConflict);
+  });
+}
 function togglePromptExpand(){promptExpanded=!promptExpanded;const el=document.getElementById("prompt"),btn=document.getElementById("promptExpand");el.classList.toggle("expanded",promptExpanded);btn.textContent=promptExpanded?"▲ 閉じる":"… タップで展開"}
 function updatePrompt(){const el=document.getElementById("prompt"),c=document.getElementById("promptCount"),exp=document.getElementById("promptExpand");if(!prompts.length){el.innerHTML='<span class="placeholder">ここに選択したプロンプトが表示されます</span>';el.classList.remove("expanded");exp.classList.remove("show");promptExpanded=false}else{el.innerHTML=prompts.map((p,i)=>{const b=p.weight!==1.0?`<span class="weight">${p.weight}</span>`:"";return `<span class="prompt-chip" data-index="${i}"><button class="move-btn" onclick="event.stopPropagation();movePrompt(${i},-1)">↑</button><button class="move-btn" onclick="event.stopPropagation();movePrompt(${i},1)">↓</button>${escapeHtml(p.text)}${b}<span class="remove" onclick="event.stopPropagation();removePrompt(${i})">×</span></span>`}).join("");if(prompts.length>COLLAPSE_THRESHOLD){exp.classList.add("show");if(!promptExpanded)el.classList.remove("expanded");else el.classList.add("expanded");exp.textContent=promptExpanded?"▲ 閉じる":"… タップで展開（"+prompts.length+"個）"}else{exp.classList.remove("show");el.classList.add("expanded");promptExpanded=true}}c.textContent=prompts.length+" 個選択中";checkConflicts();attachChipEvents();updateSelectedButtons()}
 function escapeHtml(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML}
@@ -709,14 +838,14 @@ function openVariation(k){const d=VARIATIONS[k];if(!d)return;document.getElement
 function selectVariation(t){addPrompt(t);closeVariationPanel()}
 function closeVariationPanel(){document.getElementById("variationOverlay").classList.remove("active");pendingClothing=null}
 function openClothingColor(type){pendingClothing={type,color:null};const colors=CLOTHING_COLORS[type]||[];document.getElementById("variationTitle").textContent="色を選択";document.getElementById("variationList").innerHTML=colors.map(c=>`<button onclick="selectClothingColor('${c.value}')">${c.label}</button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
-function selectClothingColor(colorValue){pendingClothing.color=colorValue;const states=CLOTHING_STATES[pendingClothing.type]||[];document.getElementById("variationTitle").textContent="状態を選択";document.getElementById("variationList").innerHTML=states.map(s=>{const base=CLOTHING_BASE[pendingClothing.type];const colorPart=pendingClothing.color?pendingClothing.color+" ":"";let prompt="";if(pendingClothing.type==="nurse_maid"){const isMaid=pendingClothing.color==="black";prompt=(isMaid?"black maid outfit":(pendingClothing.color?pendingClothing.color+" nurse outfit":"nurse outfit"))+s.suffix}else if(pendingClothing.type==="office"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"office lady, suit"+s.suffix}else if(pendingClothing.type==="uniform"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"school uniform"+s.suffix}else{prompt=colorPart+base+s.suffix}return `<button onclick="selectVariation(\`${prompt.replace(/`/g,"\\`")}\`)">${s.label}</button>`}).join("")}
-function buildSearchIndex(){SEARCH_INDEX.length=0;document.querySelectorAll("button[onclick*='addPrompt']").forEach(btn=>{const label=btn.textContent.trim();const m=btn.getAttribute("onclick").match(/addPrompt\('([^']+)'\)|addPrompt\("([^"]+)"\)|addPrompt\(&quot;([^&]+)&quot;\)/);const text=m?(m[1]||m[2]||m[3]):null;if(label&&text)SEARCH_INDEX.push({label,text,type:"direct"})});Object.keys(VARIATIONS).forEach(k=>{const v=VARIATIONS[k];SEARCH_INDEX.push({label:v.title,text:null,type:"variation",key:k});(v.options||[]).forEach(o=>{SEARCH_INDEX.push({label:o.label+"（"+v.title+"）",text:o.prompt,type:"direct"})})});["lingerie","bikini","school_swimsuit","uniform","nurse_maid","office"].forEach(k=>{SEARCH_INDEX.push({label:({lingerie:"ランジェリー",bikini:"ビキニ系",school_swimsuit:"スクール水着",uniform:"制服",nurse_maid:"ナース・メイド",office:"OL・スーツ"})[k],text:null,type:"clothing",key:k})})}
-function runSearch(q){const box=document.getElementById("searchResults");q=(q||"").trim().toLowerCase();if(!q){box.innerHTML="";return}const hits=SEARCH_INDEX.filter(i=>i.label.toLowerCase().includes(q)||(i.text&&i.text.toLowerCase().includes(q))).slice(0,30);if(!hits.length){box.innerHTML='<div class="empty">該当なし</div>';return}box.innerHTML=hits.map(h=>{if(h.type==="direct")return `<button onclick="addPrompt(\`${h.text.replace(/`/g,"\\`")}\`);document.getElementById('searchBox').value='';runSearch('')">${escapeHtml(h.label)}</button>`;if(h.type==="variation")return `<button onclick="openVariation('${h.key}')">${escapeHtml(h.label)} →</button>`;if(h.type==="clothing")return `<button onclick="openClothingColor('${h.key}')">${escapeHtml(h.label)} →</button>`;return""}).join("")}
+function selectClothingColor(colorValue){pendingClothing.color=colorValue;const states=CLOTHING_STATES[pendingClothing.type]||[];document.getElementById("variationTitle").textContent="状態を選択";document.getElementById("variationList").innerHTML=states.map(s=>{const base=CLOTHING_BASE[pendingClothing.type];const colorPart=pendingClothing.color?pendingClothing.color+" ":"";let prompt="";if(pendingClothing.type==="nurse_maid"){const isMaid=pendingClothing.color==="black";prompt=(isMaid?"black maid outfit":(pendingClothing.color?pendingClothing.color+" nurse outfit":"nurse outfit"))+s.suffix}else if(pendingClothing.type==="office"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"office lady, suit"+s.suffix}else if(pendingClothing.type==="uniform"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"school uniform"+s.suffix}else if(pendingClothing.type==="china"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"china dress"+s.suffix}else{prompt=colorPart+base+s.suffix}return `<button onclick="selectVariation(\`${prompt.replace(/`/g,"\\`")}\`)">${s.label}</button>`}).join("")}
+function buildSearchIndex(){SEARCH_INDEX.length=0;document.querySelectorAll("button[onclick*='addPrompt']").forEach(btn=>{const label=btn.textContent.trim();const m=btn.getAttribute("onclick").match(/addPrompt\('([^']+)'\)|addPrompt\("([^"]+)"\)|addPrompt\(&quot;([^&]+)&quot;\)/);const text=m?(m[1]||m[2]||m[3]):null;if(label&&text)SEARCH_INDEX.push({label,text,type:"direct"})});Object.keys(VARIATIONS).forEach(k=>{const v=VARIATIONS[k];SEARCH_INDEX.push({label:v.title,text:null,type:"variation",key:k});(v.options||[]).forEach(o=>{SEARCH_INDEX.push({label:o.label+"（"+v.title+"）",text:o.prompt,type:"direct"})})});["lingerie","bikini","school_swimsuit","uniform","nurse_maid","office","china"].forEach(k=>{SEARCH_INDEX.push({label:({lingerie:"ランジェリー",bikini:"ビキニ系",school_swimsuit:"スクール水着",uniform:"制服",nurse_maid:"ナース・メイド",office:"OL・スーツ",china:"チャイナドレス"})[k],text:null,type:"clothing",key:k})})}
+function runSearch(q){const box=document.getElementById("searchResults");q=(q||"").trim();if(!q){box.innerHTML="";return}const hits=SEARCH_INDEX.filter(i=>matchSearch(q,i.label)||(i.text&&matchSearch(q,i.text))).slice(0,40);if(!hits.length){box.innerHTML='<div class="empty">該当なし</div>';return}box.innerHTML=hits.map(h=>{if(h.type==="direct")return `<button onclick="addPrompt(\`${h.text.replace(/`/g,"\\`")}\`);document.getElementById('searchBox').value='';runSearch('')">${escapeHtml(h.label)}</button>`;if(h.type==="variation")return `<button onclick="openVariation('${h.key}')">${escapeHtml(h.label)} →</button>`;if(h.type==="clothing")return `<button onclick="openClothingColor('${h.key}')">${escapeHtml(h.label)} →</button>`;return""}).join("")}
 function attachChipEvents(){document.querySelectorAll(".prompt-chip").forEach(chip=>{let timer=null;const start=e=>{if(e.target.classList.contains("remove")||e.target.classList.contains("move-btn"))return;timer=setTimeout(()=>openWeightPanel(+chip.dataset.index),500)};const cancel=()=>clearTimeout(timer);chip.addEventListener("touchstart",start,{passive:true});chip.addEventListener("touchend",cancel);chip.addEventListener("touchcancel",cancel);chip.addEventListener("mousedown",start);chip.addEventListener("mouseup",cancel);chip.addEventListener("mouseleave",cancel)})}
 function openWeightPanel(i){currentWeightIndex=i;const cur=prompts[i].weight;document.getElementById("weightButtons").innerHTML=WEIGHTS.map(w=>`<button class="${w===cur?"active":""}" onclick="setWeight(${w})">${w}</button>`).join("");document.getElementById("weightOverlay").classList.add("active")}
 function setWeight(w){if(currentWeightIndex>=0){prompts[currentWeightIndex].weight=w;updatePrompt();savePrompts()}closeWeightPanel()}
 function closeWeightPanel(){document.getElementById("weightOverlay").classList.remove("active");currentWeightIndex=-1}
-function copyPrompt(){const t=prompts.map(formatPrompt).join(", ");if(!t)return alert("プロンプトがありません");navigator.clipboard.writeText(t).then(()=>alert("コピーしました！")).catch(()=>{const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);alert("コピーしました！")})}
+function copyPrompt(){const t=prompts.map(formatPrompt).join(", ");if(!t)return alert("プロンプトがありません");const out=t.endsWith(",")?t:t+",";navigator.clipboard.writeText(out).then(()=>alert("コピーしました！")).catch(()=>{const ta=document.createElement("textarea");ta.value=out;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);alert("コピーしました！")})}
 function clearPrompt(){if(!prompts.length)return;if(confirm("すべて消去しますか？")){prompts=[];updatePrompt();savePrompts()}}
 function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0);updateSelectedButtons()}
 updatePrompt();buildSearchIndex();
