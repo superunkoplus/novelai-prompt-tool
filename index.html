@@ -6,94 +6,170 @@
   <title>NovelAI Prompt Tool</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
       margin: 0;
-      padding: 20px;
-      background: #f5f5f5;
+      padding: 16px;
+      background: #f0f2f5;
       color: #222;
+      line-height: 1.5;
     }
 
     h1 {
-      font-size: 24px;
-      margin-bottom: 25px;
+      font-size: 22px;
+      margin: 0 0 20px;
+      font-weight: 700;
     }
 
     h2 {
-      font-size: 18px;
-      margin-top: 25px;
+      font-size: 16px;
+      margin: 24px 0 12px;
+      color: #444;
+      border-left: 4px solid #4a90d9;
+      padding-left: 10px;
     }
 
     h3 {
-      font-size: 17px;
-      margin-top: 25px;
-      margin-bottom: 12px;
+      font-size: 15px;
+      margin: 20px 0 10px;
+      color: #555;
     }
 
     .buttons {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
 
     button {
       border: none;
       border-radius: 10px;
-      padding: 12px 18px;
-      font-size: 16px;
-      background: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 11px 16px;
+      font-size: 15px;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform 0.1s, background 0.15s;
+      color: #222;
     }
 
     button:active {
       transform: scale(0.96);
     }
 
+    button:hover {
+      background: #f8f9fa;
+    }
+
     .menuButton {
       width: 100%;
-      margin-bottom: 12px;
-      padding: 16px;
-      font-size: 17px;
+      margin-bottom: 10px;
+      padding: 15px 18px;
+      font-size: 16px;
       text-align: left;
+      font-weight: 500;
     }
 
     #promptArea {
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: #f5f5f5;
-      padding-bottom: 10px;
+      background: #f0f2f5;
+      padding-bottom: 12px;
+      margin: -16px -16px 16px;
+      padding: 16px;
+      border-bottom: 1px solid #e0e0e0;
     }
 
     #prompt {
-      margin-top: 0;
-      padding: 15px;
-      background: white;
-      border-radius: 10px;
-      min-height: 50px;
+      margin: 0;
+      padding: 14px;
+      background: #fff;
+      border-radius: 12px;
+      min-height: 56px;
       word-break: break-word;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    #prompt .placeholder {
+      color: #999;
+      font-size: 14px;
+      padding: 4px 0;
+    }
+
+    .prompt-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8f0fe;
+      color: #1a73e8;
+      border-radius: 20px;
+      padding: 6px 12px 6px 14px;
+      font-size: 13px;
+      max-width: 100%;
+      word-break: break-all;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .prompt-chip:hover {
+      background: #d2e3fc;
+    }
+
+    .prompt-chip .remove {
+      font-size: 16px;
+      line-height: 1;
+      opacity: 0.7;
+      font-weight: bold;
+    }
+
+    .prompt-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
     }
 
     #copyButton,
     #clearButton {
-      margin-top: 15px;
-      width: 100%;
+      flex: 1;
+      margin-top: 0;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: 600;
     }
 
     #copyButton {
-      background: #222;
+      background: #1a73e8;
       color: white;
     }
 
+    #copyButton:hover {
+      background: #1557b0;
+    }
+
     #clearButton {
-      background: white;
-      color: red;
-      border: 1px solid red;
+      background: #fff;
+      color: #d93025;
+      border: 1px solid #fad2cf;
+    }
+
+    #clearButton:hover {
+      background: #fce8e6;
     }
 
     .backButton {
-      margin-bottom: 20px;
-      background: white;
+      margin-bottom: 16px;
+      background: #fff;
+      padding: 10px 16px;
+      font-size: 14px;
     }
 
     .page {
@@ -103,324 +179,165 @@
     .page.active {
       display: block;
     }
+
+    .count {
+      font-size: 13px;
+      color: #666;
+      margin-top: 6px;
+      text-align: right;
+    }
   </style>
 </head>
 
 <body>
 
   <!-- 共通プロンプト欄 -->
-
   <div id="promptArea">
-
     <div id="prompt">
-      ここに選択したプロンプトが表示されます
+      <span class="placeholder">ここに選択したプロンプトが表示されます</span>
     </div>
-
-    <button id="copyButton" onclick="copyPrompt()">
-      プロンプトをコピー
-    </button>
-
-    <button id="clearButton" onclick="clearPrompt()">
-      プロンプトを消去
-    </button>
-
+    <div class="count" id="promptCount">0 個選択中</div>
+    <div class="prompt-actions">
+      <button id="copyButton" onclick="copyPrompt()">プロンプトをコピー</button>
+      <button id="clearButton" onclick="clearPrompt()">すべて消去</button>
+    </div>
   </div>
 
 
   <!-- トップページ -->
   <div id="homePage" class="page active">
-
-    <button class="menuButton" onclick="showPage('basePage')">
-      ベースプロンプト
-    </button>
-
-    <button class="menuButton" onclick="showPage('viewPage')">
-      視点
-    </button>
-
-    <button class="menuButton" onclick="showPage('subjectViewPage')">
-      視点（被写体側）
-    </button>
-
-    <button class="menuButton" onclick="showPage('expressionPage')">
-      表情
-    </button>
-
-    <button class="menuButton" onclick="showPage('appearancePage')">
-      見た目
-    </button>
-
-    <button class="menuButton" onclick="showPage('posePage')">
-      体位
-    </button>
-
-    <button class="menuButton" onclick="showPage('characterPage')">
-      キャラクター
-    </button>
-
+    <button class="menuButton" onclick="showPage('basePage')">ベースプロンプト</button>
+    <button class="menuButton" onclick="showPage('viewPage')">視点</button>
+    <button class="menuButton" onclick="showPage('subjectViewPage')">視点（被写体側）</button>
+    <button class="menuButton" onclick="showPage('expressionPage')">表情</button>
+    <button class="menuButton" onclick="showPage('appearancePage')">見た目</button>
+    <button class="menuButton" onclick="showPage('posePage')">体位</button>
+    <button class="menuButton" onclick="showPage('characterPage')">キャラクター</button>
   </div>
 
 
   <!-- ベースプロンプト -->
   <div id="basePage" class="page">
-
-    <button class="backButton" onclick="showPage('homePage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
     <h1>ベースプロンプト</h1>
 
     <h2>ベース</h2>
-
     <div class="buttons">
-
-      <button onclick="addPrompt('anime coloring, {{official art}},highres,promotional art,4K,highly detailed,Curated,masterpiece , simple background,depth of field')">
-        ベース
-      </button>
-
+      <button onclick="addPrompt('anime coloring, {{official art}}, highres, promotional art, 4K, highly detailed, Curated, masterpiece, simple background, depth of field')">ベース</button>
     </div>
 
     <h2>ネガティブ</h2>
-
     <div class="buttons">
-
-      <button onclick="addPrompt('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated')">
-        ネガティブ
-      </button>
-
+      <button onclick="addPrompt('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated')">ネガティブ</button>
     </div>
-
   </div>
 
 
   <!-- 視点 -->
   <div id="viewPage" class="page">
-
-    <button class="backButton" onclick="showPage('homePage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
     <h1>視点</h1>
 
     <h2>基本の視点</h2>
-
     <div class="buttons">
-
-      <button onclick="addPrompt('eye-level view')">
-        目線の高さ
-      </button>
-
-      <button onclick="addPrompt('low-angle view')">
-        下から見上げる
-      </button>
-
-      <button onclick="addPrompt('high-angle view')">
-        上から見下ろす
-      </button>
-
-      <button onclick="addPrompt(&quot;bird's-eye view&quot;)">
-        真上から見下ろす
-      </button>
-
-      <button onclick="addPrompt(&quot;worm's-eye view&quot;)">
-        かなり低い位置から見上げる
-      </button>
-
+      <button onclick="addPrompt('eye-level view')">目線の高さ</button>
+      <button onclick="addPrompt('low-angle view')">下から見上げる</button>
+      <button onclick="addPrompt('high-angle view')">上から見下ろす</button>
+      <button onclick="addPrompt(&quot;bird's-eye view&quot;)">真上から見下ろす</button>
+      <button onclick="addPrompt(&quot;worm's-eye view&quot;)">かなり低い位置から見上げる</button>
     </div>
-
 
     <h2>カメラの位置</h2>
-
     <div class="buttons">
-
-      <button onclick="addPrompt('pov')">
-        主観
-      </button>
-
-      <button onclick="addPrompt('front view')">
-        正面
-      </button>
-
-      <button onclick="addPrompt('side view')">
-        横
-      </button>
-
-      <button onclick="addPrompt('profile view')">
-        真横
-      </button>
-
-      <button onclick="addPrompt('rear view')">
-        後ろ
-      </button>
-
-      <button onclick="addPrompt('three-quarter view')">
-        斜め
-      </button>
-
-      <button onclick="addPrompt('from behind')">
-        後方
-      </button>
-
-      <button onclick="addPrompt('from above')">
-        上方
-      </button>
-
-      <button onclick="addPrompt('from below')">
-        下方
-      </button>
-
-      <button onclick="addPrompt('wide shot')">
-        引いた構図
-      </button>
-
-      <button onclick="addPrompt('medium shot')">
-        中距離
-      </button>
-
-      <button onclick="addPrompt('long shot')">
-        全身+周囲
-      </button>
-
-      <button onclick="addPrompt('close-up')">
-        近距離
-      </button>
-
-      <button onclick="addPrompt('extreme close-up')">
-        かなり寄る
-      </button>
-
+      <button onclick="addPrompt('pov')">主観</button>
+      <button onclick="addPrompt('front view')">正面</button>
+      <button onclick="addPrompt('side view')">横</button>
+      <button onclick="addPrompt('profile view')">真横</button>
+      <button onclick="addPrompt('rear view')">後ろ</button>
+      <button onclick="addPrompt('three-quarter view')">斜め</button>
+      <button onclick="addPrompt('from behind')">後方</button>
+      <button onclick="addPrompt('from above')">上方</button>
+      <button onclick="addPrompt('from below')">下方</button>
+      <button onclick="addPrompt('wide shot')">引いた構図</button>
+      <button onclick="addPrompt('medium shot')">中距離</button>
+      <button onclick="addPrompt('long shot')">全身+周囲</button>
+      <button onclick="addPrompt('close-up')">近距離</button>
+      <button onclick="addPrompt('extreme close-up')">かなり寄る</button>
     </div>
-
   </div>
 
 
   <!-- 視点（被写体側） -->
   <div id="subjectViewPage" class="page">
-
-    <button class="backButton" onclick="showPage('homePage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
     <h1>視点（被写体側）</h1>
-
     <div class="buttons">
-
-      <button onclick="addPrompt('looking at viewer')">
-        カメラ目線
-      </button>
-
-      <button onclick="addPrompt('looking away')">
-        視線を外す
-      </button>
-
-      <button onclick="addPrompt('looking into the distance')">
-        遠くを見ている
-      </button>
-
-      <button onclick="addPrompt('looking to the side')">
-        横を見る
-      </button>
-
-      <button onclick="addPrompt('looking back')">
-        振り返る
-      </button>
-
-      <button onclick="addPrompt('looking up')">
-        上を見る
-      </button>
-
-      <button onclick="addPrompt('upturned eyes')">
-        上目遣い
-      </button>
-
-      <button onclick="addPrompt('looking down')">
-        下を見る
-      </button>
-
-      <button onclick="addPrompt('downcast eyes')">
-        うつむく
-      </button>
-
-      <button onclick="addPrompt('looking diagonally upward')">
-        斜め上を見る
-      </button>
-
-      <button onclick="addPrompt('looking diagonally downward')">
-        斜め下を見る
-      </button>
-
+      <button onclick="addPrompt('looking at viewer')">カメラ目線</button>
+      <button onclick="addPrompt('looking away')">視線を外す</button>
+      <button onclick="addPrompt('looking into the distance')">遠くを見ている</button>
+      <button onclick="addPrompt('looking to the side')">横を見る</button>
+      <button onclick="addPrompt('looking back')">振り返る</button>
+      <button onclick="addPrompt('looking up')">上を見る</button>
+      <button onclick="addPrompt('upturned eyes')">上目遣い</button>
+      <button onclick="addPrompt('looking down')">下を見る</button>
+      <button onclick="addPrompt('downcast eyes')">うつむく</button>
+      <button onclick="addPrompt('looking diagonally upward')">斜め上を見る</button>
+      <button onclick="addPrompt('looking diagonally downward')">斜め下を見る</button>
     </div>
-
   </div>
 
 
   <!-- 表情 -->
   <div id="expressionPage" class="page">
-
-    <button class="backButton" onclick="showPage('homePage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
     <h1>表情</h1>
-
-    <button class="menuButton" onclick="showPage('sexyExpressionPage')">
-      セクシー
-    </button>
-
-    <button class="menuButton" onclick="showPage('smilePage')">
-      笑顔
-    </button>
-
-    <button class="menuButton" onclick="showPage('sadnessPage')">
-      悲しみ
-    </button>
-
-    <button class="menuButton" onclick="showPage('angerPage')">
-      怒り
-    </button>
-
-    <button class="menuButton" onclick="showPage('fearPage')">
-      恐怖
-    </button>
-
-    <button class="menuButton" onclick="showPage('shynessPage')">
-      恥じらい
-    </button>
-
-    <button class="menuButton" onclick="showPage('disgustPage')">
-      嫌悪
-    </button>
-
-    <button class="menuButton" onclick="showPage('exasperationPage')">
-      呆れ
-    </button>
-
+    <button class="menuButton" onclick="showPage('sexyExpressionPage')">セクシー</button>
+    <button class="menuButton" onclick="showPage('smilePage')">笑顔</button>
+    <button class="menuButton" onclick="showPage('sadnessPage')">悲しみ</button>
+    <button class="menuButton" onclick="showPage('angerPage')">怒り</button>
+    <button class="menuButton" onclick="showPage('fearPage')">恐怖</button>
+    <button class="menuButton" onclick="showPage('shynessPage')">恥じらい</button>
+    <button class="menuButton" onclick="showPage('disgustPage')">嫌悪</button>
+    <button class="menuButton" onclick="showPage('exasperationPage')">呆れ</button>
   </div>
 
 
   <!-- セクシー -->
   <div id="sexyExpressionPage" class="page">
-
-    <button class="backButton" onclick="showPage('expressionPage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
     <h1>セクシー</h1>
-
+    <div class="buttons">
+      <button onclick="addPrompt('ahegao')">アヘ顔</button>
+      <button onclick="addPrompt('torogao')">トロ顔</button>
+      <button onclick="addPrompt('seductive gaze')">誘惑する視線</button>
+      <button onclick="addPrompt('bedroom eyes')">色気のある半目</button>
+      <button onclick="addPrompt('licking lips')">唇を舐める</button>
+      <button onclick="addPrompt('parted lips')">唇が少し開いている</button>
+      <button onclick="addPrompt('slightly open mouth')">口がわずかに開いている</button>
+      <button onclick="addPrompt('flushed with arousal')">興奮で顔が赤い</button>
+      <button onclick="addPrompt('panting')">息切れ</button>
+      <button onclick="addPrompt('breathing heavily')">荒い息</button>
+      <button onclick="addPrompt('dazed expression')">快感でぼんやりする</button>
+      <button onclick="addPrompt('intoxicated look')">酔ったような目</button>
+      <button onclick="addPrompt('dreamy eyes')">夢見心地の目</button>
+      <button onclick="addPrompt('hungry gaze')">飢えた目</button>
+      <button onclick="addPrompt('teasing look')">焦らす目つき</button>
+      <button onclick="addPrompt('inviting expression')">誘っている</button>
+      <button onclick="addPrompt('rolling eyes back')">快感で目が上を向く</button>
+      <button onclick="addPrompt('tongue out slightly')">舌が少し出る</button>
+      <button onclick="addPrompt('drooling slightly')">少しよだれが出る</button>
+      <button onclick="addPrompt('orgasmic expression')">絶頂</button>
+      <button onclick="addPrompt('ecstasy face')">恍惚</button>
+      <button onclick="addPrompt('trembling with pleasure')">快感で震える</button>
+    </div>
   </div>
 
 
   <!-- 笑顔 -->
   <div id="smilePage" class="page">
-
-    <button class="backButton" onclick="showPage('expressionPage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
     <h1>笑顔</h1>
-
     <div class="buttons">
-
       <button onclick="addPrompt('smiling')">笑顔</button>
       <button onclick="addPrompt('soft smile')">柔らかい笑顔</button>
       <button onclick="addPrompt('shy smile')">照れた笑顔</button>
@@ -446,23 +363,15 @@
       <button onclick="addPrompt('eyes closed from laughing')">笑いすぎて目を細める</button>
       <button onclick="addPrompt('teeth showing smile')">歯が見える笑顔</button>
       <button onclick="addPrompt('one-sided smile')">片側だけ上がった笑顔</button>
-
     </div>
-
   </div>
 
 
   <!-- 悲しみ -->
   <div id="sadnessPage" class="page">
-
-    <button class="backButton" onclick="showPage('expressionPage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
     <h1>悲しみ</h1>
-
     <div class="buttons">
-
       <button onclick="addPrompt('crying')">泣く</button>
       <button onclick="addPrompt('sobbing')">すすり泣き</button>
       <button onclick="addPrompt('weeping')">しくしく泣く</button>
@@ -479,23 +388,15 @@
       <button onclick="addPrompt('empty eyes')">虚ろな目</button>
       <button onclick="addPrompt('looking down sadly')">悲しそうに下を向く</button>
       <button onclick="addPrompt('biting lip in sadness')">悲しさで唇を噛む</button>
-
     </div>
-
   </div>
 
 
   <!-- 怒り -->
   <div id="angerPage" class="page">
-
-    <button class="backButton" onclick="showPage('expressionPage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
     <h1>怒り</h1>
-
     <div class="buttons">
-
       <button onclick="addPrompt('angry glare')">睨む</button>
       <button onclick="addPrompt('furrowed brows')">眉間に皺を寄せる</button>
       <button onclick="addPrompt('clenched teeth')">歯を食いしばる</button>
@@ -506,23 +407,15 @@
       <button onclick="addPrompt('annoyed face')">うんざりした顔</button>
       <button onclick="addPrompt('looking down on someone')">上から目線</button>
       <button onclick="addPrompt('tight-lipped anger')">唇を結び怒りを堪える</button>
-
     </div>
-
   </div>
 
 
   <!-- 恐怖 -->
   <div id="fearPage" class="page">
-
-    <button class="backButton" onclick="showPage('expressionPage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
     <h1>恐怖</h1>
-
     <div class="buttons">
-
       <button onclick="addPrompt('eyes wide open')">目を大きく見開く</button>
       <button onclick="addPrompt('raised eyebrows')">眉を上げる</button>
       <button onclick="addPrompt('mouth agape')">口を開け放している</button>
@@ -534,23 +427,15 @@
       <button onclick="addPrompt('sweating nervously')">緊張で汗をかく</button>
       <button onclick="addPrompt('covering mouth in shock')">ショックで口を手で覆う</button>
       <button onclick="addPrompt('biting nails')">爪を噛む</button>
-
     </div>
-
   </div>
 
 
   <!-- 恥じらい -->
   <div id="shynessPage" class="page">
-
-    <button class="backButton" onclick="showPage('expressionPage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
     <h1>恥じらい</h1>
-
     <div class="buttons">
-
       <button onclick="addPrompt('blushing')">照れ</button>
       <button onclick="addPrompt('heavy blush')">強い赤面</button>
       <button onclick="addPrompt('red face')">顔全体が赤い</button>
@@ -560,23 +445,15 @@
       <button onclick="addPrompt('covering face with hands')">両手で顔を隠す</button>
       <button onclick="addPrompt('fidgeting')">そわそわする</button>
       <button onclick="addPrompt('looking down bashfully')">はにかんで下を向く</button>
-
     </div>
-
   </div>
 
 
   <!-- 嫌悪 -->
   <div id="disgustPage" class="page">
-
-    <button class="backButton" onclick="showPage('expressionPage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
     <h1>嫌悪</h1>
-
     <div class="buttons">
-
       <button onclick="addPrompt('reluctant face')">嫌がる</button>
       <button onclick="addPrompt('unwilling face')">気の進まない</button>
       <button onclick="addPrompt('pained expression')">苦しそうな顔</button>
@@ -588,23 +465,15 @@
       <button onclick="addPrompt('resisting expression')">抵抗する顔</button>
       <button onclick="addPrompt('shaking head')">首を横に振る</button>
       <button onclick="addPrompt('sweat drop')">冷や汗</button>
-
     </div>
-
   </div>
 
 
   <!-- 呆れ -->
   <div id="exasperationPage" class="page">
-
-    <button class="backButton" onclick="showPage('expressionPage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
     <h1>呆れ</h1>
-
     <div class="buttons">
-
       <button onclick="addPrompt('exasperated')">うんざり</button>
       <button onclick="addPrompt('disappointed')">失望</button>
       <button onclick="addPrompt('tired expression')">疲れた顔</button>
@@ -614,172 +483,145 @@
       <button onclick="addPrompt('narrowed eyes')">目を細める</button>
       <button onclick="addPrompt('slight frown')">軽く眉を下げる</button>
       <button onclick="addPrompt('deadpan')">無表情</button>
-
     </div>
-
   </div>
 
 
   <!-- 見た目 -->
   <div id="appearancePage" class="page">
-
-    <button class="backButton" onclick="showPage('homePage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
     <h1>見た目</h1>
-
-    <button class="menuButton" onclick="showPage('clothingPage')">
-      服装
-    </button>
-
-    <button class="menuButton" onclick="showPage('hairstylePage')">
-      髪型
-    </button>
-
+    <button class="menuButton" onclick="showPage('clothingPage')">服装</button>
+    <button class="menuButton" onclick="showPage('hairstylePage')">髪型</button>
   </div>
 
 
   <!-- 服装 -->
   <div id="clothingPage" class="page">
-
-    <button class="backButton" onclick="showPage('appearancePage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('appearancePage')">← 戻る</button>
     <h1>服装</h1>
 
     <h3>基本</h3>
-
     <div class="buttons">
-
-      <button onclick="addPrompt('Plain white T-shirt')">
-        白の無地のTシャツ
-      </button>
-
-      <button onclick="addPrompt('School Swimsuit')">
-        スクール水着
-      </button>
-
+      <button onclick="addPrompt('Plain white T-shirt')">白の無地のTシャツ</button>
+      <button onclick="addPrompt('School Swimsuit')">スクール水着</button>
     </div>
-
 
     <h3>特殊</h3>
-
     <div class="buttons">
-
-      <button onclick="addPrompt('kitauji school uniform')">
-        北宇治高校制服
-      </button>
-
-      <button onclick="addPrompt('hatsuboshi gakuen school uniform')">
-        初星学園制服
-      </button>
-
-      <button onclick="addPrompt('kimi to semi blue (idolmaster)')">
-        君とセミブルー
-      </button>
-
+      <button onclick="addPrompt('kitauji school uniform')">北宇治高校制服</button>
+      <button onclick="addPrompt('hatsuboshi gakuen school uniform')">初星学園制服</button>
+      <button onclick="addPrompt('kimi to semi blue (idolmaster)')">君とセミブルー</button>
     </div>
 
+    <h3>AV・セクシー系</h3>
+    <div class="buttons">
+      <button onclick="addPrompt('lingerie')">ランジェリー</button>
+      <button onclick="addPrompt('black lingerie')">黒ランジェリー</button>
+      <button onclick="addPrompt('white lingerie')">白ランジェリー</button>
+      <button onclick="addPrompt('lace lingerie')">レースのランジェリー</button>
+      <button onclick="addPrompt('micro bikini')">マイクロビキニ</button>
+      <button onclick="addPrompt('string bikini')">紐ビキニ</button>
+      <button onclick="addPrompt('slingshot swimsuit')">スリングショット水着</button>
+      <button onclick="addPrompt('nurse outfit')">ナース服</button>
+      <button onclick="addPrompt('maid outfit')">メイド服</button>
+      <button onclick="addPrompt('bunny suit')">バニー衣装</button>
+      <button onclick="addPrompt('china dress')">チャイナドレス</button>
+      <button onclick="addPrompt('qipao')">旗袍</button>
+      <button onclick="addPrompt('school uniform, short skirt')">制服（ミニスカ）</button>
+      <button onclick="addPrompt('gym uniform')">体操服</button>
+      <button onclick="addPrompt('bloomers')">ブルマ</button>
+      <button onclick="addPrompt('office lady, tight skirt')">OL（タイトスカート）</button>
+      <button onclick="addPrompt('suit, unbuttoned blouse')">スーツ（ブラウスはだけ）</button>
+      <button onclick="addPrompt('see-through clothing')">透け透け服</button>
+      <button onclick="addPrompt('wet clothes')">濡れた服</button>
+      <button onclick="addPrompt('torn clothes')">破れた服</button>
+      <button onclick="addPrompt('open shirt')">シャツはだけ</button>
+      <button onclick="addPrompt('no bra')">ノーブラ</button>
+      <button onclick="addPrompt('nipple slip')">乳首チラ</button>
+      <button onclick="addPrompt('pantyshot')">パンチラ</button>
+      <button onclick="addPrompt('garter belt')">ガーターベルト</button>
+      <button onclick="addPrompt('stockings')">ストッキング</button>
+      <button onclick="addPrompt('thighhighs')">サイハイソックス</button>
+      <button onclick="addPrompt('fishnet stockings')">網タイツ</button>
+      <button onclick="addPrompt('collar')">首輪</button>
+      <button onclick="addPrompt('choker')">チョーカー</button>
+    </div>
   </div>
 
 
   <!-- 髪型 -->
   <div id="hairstylePage" class="page">
-
-    <button class="backButton" onclick="showPage('appearancePage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('appearancePage')">← 戻る</button>
     <h1>髪型</h1>
-
     <div class="buttons">
-
-      <button onclick="addPrompt('ponytail')">
-        ポニーテール
-      </button>
-
-      <button onclick="addPrompt('high ponytail')">
-        ハイポニテ
-      </button>
-
-      <button onclick="addPrompt('low ponytail')">
-        ローポニテ
-      </button>
-
-      <button onclick="addPrompt('side ponytail')">
-        サイドポニテ
-      </button>
-
-      <button onclick="addPrompt('hair bun')">
-        お団子
-      </button>
-
+      <button onclick="addPrompt('ponytail')">ポニーテール</button>
+      <button onclick="addPrompt('high ponytail')">ハイポニテ</button>
+      <button onclick="addPrompt('low ponytail')">ローポニテ</button>
+      <button onclick="addPrompt('side ponytail')">サイドポニテ</button>
+      <button onclick="addPrompt('hair bun')">お団子</button>
+      <button onclick="addPrompt('twin tails')">ツインテール</button>
+      <button onclick="addPrompt('long hair')">ロングヘア</button>
+      <button onclick="addPrompt('short hair')">ショートヘア</button>
+      <button onclick="addPrompt('medium hair')">ミディアムヘア</button>
+      <button onclick="addPrompt('braided hair')">三つ編み</button>
+      <button onclick="addPrompt('messy hair')">ボサボサ髪</button>
+      <button onclick="addPrompt('wet hair')">濡れた髪</button>
+      <button onclick="addPrompt('hair over one eye')">片目隠れ</button>
+      <button onclick="addPrompt('ahoge')">アホ毛</button>
     </div>
-
   </div>
 
 
   <!-- 体位 -->
   <div id="posePage" class="page">
-
-    <button class="backButton" onclick="showPage('homePage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
     <h1>体位</h1>
 
+    <h2>基本</h2>
     <div class="buttons">
-
-      <button onclick="addPrompt('standing')">
-        立つ
-      </button>
-
-      <button onclick="addPrompt('sitting')">
-        座る
-      </button>
-
-      <button onclick="addPrompt('lying')">
-        横になる
-      </button>
-
+      <button onclick="addPrompt('standing')">立つ</button>
+      <button onclick="addPrompt('sitting')">座る</button>
+      <button onclick="addPrompt('lying')">横になる</button>
     </div>
 
+    <h2>性交体位</h2>
+    <div class="buttons">
+      <button onclick="addPrompt('missionary position, man on top, woman on her back with legs spread, face to face, deep penetration')">正常位</button>
+      <button onclick="addPrompt('missionary with woman’s legs over man’s shoulders, deep angle')">脚を上げた正常位</button>
+      <button onclick="addPrompt('missionary, one of woman’s legs raised high, other wrapped around man’s waist')">片脚を上げた正常位</button>
+      <button onclick="addPrompt('missionary, man holding woman’s knees to her chest')">膝を抱えた正常位</button>
+      <button onclick="addPrompt('sitting face to face, woman straddling man on a chair or bed, intimate eye contact')">対面座位</button>
+      <button onclick="addPrompt('standing face to face, woman with one leg raised, man supporting her thigh')">立位対面</button>
+      <button onclick="addPrompt('doggy style, woman on all fours, man behind, arched back')">後背位</button>
+      <button onclick="addPrompt('prone bone, woman lying flat on her stomach, man on top from behind')">顔を伏せた後背位</button>
+      <button onclick="addPrompt('kneeling doggy, both on knees, man thrusting from behind')">後背位(膝立ち)</button>
+      <button onclick="addPrompt('standing doggy, woman bent over a table or wall, man standing behind')">立ちバック</button>
+      <button onclick="addPrompt('cowgirl, woman on top facing man, riding, hands on his chest')">騎乗位</button>
+      <button onclick="addPrompt('reverse cowgirl, woman on top facing away, looking back over her shoulder')">逆騎乗位</button>
+      <button onclick="addPrompt('cowgirl leaning forward, breasts close to man’s face')">騎乗位(前傾)</button>
+      <button onclick="addPrompt('reverse cowgirl, woman leaning back with hands on the bed for support')">騎乗位(後ろに手をつく)</button>
+      <button onclick="addPrompt('spooning position, both lying on their side, man behind')">側位</button>
+      <button onclick="addPrompt('side by side facing each other, legs intertwined')">側位対面</button>
+      <button onclick="addPrompt('69 position, mutual oral, one on top of the other')">69</button>
+    </div>
   </div>
 
 
   <!-- キャラクター -->
   <div id="characterPage" class="page">
-
-    <button class="backButton" onclick="showPage('homePage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
     <h1>キャラクター</h1>
-
-    <button class="menuButton" onclick="showPage('euphoniumPage')">
-      響け！ユーフォニアム
-    </button>
-
-    <button class="menuButton" onclick="showPage('idolmasterPage')">
-      学園アイドルマスター
-    </button>
-
+    <button class="menuButton" onclick="showPage('euphoniumPage')">響け！ユーフォニアム</button>
+    <button class="menuButton" onclick="showPage('idolmasterPage')">学園アイドルマスター</button>
   </div>
 
 
   <!-- 響け！ユーフォニアム -->
   <div id="euphoniumPage" class="page">
-
-    <button class="backButton" onclick="showPage('characterPage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('characterPage')">← 戻る</button>
     <h1>響け！ユーフォニアム</h1>
-
     <div class="buttons">
-
       <button onclick="addPrompt('hibike! euphonium')">響け！ユーフォニアム</button>
       <button onclick="addPrompt('oumae kumiko')">黄前久美子</button>
       <button onclick="addPrompt('kousaka reina')">高坂麗奈</button>
@@ -812,23 +654,15 @@
       <button onclick="addPrompt('hashimoto masahiro')">橋本真博</button>
       <button onclick="addPrompt('niiyama satomi')">新山聡美</button>
       <button onclick="addPrompt('oumae mamiko')">黄前麻美子</button>
-
     </div>
-
   </div>
 
 
   <!-- 学園アイドルマスター -->
   <div id="idolmasterPage" class="page">
-
-    <button class="backButton" onclick="showPage('characterPage')">
-      ← 戻る
-    </button>
-
+    <button class="backButton" onclick="showPage('characterPage')">← 戻る</button>
     <h1>学園アイドルマスター</h1>
-
     <div class="buttons">
-
       <button onclick="addPrompt('gakuen idolmaster')">学園アイドルマスター</button>
       <button onclick="addPrompt('hanami saki')">花海咲季</button>
       <button onclick="addPrompt('tsukimura temari')">月村手毬</button>
@@ -845,59 +679,108 @@
       <button onclick="addPrompt('himesaki rinami')">姫崎莉波</button>
       <button onclick="addPrompt('amaya tsubame')">雨夜燕</button>
       <button onclick="addPrompt('neo asari')">根緒亜紗里</button>
-
     </div>
-
   </div>
 
 
   <script>
-
     let prompts = [];
 
+    // ローカルストレージから復元
+    try {
+      const saved = localStorage.getItem('novelai_prompts');
+      if (saved) {
+        prompts = JSON.parse(saved);
+      }
+    } catch (e) {}
+
+    function savePrompts() {
+      try {
+        localStorage.setItem('novelai_prompts', JSON.stringify(prompts));
+      } catch (e) {}
+    }
+
     function addPrompt(prompt) {
+      // 同一プロンプトの重複を防止
+      if (prompts.includes(prompt)) {
+        // 既にある場合は何もしない（または軽いフィードバック）
+        return;
+      }
       prompts.push(prompt);
       updatePrompt();
+      savePrompts();
+    }
+
+    function removePrompt(index) {
+      prompts.splice(index, 1);
+      updatePrompt();
+      savePrompts();
     }
 
     function updatePrompt() {
       const promptElement = document.getElementById("prompt");
+      const countElement = document.getElementById("promptCount");
 
       if (prompts.length === 0) {
-        promptElement.textContent =
-          "ここに選択したプロンプトが表示されます";
+        promptElement.innerHTML = '<span class="placeholder">ここに選択したプロンプトが表示されます</span>';
       } else {
-        promptElement.textContent =
-          prompts.join(", ");
+        promptElement.innerHTML = prompts.map((p, i) => 
+          `<span class="prompt-chip" onclick="removePrompt(${i})" title="タップで削除">
+            ${escapeHtml(p)}
+            <span class="remove">×</span>
+          </span>`
+        ).join('');
       }
+
+      countElement.textContent = prompts.length + ' 個選択中';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
     function copyPrompt() {
-      const text = prompts.join(", ");
-
-      navigator.clipboard.writeText(text);
-
-      alert("コピーしました！");
+      const text = prompts.join(', ');
+      if (!text) {
+        alert('プロンプトがありません');
+        return;
+      }
+      navigator.clipboard.writeText(text).then(() => {
+        alert('コピーしました！');
+      }).catch(() => {
+        // フォールバック
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('コピーしました！');
+      });
     }
 
     function clearPrompt() {
-      prompts = [];
-      updatePrompt();
+      if (prompts.length === 0) return;
+      if (confirm('すべて消去しますか？')) {
+        prompts = [];
+        updatePrompt();
+        savePrompts();
+      }
     }
 
     function showPage(pageId) {
-
       const pages = document.querySelectorAll(".page");
-
       pages.forEach(function(page) {
         page.classList.remove("active");
       });
-
       document.getElementById(pageId).classList.add("active");
-
       window.scrollTo(0, 0);
     }
 
+    // 初期表示
+    updatePrompt();
   </script>
 
 </body>
