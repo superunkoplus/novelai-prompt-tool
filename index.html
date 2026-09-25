@@ -56,12 +56,12 @@ button.selected{opacity:.45;pointer-events:none;text-decoration:line-through}
 #conflictWarning{display:none;margin-top:8px;padding:8px 12px;background:#fce8e6;color:#c5221f;border-radius:8px;font-size:13px}
 body.dark #conflictWarning{background:#5c2b2b;color:#f28b82}
 #conflictWarning.active{display:block}
-.prompt-actions{display:flex;gap:10px;margin-top:12px}
-#copyButton,#clearButton,#themeButton{flex:1;padding:13px;font-size:15px;font-weight:600}
+.prompt-actions{display:flex;gap:8px;margin-top:12px;align-items:center}
+#copyButton,#clearButton{flex:1;padding:13px;font-size:15px;font-weight:600}
 #copyButton{background:var(--accent);color:#fff}
 #clearButton{background:var(--card);color:var(--danger);border:1px solid #fad2cf}
 body.dark #clearButton{border-color:#5c2b2b}
-#themeButton{background:var(--card);color:var(--text);flex:0.6}
+#themeButton{background:var(--card);color:var(--text);padding:10px 12px;font-size:16px;flex:0 0 auto;min-width:44px}
 .backButton{margin-bottom:16px;background:var(--card);padding:10px 16px;font-size:14px}
 .page{display:none}
 .page.active{display:block}
@@ -78,6 +78,10 @@ body.dark #clearButton{border-color:#5c2b2b}
 #variationPanel .var-list button{width:100%;text-align:left;padding:13px 16px;font-size:15px;background:var(--bg);border:1px solid var(--border)}
 #variationPanel .var-list button:hover{border-color:var(--accent)}
 #variationPanel .var-list button .desc{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+#searchBox{width:100%;padding:12px 14px;font-size:15px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);margin-top:8px}
+#searchResults{margin-top:10px;display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto}
+#searchResults button{width:100%;text-align:left;padding:12px 14px;font-size:14px}
+#searchResults .empty{color:var(--muted);font-size:13px;padding:8px}
 </style>
 </head>
 <body>
@@ -105,6 +109,10 @@ body.dark #clearButton{border-color:#5c2b2b}
   <button class="menuButton" onclick="showPage('expressionPage')">表情</button>
   <button class="menuButton" onclick="showPage('appearancePage')">外見</button>
   <button class="menuButton" onclick="showPage('characterPage')">キャラクター</button>
+
+  <h2 style="margin-top:28px">検索</h2>
+  <input id="searchBox" type="search" placeholder="タグ名で検索（例: アヘ, 種付け, ネイビー）" oninput="runSearch(this.value)">
+  <div id="searchResults"></div>
 </div>
 
 <div id="basePage" class="page">
@@ -133,7 +141,7 @@ body.dark #clearButton{border-color:#5c2b2b}
     <button onclick="addPrompt('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated')">ネガティブ</button>
     <button onclick="addPrompt('nsfw, mosaic censoring')">モザイク</button>
     <button onclick="addPrompt('black pubic hair')">陰毛</button>
-    <button onclick="addPrompt('faceless')">顔のパーツなし</button>
+    <button onclick="addPrompt('faceless')">顔なし</button>
   </div>
 </div>
 
@@ -145,8 +153,8 @@ body.dark #clearButton{border-color:#5c2b2b}
     <button onclick="addPrompt('eye-level view')">目線の高さ</button>
     <button onclick="addPrompt('low-angle view')">下から見上げる</button>
     <button onclick="addPrompt('high-angle view')">上から見下ろす</button>
-    <button onclick="addPrompt(&quot;bird's-eye view&quot;)">真上から見下ろす</button>
-    <button onclick="addPrompt(&quot;worm's-eye view&quot;)">かなり低い位置から見上げる</button>
+    <button onclick="addPrompt(&quot;bird's-eye view&quot;)">真上から</button>
+    <button onclick="addPrompt(&quot;worm's-eye view&quot;)">かなり低い位置から</button>
   </div>
   <h2>カメラの位置</h2>
   <div class="buttons">
@@ -230,23 +238,6 @@ body.dark #clearButton{border-color:#5c2b2b}
 <div id="sexPage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
   <h1>性行</h1>
-  <h2>基本</h2>
-  <div class="buttons">
-    <button onclick="addPrompt('standing')">立つ</button>
-    <button onclick="addPrompt('sitting')">座る</button>
-    <button onclick="addPrompt('lying')">横になる</button>
-    <button onclick="addPrompt('kneeling')">膝立ち</button>
-    <button onclick="addPrompt('crouching')">しゃがむ</button>
-    <button onclick="addPrompt('on all fours')">四つん這い</button>
-    <button onclick="addPrompt('leaning forward')">前かがみ</button>
-    <button onclick="addPrompt('arms up')">両腕を上げる</button>
-    <button onclick="addPrompt('arms behind back')">両手を後ろに</button>
-    <button onclick="addPrompt('hands on hips')">腰に手</button>
-    <button onclick="addPrompt('crossed arms')">腕組み</button>
-    <button onclick="addPrompt('legs spread')">脚を開く</button>
-    <button onclick="addPrompt('one leg raised')">片脚を上げる</button>
-    <button onclick="addPrompt('arching back')">背中を反らす</button>
-  </div>
   <h2>前戯</h2>
   <div class="buttons">
     <button class="var-btn" onclick="openVariation('kiss')">キス</button>
@@ -585,8 +576,31 @@ body.dark #clearButton{border-color:#5c2b2b}
 <div id="characterPage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
   <h1>キャラクター</h1>
-  <button class="menuButton" onclick="showPage('euphoniumPage')">響け！ユーフォニアム</button>
   <button class="menuButton" onclick="showPage('idolmasterPage')">学園アイドルマスター</button>
+  <button class="menuButton" onclick="showPage('euphoniumPage')">響け！ユーフォニアム</button>
+</div>
+
+<div id="idolmasterPage" class="page">
+  <button class="backButton" onclick="showPage('characterPage')">← 戻る</button>
+  <h1>学園アイドルマスター</h1>
+  <div class="buttons">
+    <button onclick="addPrompt('gakuen idolmaster')">学園アイドルマスター</button>
+    <button onclick="addPrompt('hanami saki')">花海咲季</button>
+    <button onclick="addPrompt('tsukimura temari')">月村手毬</button>
+    <button onclick="addPrompt('fuzita kotone')">藤田ことね</button>
+    <button onclick="addPrompt('shiun sumika')">紫雲清夏</button>
+    <button onclick="addPrompt('katsuragi lilja')">葛城リーリヤ</button>
+    <button onclick="addPrompt('hanami ume')">花海佑芽</button>
+    <button onclick="addPrompt('shinosawa hiro')">篠澤広</button>
+    <button onclick="addPrompt('kuramoto china')">倉本千奈</button>
+    <button onclick="addPrompt('hataya misuzu')">秦谷美鈴</button>
+    <button onclick="addPrompt('kaya rinha')">賀陽燐羽</button>
+    <button onclick="addPrompt('juo sena')">十王星南</button>
+    <button onclick="addPrompt('arimura mao')">有村麻央</button>
+    <button onclick="addPrompt('himesaki rinami')">姫崎莉波</button>
+    <button onclick="addPrompt('amaya tsubame')">雨夜燕</button>
+    <button onclick="addPrompt('neo asari')">根緒亜紗里</button>
+  </div>
 </div>
 
 <div id="euphoniumPage" class="page">
@@ -594,6 +608,7 @@ body.dark #clearButton{border-color:#5c2b2b}
   <h1>響け！ユーフォニアム</h1>
   <div class="buttons">
     <button onclick="addPrompt('hibike! euphonium')">響け！ユーフォニアム</button>
+    <button onclick="addPrompt('Liz to aoitori')">リズと青い鳥</button>
     <button onclick="addPrompt('oumae kumiko')">黄前久美子</button>
     <button onclick="addPrompt('kousaka reina')">高坂麗奈</button>
     <button onclick="addPrompt('katou hazuki')">加藤葉月</button>
@@ -628,32 +643,12 @@ body.dark #clearButton{border-color:#5c2b2b}
   </div>
 </div>
 
-<div id="idolmasterPage" class="page">
-  <button class="backButton" onclick="showPage('characterPage')">← 戻る</button>
-  <h1>学園アイドルマスター</h1>
-  <div class="buttons">
-    <button onclick="addPrompt('gakuen idolmaster')">学園アイドルマスター</button>
-    <button onclick="addPrompt('hanami saki')">花海咲季</button>
-    <button onclick="addPrompt('tsukimura temari')">月村手毬</button>
-    <button onclick="addPrompt('fuzita kotone')">藤田ことね</button>
-    <button onclick="addPrompt('shiun sumika')">紫雲清夏</button>
-    <button onclick="addPrompt('katsuragi lilja')">葛城リーリヤ</button>
-    <button onclick="addPrompt('hanami ume')">花海佑芽</button>
-    <button onclick="addPrompt('shinosawa hiro')">篠澤広</button>
-    <button onclick="addPrompt('kuramoto china')">倉本千奈</button>
-    <button onclick="addPrompt('hataya misuzu')">秦谷美鈴</button>
-    <button onclick="addPrompt('kaya rinha')">賀陽燐羽</button>
-    <button onclick="addPrompt('juo sena')">十王星南</button>
-    <button onclick="addPrompt('arimura mao')">有村麻央</button>
-    <button onclick="addPrompt('himesaki rinami')">姫崎莉波</button>
-    <button onclick="addPrompt('amaya tsubame')">雨夜燕</button>
-    <button onclick="addPrompt('neo asari')">根緒亜紗里</button>
-  </div>
-</div>
-
 <script>
 let prompts=[],currentWeightIndex=-1,pendingClothing=null;
 const WEIGHTS=[0.8,1.0,1.1,1.2,1.3,1.5];
+
+/* 検索用インデックス（ラベル → プロンプト or アクション） */
+const SEARCH_INDEX=[];
 
 const CLOTHING_COLORS={
   lingerie:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"紫",value:"purple"}],
@@ -663,99 +658,54 @@ const CLOTHING_COLORS={
   nurse_maid:[{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"黒",value:"black"}],
   office:[{label:"黒",value:"black"},{label:"グレー",value:"gray"},{label:"ネイビー",value:"navy"}]
 };
-
 const CLOTHING_STATES={
-  lingerie:[
-    {label:"普通に着ている",suffix:""},
-    {label:"ずらしている",suffix:", lingerie aside, panties aside, pulled aside"},
-    {label:"はだけている",suffix:", open lingerie, disheveled lingerie"},
-    {label:"半分脱がされている",suffix:", half-removed lingerie, lingerie around thighs"},
-    {label:"破れている",suffix:", torn lingerie, ripped lingerie"}
-  ],
-  bikini:[
-    {label:"普通に着ている",suffix:""},
-    {label:"マイクロビキニ",suffix:", micro bikini"},
-    {label:"紐ビキニ",suffix:", string bikini"},
-    {label:"紐を解いている",suffix:", untied bikini, bikini strings undone"},
-    {label:"ずらしている",suffix:", bikini aside, pulled aside bikini"},
-    {label:"濡れている",suffix:", wet bikini, see-through bikini"},
-    {label:"半分脱げている",suffix:", half-removed bikini, bikini around ankles"}
-  ],
-  school_swimsuit:[
-    {label:"普通に着ている",suffix:""},
-    {label:"ずらしている",suffix:", school swimsuit aside, pulled aside"},
-    {label:"ずり下げ",suffix:", school swimsuit pulled down, around thighs"},
-    {label:"濡れている",suffix:", wet school swimsuit, see-through school swimsuit"},
-    {label:"破れている",suffix:", torn school swimsuit"}
-  ],
-  uniform:[
-    {label:"普通に着ている",suffix:", short skirt"},
-    {label:"シャツはだけ",suffix:", open shirt, unbuttoned blouse, short skirt"},
-    {label:"スカートめくれ",suffix:", skirt lift, lifted skirt, upskirt"},
-    {label:"乱れている",suffix:", disheveled uniform, messy clothes"},
-    {label:"半脱ぎ",suffix:", half-undressed, clothes around waist"}
-  ],
-  nurse_maid:[
-    {label:"普通に着ている",suffix:""},
-    {label:"はだけている",suffix:", open, unbuttoned, cleavage"},
-    {label:"スカートめくれ",suffix:", skirt lift, upskirt"},
-    {label:"乱れている",suffix:", disheveled, messy clothes"}
-  ],
-  office:[
-    {label:"普通に着ている",suffix:", tight skirt"},
-    {label:"ブラウスはだけ",suffix:", unbuttoned blouse, open shirt, tight skirt"},
-    {label:"スカートめくれ",suffix:", skirt lift, tight skirt, upskirt"},
-    {label:"乱れている",suffix:", disheveled, messy clothes"}
-  ]
+  lingerie:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", lingerie aside, panties aside, pulled aside"},{label:"はだけている",suffix:", open lingerie, disheveled lingerie"},{label:"半分脱がされている",suffix:", half-removed lingerie, lingerie around thighs"},{label:"破れている",suffix:", torn lingerie, ripped lingerie"}],
+  bikini:[{label:"普通に着ている",suffix:""},{label:"マイクロビキニ",suffix:", micro bikini"},{label:"紐ビキニ",suffix:", string bikini"},{label:"紐を解いている",suffix:", untied bikini, bikini strings undone"},{label:"ずらしている",suffix:", bikini aside, pulled aside bikini"},{label:"濡れている",suffix:", wet bikini, see-through bikini"},{label:"半分脱げている",suffix:", half-removed bikini, bikini around ankles"}],
+  school_swimsuit:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", school swimsuit aside, pulled aside"},{label:"ずり下げ",suffix:", school swimsuit pulled down, around thighs"},{label:"濡れている",suffix:", wet school swimsuit, see-through school swimsuit"},{label:"破れている",suffix:", torn school swimsuit"}],
+  uniform:[{label:"普通に着ている",suffix:", short skirt"},{label:"シャツはだけ",suffix:", open shirt, unbuttoned blouse, short skirt"},{label:"スカートめくれ",suffix:", skirt lift, lifted skirt, upskirt"},{label:"乱れている",suffix:", disheveled uniform, messy clothes"},{label:"半脱ぎ",suffix:", half-undressed, clothes around waist"}],
+  nurse_maid:[{label:"普通に着ている",suffix:""},{label:"はだけている",suffix:", open, unbuttoned, cleavage"},{label:"スカートめくれ",suffix:", skirt lift, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],
+  office:[{label:"普通に着ている",suffix:", tight skirt"},{label:"ブラウスはだけ",suffix:", unbuttoned blouse, open shirt, tight skirt"},{label:"スカートめくれ",suffix:", skirt lift, tight skirt, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}]
 };
-
-const CLOTHING_BASE={
-  lingerie:"lingerie",
-  bikini:"bikini",
-  school_swimsuit:"school swimsuit",
-  uniform:"school uniform",
-  nurse_maid:"nurse outfit",
-  office:"office lady, suit"
-};
+const CLOTHING_BASE={lingerie:"lingerie",bikini:"bikini",school_swimsuit:"school swimsuit",uniform:"school uniform",nurse_maid:"nurse outfit",office:"office lady, suit"};
 
 const VARIATIONS={
-role_position:{title:"上下関係・体位",options:[{label:"男性が上",prompt:"man on top, male on top",desc:""},{label:"女性が上",prompt:"woman on top, female on top",desc:""},{label:"対面",prompt:"face to face, facing each other",desc:""},{label:"後ろから",prompt:"from behind, rear entry",desc:""}]},
-role_dominance:{title:"攻め・受け",options:[{label:"男性が攻め",prompt:"dominant male, male dominant",desc:""},{label:"女性が攻め",prompt:"dominant female, female dominant",desc:""},{label:"互いに積極的",prompt:"mutual, equal participation",desc:""}]},
-role_gaze:{title:"視線の関係",options:[{label:"お互いを見つめ合う",prompt:"looking at each other, eye contact",desc:""},{label:"男性が女性を見る",prompt:"man looking at woman",desc:""},{label:"女性が男性を見る",prompt:"woman looking at man",desc:""},{label:"どちらも上を向く",prompt:"both looking up",desc:""}]},
-clothing_state:{title:"着衣の状態（汎用）",options:[{label:"はだけている",prompt:"open clothes, unbuttoned, disheveled clothes",desc:""},{label:"ずらしている",prompt:"clothes aside, pulled aside",desc:""},{label:"半分脱がされている",prompt:"half-undressed, clothes around waist or thighs",desc:""},{label:"破れている",prompt:"torn clothes, ripped clothes",desc:""},{label:"濡れている",prompt:"wet clothes, see-through clothes",desc:""},{label:"全裸",prompt:"completely nude, naked",desc:""},{label:"下着だけ",prompt:"underwear only, in underwear",desc:""}]},
-condom:{title:"コンドームの状態",options:[{label:"付けている途中",prompt:"putting on condom, rolling condom onto penis",desc:""},{label:"装着済み",prompt:"wearing condom, condom on penis",desc:""},{label:"使用済み・廃棄",prompt:"used condom, discarded condom",desc:""},{label:"包装を開けている",prompt:"opening condom package, condom wrapper",desc:""},{label:"精液が入っている",prompt:"used condom filled with semen",desc:""}]},
-dildo:{title:"ディルドの使い方",options:[{label:"膣に挿入中",prompt:"dildo insertion, dildo in pussy",desc:""},{label:"アナルに挿入",prompt:"anal dildo, dildo in ass",desc:""},{label:"持っている・見せている",prompt:"holding dildo, presenting dildo",desc:""},{label:"舐める・咥える",prompt:"sucking dildo, licking dildo",desc:""},{label:"置いてある",prompt:"dildo on floor, dildo on table",desc:""}]},
-vibrator:{title:"バイブの使い方",options:[{label:"膣に挿入中",prompt:"vibrator in pussy, vibrating",desc:""},{label:"クリトリスに当てている",prompt:"vibrator on clitoris, clitoral stimulation",desc:""},{label:"アナルに挿入",prompt:"anal vibrator, vibrator in ass",desc:""},{label:"遠隔操作中",prompt:"remote controlled vibrator, public vibrator",desc:""},{label:"持っている",prompt:"holding vibrator",desc:""}]},
-anal:{title:"アナル系道具",options:[{label:"アナルビーズ",prompt:"anal beads, pulling anal beads",desc:""},{label:"アナルプラグ装着",prompt:"butt plug, wearing butt plug",desc:""},{label:"テールプラグ",prompt:"anal tail plug, fox tail plug",desc:""},{label:"拡張中",prompt:"anal stretching, anal gape",desc:""}]},
-restraint:{title:"拘束の状態",options:[{label:"縄で縛られている",prompt:"bound, shibari, rope bondage",desc:""},{label:"手錠",prompt:"handcuffs, hands cuffed",desc:""},{label:"目隠し",prompt:"blindfold, blindfolded",desc:""},{label:"ボールギャグ",prompt:"ball gag, gagged",desc:""},{label:"首輪とリード",prompt:"collar and leash, being led",desc:""},{label:"手足を固定",prompt:"spread eagle, limbs restrained",desc:""}]},
-other_toy:{title:"その他の性具",options:[{label:"ローション",prompt:"lube, covered in lube",desc:""},{label:"鞭",prompt:"whip, being whipped",desc:""},{label:"パドル",prompt:"paddle, spanking with paddle",desc:""},{label:"乳首クリップ",prompt:"nipple clamps",desc:""},{label:"オナホール",prompt:"onahole, fleshlight",desc:""}]},
-kiss:{title:"キスの状態",options:[{label:"ディープキス",prompt:"deep kiss, french kiss, tongue kiss",desc:""},{label:"軽いキス",prompt:"kiss, light kiss, peck",desc:""},{label:"首筋へのキス",prompt:"neck kiss, kissing neck",desc:""},{label:"唾液が糸を引く",prompt:"saliva trail, string of saliva, messy kiss",desc:""},{label:"キスしながら抱きつく",prompt:"kissing while embracing, passionate kiss",desc:""}]},
-fellatio:{title:"フェラチオの状態",options:[{label:"咥えている",prompt:"fellatio, oral, sucking penis, penis in mouth",desc:""},{label:"先端を舐めている",prompt:"licking penis, licking tip of penis",desc:""},{label:"深喉",prompt:"deepthroat, throat bulge",desc:""},{label:"顔に精液",prompt:"facial, cum on face",desc:""},{label:"口内射精",prompt:"cum in mouth, swallowing cum",desc:""}]},
-cunnilingus:{title:"クンニの状態",options:[{label:"舐めている",prompt:"cunnilingus, oral, licking pussy",desc:""},{label:"クリトリス集中",prompt:"licking clitoris, clitoral stimulation",desc:""},{label:"顔を埋めている",prompt:"face in pussy, smothered",desc:""},{label:"愛液を舐めている",prompt:"licking juices, wet pussy",desc:""}]},
-handjob:{title:"手コキの状態",options:[{label:"しごいている",prompt:"handjob, stroking penis",desc:""},{label:"両手で",prompt:"two-handed handjob",desc:""},{label:"射精させている",prompt:"handjob, cumming, ejaculation",desc:""},{label:"先端を刺激",prompt:"teasing tip of penis, rubbing glans",desc:""}]},
-paizuri:{title:"パイズリの状態",options:[{label:"挟んでいる",prompt:"paizuri, titjob, breast sex, penis between breasts",desc:""},{label:"動かしながら",prompt:"paizuri, moving breasts, active titjob",desc:""},{label:"射精",prompt:"paizuri, cum on breasts, cum between breasts",desc:""},{label:"顔も使っている",prompt:"paizuri, licking tip while titjob",desc:""}]},
-nipple:{title:"乳首責め（対象を選択）",options:[{label:"女性の乳首を舐める",prompt:"licking nipple, nipple play, female nipples",desc:""},{label:"女性の乳首を吸う",prompt:"sucking nipple, nursing, female nipples",desc:""},{label:"女性の乳首を摘まむ",prompt:"pinching nipple, twisting nipple, female nipples",desc:""},{label:"男性の乳首を舐める",prompt:"licking male nipple, male nipple play",desc:""},{label:"男性の乳首を摘まむ",prompt:"pinching male nipple, male nipple play",desc:""},{label:"男性の乳首を吸う",prompt:"sucking male nipple, male nipple play",desc:""}]},
-analingus:{title:"アナル舐め",options:[{label:"アナルを舐めている",prompt:"analingus, rimming, licking anus",desc:""},{label:"深く舌を入れている",prompt:"tongue in ass, deep rimming",desc:""},{label:"顔を埋めている",prompt:"face in ass, smothered",desc:""}]},
-balls:{title:"玉・睾丸",options:[{label:"玉を舐めている",prompt:"licking balls, sucking balls, testis",desc:""},{label:"玉を優しく触る",prompt:"fondling balls, cupping balls",desc:""},{label:"玉を吸い上げる",prompt:"sucking balls, balls in mouth",desc:""}]},
-fingering:{title:"指入れの状態",options:[{label:"指を入れている",prompt:"fingering, fingering pussy, fingers in pussy",desc:""},{label:"複数本",prompt:"multiple fingers in pussy, fingering",desc:""},{label:"Gスポット刺激",prompt:"fingering g-spot, curling fingers",desc:""},{label:"アナルに指",prompt:"anal fingering, fingers in ass",desc:""}]},
-missionary:{title:"正常位のバリエーション",options:[{label:"基本の正常位",prompt:"missionary position, man on top, woman on her back with legs spread, face to face, deep penetration",desc:""},{label:"脚を肩に",prompt:"missionary with woman’s legs over man’s shoulders, deep angle",desc:""},{label:"片脚上げ",prompt:"missionary, one of woman’s legs raised high, other wrapped around man’s waist",desc:""},{label:"膝を抱える",prompt:"missionary, man holding woman’s knees to her chest",desc:""}]},
-doggy:{title:"後背位のバリエーション",options:[{label:"基本の後背位",prompt:"doggy style, woman on all fours, man behind, arched back",desc:""},{label:"顔を伏せた後背位",prompt:"prone bone, woman lying flat on her stomach, man on top from behind",desc:""},{label:"膝立ち後背位",prompt:"kneeling doggy, both on knees, man thrusting from behind",desc:""},{label:"立ちバック",prompt:"standing doggy, woman bent over a table or wall, man standing behind",desc:""}]},
-cowgirl:{title:"騎乗位のバリエーション",options:[{label:"基本の騎乗位",prompt:"cowgirl, woman on top facing man, riding, hands on his chest",desc:""},{label:"逆騎乗位",prompt:"reverse cowgirl, woman on top facing away, looking back over her shoulder",desc:""},{label:"前傾騎乗位",prompt:"cowgirl leaning forward, breasts close to man’s face",desc:""},{label:"後ろに手をつく",prompt:"reverse cowgirl, woman leaning back with hands on the bed for support",desc:""}]},
-mating_press:{title:"種付けプレス",options:[{label:"基本の種付けプレス",prompt:"mating press, legs pushed back, deep penetration, breeding",desc:""},{label:"強く押さえつける",prompt:"mating press, heavy pressing, legs over head",desc:""},{label:"中出し強調",prompt:"mating press, creampie, cum inside, breeding",desc:""}]},
-daisuki_hold:{title:"だいしゅきホールド",options:[{label:"基本のだいしゅきホールド",prompt:"daisuki hold, legs held up, deep penetration, intimate embrace",desc:""},{label:"強く抱きしめる",prompt:"daisuki hold, tight embrace, legs over shoulders",desc:""},{label:"中出ししながら",prompt:"daisuki hold, creampie, cum inside while holding",desc:""}]},
-ekiben:{title:"駅弁",options:[{label:"基本の駅弁",prompt:"ekiben, standing carry, woman held up, legs wrapped around man, penetration while standing",desc:""},{label:"壁に押し付けながら",prompt:"ekiben, against wall, standing carry sex",desc:""},{label:"激しく動かす",prompt:"ekiben, intense thrusting while carrying",desc:""}]},
-thrust:{title:"腰振り・ピストン",options:[{label:"激しく腰を振っている",prompt:"thrusting, intense thrusting, pistoning",desc:""},{label:"ゆっくり腰を動かす",prompt:"slow thrusting, grinding",desc:""},{label:"深く突き上げる",prompt:"deep thrust, deep penetration, bottoming out",desc:""},{label:"浅いピストン",prompt:"shallow thrusting, teasing thrusts",desc:""}]},
-bounce:{title:"揺れ・バウンス",options:[{label:"おっぱいが揺れている",prompt:"bouncing breasts, jiggle",desc:""},{label:"尻が揺れている",prompt:"bouncing ass, jiggling butt",desc:""},{label:"体全体が揺れている",prompt:"body bounce, bouncing",desc:""}]},
-body_reaction:{title:"身体の反応",options:[{label:"腰が浮かる",prompt:"hips rising, arching from pleasure",desc:""},{label:"足が震える",prompt:"trembling legs, shaking legs",desc:""},{label:"力が入る・踏ん張る",prompt:"clenching, tensing up, gripping",desc:""},{label:"体をくねらせる",prompt:"writhing, squirming from pleasure",desc:""},{label:"背中を大きく反らす",prompt:"arching back strongly, extreme arch",desc:""}]},
-breasts:{title:"おっぱいの描写",options:[{label:"大きいおっぱい",prompt:"large breasts, big breasts",desc:""},{label:"垂れたおっぱい",prompt:"sagging breasts, soft breasts",desc:""},{label:"ピンと張ったおっぱい",prompt:"perky breasts, firm breasts",desc:""},{label:"揺れおっぱい",prompt:"bouncing breasts, jiggle",desc:""},{label:"強調・寄せている",prompt:"cleavage, squeezed breasts, pressed breasts",desc:""},{label:"乳首が見えている",prompt:"nipples visible, erect nipples",desc:""},{label:"おっぱいを掴まれている",prompt:"groping breasts, hands on breasts",desc:""}]},
-ass:{title:"お尻・太ももの描写",options:[{label:"大きなお尻",prompt:"large ass, big butt, thick thighs",desc:""},{label:"桃尻",prompt:"peach ass, round ass",desc:""},{label:"尻を強調",prompt:"ass focus, presenting ass",desc:""},{label:"尻を掴まれている",prompt:"groping ass, hands on ass",desc:""},{label:"太ももに手",prompt:"hands on thighs, stroking thighs",desc:""}]},
-pussy:{title:"性器の描写",options:[{label:"濡れている",prompt:"wet pussy, dripping pussy, soaked",desc:""},{label:"開いている",prompt:"spread pussy, open pussy, gaping",desc:""},{label:"挿入されている",prompt:"penis in pussy, penetration, vaginal penetration",desc:""},{label:"クリトリス強調",prompt:"visible clitoris, swollen clitoris",desc:""},{label:"性器アップ",prompt:"pussy focus, close-up pussy",desc:""}]},
-skin:{title:"肌の状態",options:[{label:"汗だく",prompt:"sweaty, covered in sweat, glistening skin",desc:""},{label:"赤み・興奮で赤い",prompt:"flushed skin, red skin, aroused flush",desc:""},{label:"オイル・光沢",prompt:"oiled skin, shiny skin, glossy skin",desc:""},{label:"キス跡・吸い跡",prompt:"hickeys, love bites, kiss marks",desc:""}]},
-body_focus:{title:"身体の強調",options:[{label:"おっぱいフォーカス",prompt:"breast focus, chest focus",desc:""},{label:"尻フォーカス",prompt:"ass focus, butt focus",desc:""},{label:"局部フォーカス",prompt:"pussy focus, crotch focus",desc:""},{label:"全身を見せる",prompt:"full body, entirely visible",desc:""},{label:"上半身強調",prompt:"upper body focus",desc:""}]},
-love_juice:{title:"愛液",options:[{label:"愛液が流れている",prompt:"pussy juice, love juice, dripping, wet",desc:""},{label:"太ももを伝う",prompt:"pussy juice on thighs, trails of juice",desc:""},{label:"シーツに染み",prompt:"wet stain on sheets, soaked sheets",desc:""},{label:"糸を引いている",prompt:"string of pussy juice, sticky",desc:""}]},
-semen:{title:"精液",options:[{label:"顔にかかっている",prompt:"facial, cum on face, cum on cheeks",desc:""},{label:"胸にかかっている",prompt:"cum on breasts, cum on chest",desc:""},{label:"中出し",prompt:"cum in pussy, creampie, internal cumshot",desc:""},{label:"お腹・体にかかっている",prompt:"cum on stomach, cum on body",desc:""},{label:"口に出されている",prompt:"cum in mouth, cum on tongue",desc:""},{label:"大量の精液",prompt:"excessive cum, lots of cum, cum overflow",desc:""}]},
-saliva:{title:"よだれ・唾液",options:[{label:"よだれが垂れている",prompt:"drool, drooling, saliva",desc:""},{label:"舌に唾液",prompt:"saliva on tongue, wet tongue",desc:""},{label:"キスで唾液交換",prompt:"saliva trail, string of saliva, deep kiss",desc:""}]},
-sweat:{title:"汗",options:[{label:"汗だく",prompt:"sweat, sweaty body, covered in sweat",desc:""},{label:"額の汗",prompt:"sweat on forehead, beads of sweat",desc:""},{label:"汗で肌が光る",prompt:"glistening sweat, shiny with sweat",desc:""}]}
+role_position:{title:"上下関係・体位",options:[{label:"男性が上",prompt:"man on top, male on top"},{label:"女性が上",prompt:"woman on top, female on top"},{label:"対面",prompt:"face to face, facing each other"},{label:"後ろから",prompt:"from behind, rear entry"}]},
+role_dominance:{title:"攻め・受け",options:[{label:"男性が攻め",prompt:"dominant male, male dominant"},{label:"女性が攻め",prompt:"dominant female, female dominant"},{label:"互いに積極的",prompt:"mutual, equal participation"}]},
+role_gaze:{title:"視線の関係",options:[{label:"お互いを見つめ合う",prompt:"looking at each other, eye contact"},{label:"男性が女性を見る",prompt:"man looking at woman"},{label:"女性が男性を見る",prompt:"woman looking at man"},{label:"どちらも上を向く",prompt:"both looking up"}]},
+clothing_state:{title:"着衣の状態（汎用）",options:[{label:"はだけている",prompt:"open clothes, unbuttoned, disheveled clothes"},{label:"ずらしている",prompt:"clothes aside, pulled aside"},{label:"半分脱がされている",prompt:"half-undressed, clothes around waist or thighs"},{label:"破れている",prompt:"torn clothes, ripped clothes"},{label:"濡れている",prompt:"wet clothes, see-through clothes"},{label:"全裸",prompt:"completely nude, naked"},{label:"下着だけ",prompt:"underwear only, in underwear"}]},
+condom:{title:"コンドーム",options:[{label:"付けている途中",prompt:"putting on condom, rolling condom onto penis"},{label:"装着済み",prompt:"wearing condom, condom on penis"},{label:"使用済み・廃棄",prompt:"used condom, discarded condom"},{label:"包装を開けている",prompt:"opening condom package, condom wrapper"},{label:"精液が入っている",prompt:"used condom filled with semen"}]},
+dildo:{title:"ディルド",options:[{label:"膣に挿入中",prompt:"dildo insertion, dildo in pussy"},{label:"アナルに挿入",prompt:"anal dildo, dildo in ass"},{label:"持っている・見せている",prompt:"holding dildo, presenting dildo"},{label:"舐める・咥える",prompt:"sucking dildo, licking dildo"},{label:"置いてある",prompt:"dildo on floor, dildo on table"}]},
+vibrator:{title:"バイブ",options:[{label:"膣に挿入中",prompt:"vibrator in pussy, vibrating"},{label:"クリトリスに当てている",prompt:"vibrator on clitoris, clitoral stimulation"},{label:"アナルに挿入",prompt:"anal vibrator, vibrator in ass"},{label:"遠隔操作中",prompt:"remote controlled vibrator, public vibrator"},{label:"持っている",prompt:"holding vibrator"}]},
+anal:{title:"アナル系道具",options:[{label:"アナルビーズ",prompt:"anal beads, pulling anal beads"},{label:"アナルプラグ装着",prompt:"butt plug, wearing butt plug"},{label:"テールプラグ",prompt:"anal tail plug, fox tail plug"},{label:"拡張中",prompt:"anal stretching, anal gape"}]},
+restraint:{title:"拘束",options:[{label:"縄で縛られている",prompt:"bound, shibari, rope bondage"},{label:"手錠",prompt:"handcuffs, hands cuffed"},{label:"目隠し",prompt:"blindfold, blindfolded"},{label:"ボールギャグ",prompt:"ball gag, gagged"},{label:"首輪とリード",prompt:"collar and leash, being led"},{label:"手足を固定",prompt:"spread eagle, limbs restrained"}]},
+other_toy:{title:"その他性具",options:[{label:"ローション",prompt:"lube, covered in lube"},{label:"鞭",prompt:"whip, being whipped"},{label:"パドル",prompt:"paddle, spanking with paddle"},{label:"乳首クリップ",prompt:"nipple clamps"},{label:"オナホール",prompt:"onahole, fleshlight"}]},
+kiss:{title:"キス",options:[{label:"ディープキス",prompt:"deep kiss, french kiss, tongue kiss"},{label:"軽いキス",prompt:"kiss, light kiss, peck"},{label:"首筋へのキス",prompt:"neck kiss, kissing neck"},{label:"唾液が糸を引く",prompt:"saliva trail, string of saliva, messy kiss"},{label:"キスしながら抱きつく",prompt:"kissing while embracing, passionate kiss"}]},
+fellatio:{title:"フェラチオ",options:[{label:"咥えている",prompt:"fellatio, oral, sucking penis, penis in mouth"},{label:"先端を舐めている",prompt:"licking penis, licking tip of penis"},{label:"深喉",prompt:"deepthroat, throat bulge"},{label:"顔に精液",prompt:"facial, cum on face"},{label:"口内射精",prompt:"cum in mouth, swallowing cum"}]},
+cunnilingus:{title:"クンニ",options:[{label:"舐めている",prompt:"cunnilingus, oral, licking pussy"},{label:"クリトリス集中",prompt:"licking clitoris, clitoral stimulation"},{label:"顔を埋めている",prompt:"face in pussy, smothered"},{label:"愛液を舐めている",prompt:"licking juices, wet pussy"}]},
+handjob:{title:"手コキ",options:[{label:"しごいている",prompt:"handjob, stroking penis"},{label:"両手で",prompt:"two-handed handjob"},{label:"射精させている",prompt:"handjob, cumming, ejaculation"},{label:"先端を刺激",prompt:"teasing tip of penis, rubbing glans"}]},
+paizuri:{title:"パイズリ",options:[{label:"挟んでいる",prompt:"paizuri, titjob, breast sex, penis between breasts"},{label:"動かしながら",prompt:"paizuri, moving breasts, active titjob"},{label:"射精",prompt:"paizuri, cum on breasts, cum between breasts"},{label:"顔も使っている",prompt:"paizuri, licking tip while titjob"}]},
+nipple:{title:"乳首責め",options:[{label:"女性の乳首を舐める",prompt:"licking nipple, nipple play, female nipples"},{label:"女性の乳首を吸う",prompt:"sucking nipple, nursing, female nipples"},{label:"女性の乳首を摘まむ",prompt:"pinching nipple, twisting nipple, female nipples"},{label:"男性の乳首を舐める",prompt:"licking male nipple, male nipple play"},{label:"男性の乳首を摘まむ",prompt:"pinching male nipple, male nipple play"},{label:"男性の乳首を吸う",prompt:"sucking male nipple, male nipple play"}]},
+analingus:{title:"アナル舐め",options:[{label:"アナルを舐めている",prompt:"analingus, rimming, licking anus"},{label:"深く舌を入れている",prompt:"tongue in ass, deep rimming"},{label:"顔を埋めている",prompt:"face in ass, smothered"}]},
+balls:{title:"玉・睾丸",options:[{label:"玉を舐めている",prompt:"licking balls, sucking balls, testis"},{label:"玉を優しく触る",prompt:"fondling balls, cupping balls"},{label:"玉を吸い上げる",prompt:"sucking balls, balls in mouth"}]},
+fingering:{title:"指入れ",options:[{label:"指を入れている",prompt:"fingering, fingering pussy, fingers in pussy"},{label:"複数本",prompt:"multiple fingers in pussy, fingering"},{label:"Gスポット刺激",prompt:"fingering g-spot, curling fingers"},{label:"アナルに指",prompt:"anal fingering, fingers in ass"}]},
+missionary:{title:"正常位",options:[{label:"基本の正常位",prompt:"missionary position, man on top, woman on her back with legs spread, face to face, deep penetration"},{label:"脚を肩に",prompt:"missionary with woman’s legs over man’s shoulders, deep angle"},{label:"片脚上げ",prompt:"missionary, one of woman’s legs raised high, other wrapped around man’s waist"},{label:"膝を抱える",prompt:"missionary, man holding woman’s knees to her chest"}]},
+doggy:{title:"後背位",options:[{label:"基本の後背位",prompt:"doggy style, woman on all fours, man behind, arched back"},{label:"顔を伏せた後背位",prompt:"prone bone, woman lying flat on her stomach, man on top from behind"},{label:"膝立ち後背位",prompt:"kneeling doggy, both on knees, man thrusting from behind"},{label:"立ちバック",prompt:"standing doggy, woman bent over a table or wall, man standing behind"}]},
+cowgirl:{title:"騎乗位",options:[{label:"基本の騎乗位",prompt:"cowgirl, woman on top facing man, riding, hands on his chest"},{label:"逆騎乗位",prompt:"reverse cowgirl, woman on top facing away, looking back over her shoulder"},{label:"前傾騎乗位",prompt:"cowgirl leaning forward, breasts close to man’s face"},{label:"後ろに手をつく",prompt:"reverse cowgirl, woman leaning back with hands on the bed for support"}]},
+mating_press:{title:"種付けプレス",options:[{label:"基本の種付けプレス",prompt:"mating press, legs pushed back, deep penetration, breeding"},{label:"強く押さえつける",prompt:"mating press, heavy pressing, legs over head"},{label:"中出し強調",prompt:"mating press, creampie, cum inside, breeding"}]},
+daisuki_hold:{title:"だいしゅきホールド",options:[{label:"基本のだいしゅきホールド",prompt:"daisuki hold, legs held up, deep penetration, intimate embrace"},{label:"強く抱きしめる",prompt:"daisuki hold, tight embrace, legs over shoulders"},{label:"中出ししながら",prompt:"daisuki hold, creampie, cum inside while holding"}]},
+ekiben:{title:"駅弁",options:[{label:"基本の駅弁",prompt:"ekiben, standing carry, woman held up, legs wrapped around man, penetration while standing"},{label:"壁に押し付けながら",prompt:"ekiben, against wall, standing carry sex"},{label:"激しく動かす",prompt:"ekiben, intense thrusting while carrying"}]},
+thrust:{title:"腰振り・ピストン",options:[{label:"激しく腰を振っている",prompt:"thrusting, intense thrusting, pistoning"},{label:"ゆっくり腰を動かす",prompt:"slow thrusting, grinding"},{label:"深く突き上げる",prompt:"deep thrust, deep penetration, bottoming out"},{label:"浅いピストン",prompt:"shallow thrusting, teasing thrusts"}]},
+bounce:{title:"揺れ・バウンス",options:[{label:"おっぱいが揺れている",prompt:"bouncing breasts, jiggle"},{label:"尻が揺れている",prompt:"bouncing ass, jiggling butt"},{label:"体全体が揺れている",prompt:"body bounce, bouncing"}]},
+body_reaction:{title:"身体の反応",options:[{label:"腰が浮かる",prompt:"hips rising, arching from pleasure"},{label:"足が震える",prompt:"trembling legs, shaking legs"},{label:"力が入る・踏ん張る",prompt:"clenching, tensing up, gripping"},{label:"体をくねらせる",prompt:"writhing, squirming from pleasure"},{label:"背中を大きく反らす",prompt:"arching back strongly, extreme arch"}]},
+breasts:{title:"おっぱい",options:[{label:"大きいおっぱい",prompt:"large breasts, big breasts"},{label:"垂れたおっぱい",prompt:"sagging breasts, soft breasts"},{label:"ピンと張ったおっぱい",prompt:"perky breasts, firm breasts"},{label:"揺れおっぱい",prompt:"bouncing breasts, jiggle"},{label:"強調・寄せている",prompt:"cleavage, squeezed breasts, pressed breasts"},{label:"乳首が見えている",prompt:"nipples visible, erect nipples"},{label:"おっぱいを掴まれている",prompt:"groping breasts, hands on breasts"}]},
+ass:{title:"お尻・太もも",options:[{label:"大きなお尻",prompt:"large ass, big butt, thick thighs"},{label:"桃尻",prompt:"peach ass, round ass"},{label:"尻を強調",prompt:"ass focus, presenting ass"},{label:"尻を掴まれている",prompt:"groping ass, hands on ass"},{label:"太ももに手",prompt:"hands on thighs, stroking thighs"}]},
+pussy:{title:"性器",options:[{label:"濡れている",prompt:"wet pussy, dripping pussy, soaked"},{label:"開いている",prompt:"spread pussy, open pussy, gaping"},{label:"挿入されている",prompt:"penis in pussy, penetration, vaginal penetration"},{label:"クリトリス強調",prompt:"visible clitoris, swollen clitoris"},{label:"性器アップ",prompt:"pussy focus, close-up pussy"}]},
+skin:{title:"肌の状態",options:[{label:"汗だく",prompt:"sweaty, covered in sweat, glistening skin"},{label:"赤み・興奮で赤い",prompt:"flushed skin, red skin, aroused flush"},{label:"オイル・光沢",prompt:"oiled skin, shiny skin, glossy skin"},{label:"キス跡・吸い跡",prompt:"hickeys, love bites, kiss marks"}]},
+body_focus:{title:"身体の強調",options:[{label:"おっぱいフォーカス",prompt:"breast focus, chest focus"},{label:"尻フォーカス",prompt:"ass focus, butt focus"},{label:"局部フォーカス",prompt:"pussy focus, crotch focus"},{label:"全身を見せる",prompt:"full body, entirely visible"},{label:"上半身強調",prompt:"upper body focus"}]},
+love_juice:{title:"愛液",options:[{label:"愛液が流れている",prompt:"pussy juice, love juice, dripping, wet"},{label:"太ももを伝う",prompt:"pussy juice on thighs, trails of juice"},{label:"シーツに染み",prompt:"wet stain on sheets, soaked sheets"},{label:"糸を引いている",prompt:"string of pussy juice, sticky"}]},
+semen:{title:"精液",options:[{label:"顔にかかっている",prompt:"facial, cum on face, cum on cheeks"},{label:"胸にかかっている",prompt:"cum on breasts, cum on chest"},{label:"中出し",prompt:"cum in pussy, creampie, internal cumshot"},{label:"お腹・体にかかっている",prompt:"cum on stomach, cum on body"},{label:"口に出されている",prompt:"cum in mouth, cum on tongue"},{label:"大量の精液",prompt:"excessive cum, lots of cum, cum overflow"}]},
+saliva:{title:"よだれ・唾液",options:[{label:"よだれが垂れている",prompt:"drool, drooling, saliva"},{label:"舌に唾液",prompt:"saliva on tongue, wet tongue"},{label:"キスで唾液交換",prompt:"saliva trail, string of saliva, deep kiss"}]},
+sweat:{title:"汗",options:[{label:"汗だく",prompt:"sweat, sweaty body, covered in sweat"},{label:"額の汗",prompt:"sweat on forehead, beads of sweat"},{label:"汗で肌が光る",prompt:"glistening sweat, shiny with sweat"}]}
 };
 
 const CONFLICT_PAIRS=[["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],["solo","2girls"],["solo","1boy 1girl"],["solo","multiple girls"],["1girl","2girls"],["1girl","3girls"],["day","night"],["morning","night"],["indoors","outdoors"]];
@@ -782,10 +732,7 @@ function updateSelectedButtons(){
     const m=btn.getAttribute("onclick").match(/addPrompt\('([^']+)'\)|addPrompt\("([^"]+)"\)|addPrompt\(&quot;([^&]+)&quot;\)/);
     let text=null;
     if(m)text=m[1]||m[2]||m[3];
-    if(text){
-      const exists=prompts.some(p=>p.text===text);
-      btn.classList.toggle("selected",exists);
-    }
+    if(text)btn.classList.toggle("selected",prompts.some(p=>p.text===text));
   });
 }
 
@@ -803,7 +750,7 @@ function escapeHtml(t){const d=document.createElement("div");d.textContent=t;ret
 function openVariation(k){
   const d=VARIATIONS[k];if(!d)return;
   document.getElementById("variationTitle").textContent=d.title;
-  document.getElementById("variationList").innerHTML=d.options.map(o=>`<button onclick="selectVariation(\`${o.prompt.replace(/`/g,"\\`")}\`)">${o.label}${o.desc?`<span class="desc">${o.desc}</span>`:""}</button>`).join("");
+  document.getElementById("variationList").innerHTML=d.options.map(o=>`<button onclick="selectVariation(\`${o.prompt.replace(/`/g,"\\`")}\`)">${o.label}</button>`).join("");
   document.getElementById("variationOverlay").classList.add("active");
 }
 function selectVariation(t){addPrompt(t);closeVariationPanel()}
@@ -838,6 +785,39 @@ function selectClothingColor(colorValue){
   }).join("");
 }
 
+function buildSearchIndex(){
+  SEARCH_INDEX.length=0;
+  document.querySelectorAll("button[onclick*='addPrompt']").forEach(btn=>{
+    const label=btn.textContent.trim();
+    const m=btn.getAttribute("onclick").match(/addPrompt\('([^']+)'\)|addPrompt\("([^"]+)"\)|addPrompt\(&quot;([^&]+)&quot;\)/);
+    const text=m?(m[1]||m[2]||m[3]):null;
+    if(label&&text)SEARCH_INDEX.push({label,text,type:"direct"});
+  });
+  Object.keys(VARIATIONS).forEach(k=>{
+    const v=VARIATIONS[k];
+    SEARCH_INDEX.push({label:v.title,text:null,type:"variation",key:k});
+    (v.options||[]).forEach(o=>{
+      SEARCH_INDEX.push({label:o.label+"（"+v.title+"）",text:o.prompt,type:"direct"});
+    });
+  });
+  ["lingerie","bikini","school_swimsuit","uniform","nurse_maid","office"].forEach(k=>{
+    SEARCH_INDEX.push({label:({lingerie:"ランジェリー",bikini:"ビキニ系",school_swimsuit:"スクール水着",uniform:"制服",nurse_maid:"ナース・メイド",office:"OL・スーツ"})[k],text:null,type:"clothing",key:k});
+  });
+}
+function runSearch(q){
+  const box=document.getElementById("searchResults");
+  q=(q||"").trim().toLowerCase();
+  if(!q){box.innerHTML="";return}
+  const hits=SEARCH_INDEX.filter(i=>i.label.toLowerCase().includes(q)||(i.text&&i.text.toLowerCase().includes(q))).slice(0,30);
+  if(!hits.length){box.innerHTML='<div class="empty">該当なし</div>';return}
+  box.innerHTML=hits.map(h=>{
+    if(h.type==="direct")return `<button onclick="addPrompt(\`${h.text.replace(/`/g,"\\`")}\`);document.getElementById('searchBox').value='';runSearch('')">${escapeHtml(h.label)}</button>`;
+    if(h.type==="variation")return `<button onclick="openVariation('${h.key}')">${escapeHtml(h.label)} →</button>`;
+    if(h.type==="clothing")return `<button onclick="openClothingColor('${h.key}')">${escapeHtml(h.label)} →</button>`;
+    return "";
+  }).join("");
+}
+
 function attachChipEvents(){
   const chips=document.querySelectorAll(".prompt-chip");let dragSrc=null,isDragging=false;
   chips.forEach(chip=>{
@@ -862,6 +842,7 @@ function copyPrompt(){const t=prompts.map(formatPrompt).join(", ");if(!t)return 
 function clearPrompt(){if(!prompts.length)return;if(confirm("すべて消去しますか？")){prompts=[];updatePrompt();savePrompts()}}
 function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0);updateSelectedButtons()}
 updatePrompt();
+buildSearchIndex();
 </script>
 </body>
 </html>
