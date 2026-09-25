@@ -130,66 +130,137 @@
   </div>
 
 
-  <!-- ベースプロンプト -->
-  <div id="basePage" class="page">
+<!-- ベースプロンプト -->
+<div id="basePage" class="page">
 
-    <button class="backButton" onclick="showPage('homePage')">
-      ← 戻る
+  <button class="backButton" onclick="showPage('homePage')">
+    ← 戻る
+  </button>
+
+  <h1>ベースプロンプト</h1>
+
+  <h2>ベース</h2>
+
+  <div class="buttons">
+
+    <button onclick="addPrompt('anime coloring, {{official art}},highres,promotional art,4K,highly detailed,Curated,masterpiece , simple background,depth of field')">
+      ベース
     </button>
 
-    <h1>ベースプロンプト</h1>
+  </div>
 
-    <div class="buttons">
-      <button onclick="addPrompt('anime screencap')">
-        anime screencap
-      </button>
+  <h2>ネガティブ</h2>
 
-      <button onclick="addPrompt('2d')">
-        2d
-      </button>
+  <div class="buttons">
 
-      <button onclick="addPrompt('clean lineart')">
-        clean lineart
-      </button>
+    <button onclick="addPrompt('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated')">
+      ネガティブ
+    </button>
 
-      <button onclick="addPrompt('soft cel shading')">
-        soft cel shading
-      </button>
-    </div>
+  </div>
+
+</div>
+
+
+<!-- 視点 -->
+<div id="viewPage" class="page">
+
+  <button class="backButton" onclick="showPage('homePage')">
+    ← 戻る
+  </button>
+
+  <h1>視点</h1>
+
+  <h2>基本の視点</h2>
+
+  <div class="buttons">
+
+    <button onclick="addPrompt('eye-level view')">
+      目線の高さ
+    </button>
+
+    <button onclick="addPrompt('low-angle view')">
+      下から見上げる
+    </button>
+
+    <button onclick="addPrompt('high-angle view')">
+      上から見下ろす
+    </button>
+
+    <button onclick="addPrompt('bird's-eye view')">
+      真上から見下ろす
+    </button>
+
+    <button onclick="addPrompt('worm's-eye view')">
+      かなり低い位置から見上げる
+    </button>
 
   </div>
 
 
-  <!-- 視点 -->
-  <div id="viewPage" class="page">
+  <h2>カメラの位置</h2>
 
-    <button class="backButton" onclick="showPage('homePage')">
-      ← 戻る
+  <div class="buttons">
+
+    <button onclick="addPrompt('pov')">
+      主観
     </button>
 
-    <h1>視点</h1>
+    <button onclick="addPrompt('front view')">
+      正面
+    </button>
 
-    <div class="buttons">
+    <button onclick="addPrompt('side view')">
+      横
+    </button>
 
-      <button onclick="addPrompt('pov')">
-        主観視点
-      </button>
+    <button onclick="addPrompt('profile view')">
+      真横
+    </button>
 
-      <button onclick="addPrompt('from above')">
-        俯瞰
-      </button>
+    <button onclick="addPrompt('rear view')">
+      後ろ
+    </button>
 
-      <button onclick="addPrompt('from below')">
-        あおり
-      </button>
+    <button onclick="addPrompt('three-quarter view')">
+      斜め
+    </button>
 
-      <button onclick="addPrompt('front view')">
-        正面
-      </button>
+    <button onclick="addPrompt('from behind')">
+      後方
+    </button>
 
-    </div>
+    <button onclick="addPrompt('from above')">
+      上方
+    </button>
+
+    <button onclick="addPrompt('from below')">
+      下方
+    </button>
+
+    <button onclick="addPrompt('wide shot')">
+      引いた構図
+    </button>
+
+    <button onclick="addPrompt('medium shot')">
+      中距離
+    </button>
+
+    <button onclick="addPrompt('long shot')">
+      全身+周囲
+    </button>
+
+    <button onclick="addPrompt('close-up')">
+      近距離
+    </button>
+
+    <button onclick="addPrompt('extreme close-up')">
+      かなり寄る
+    </button>
 
   </div>
+
+</div>
 
 
   <!-- 視点（被写体側） -->
