@@ -24,6 +24,12 @@
       margin-top: 25px;
     }
 
+    h3 {
+      font-size: 17px;
+      margin-top: 25px;
+      margin-bottom: 12px;
+    }
+
     .buttons {
       display: flex;
       flex-wrap: wrap;
@@ -140,8 +146,8 @@
       表情
     </button>
 
-    <button class="menuButton" onclick="showPage('clothingPage')">
-      服装
+    <button class="menuButton" onclick="showPage('appearancePage')">
+      見た目
     </button>
 
     <button class="menuButton" onclick="showPage('posePage')">
@@ -614,31 +620,100 @@
   </div>
 
 
-  <!-- 服装 -->
-  <div id="clothingPage" class="page">
+  <!-- 見た目 -->
+  <div id="appearancePage" class="page">
 
     <button class="backButton" onclick="showPage('homePage')">
       ← 戻る
     </button>
 
+    <h1>見た目</h1>
+
+    <button class="menuButton" onclick="showPage('clothingPage')">
+      服装
+    </button>
+
+    <button class="menuButton" onclick="showPage('hairstylePage')">
+      髪型
+    </button>
+
+  </div>
+
+
+  <!-- 服装 -->
+  <div id="clothingPage" class="page">
+
+    <button class="backButton" onclick="showPage('appearancePage')">
+      ← 戻る
+    </button>
+
     <h1>服装</h1>
+
+    <h3>基本</h3>
 
     <div class="buttons">
 
-      <button onclick="addPrompt('school uniform')">
-        制服
+      <button onclick="addPrompt('Plain white T-shirt')">
+        白の無地のTシャツ
       </button>
 
-      <button onclick="addPrompt('sailor uniform')">
-        セーラー服
+      <button onclick="addPrompt('School Swimsuit')">
+        スクール水着
       </button>
 
-      <button onclick="addPrompt('blazer')">
-        ブレザー
+    </div>
+
+
+    <h3>特殊</h3>
+
+    <div class="buttons">
+
+      <button onclick="addPrompt('kitauji school uniform')">
+        北宇治高校制服
       </button>
 
-      <button onclick="addPrompt('gym uniform')">
-        体操服
+      <button onclick="addPrompt('hatsuboshi gakuen school uniform')">
+        初星学園制服
+      </button>
+
+      <button onclick="addPrompt('kimi to semi blue (idolmaster)')">
+        君とセミブルー
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- 髪型 -->
+  <div id="hairstylePage" class="page">
+
+    <button class="backButton" onclick="showPage('appearancePage')">
+      ← 戻る
+    </button>
+
+    <h1>髪型</h1>
+
+    <div class="buttons">
+
+      <button onclick="addPrompt('ponytail')">
+        ポニーテール
+      </button>
+
+      <button onclick="addPrompt('high ponytail')">
+        ハイポニテ
+      </button>
+
+      <button onclick="addPrompt('low ponytail')">
+        ローポニテ
+      </button>
+
+      <button onclick="addPrompt('side ponytail')">
+        サイドポニテ
+      </button>
+
+      <button onclick="addPrompt('hair bun')">
+        お団子
       </button>
 
     </div>
