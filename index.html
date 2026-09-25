@@ -79,7 +79,7 @@
       background: #e8f0fe;
       color: #1a73e8;
       border-radius: 20px;
-      padding: 6px 12px 6px 14px;
+      padding: 6px 10px 6px 14px;
       font-size: 13px;
       max-width: 100%;
       word-break: break-all;
@@ -106,6 +106,13 @@
       line-height: 1;
       opacity: 0.7;
       font-weight: bold;
+      padding: 2px 4px;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+    .prompt-chip .remove:hover {
+      background: rgba(0,0,0,0.1);
+      opacity: 1;
     }
 
     #conflictWarning {
@@ -206,20 +213,20 @@
   </div>
 
 
-  <!-- トップページ -->
+  <!-- トップページ（順番変更：視点（被写体側）→状況→体位） -->
   <div id="homePage" class="page active">
     <button class="menuButton" onclick="showPage('basePage')">ベース</button>
     <button class="menuButton" onclick="showPage('viewPage')">視点</button>
     <button class="menuButton" onclick="showPage('subjectViewPage')">視点（被写体側）</button>
+    <button class="menuButton" onclick="showPage('situationPage')">状況</button>
+    <button class="menuButton" onclick="showPage('posePage')">体位</button>
     <button class="menuButton" onclick="showPage('expressionPage')">表情</button>
     <button class="menuButton" onclick="showPage('appearancePage')">見た目</button>
-    <button class="menuButton" onclick="showPage('posePage')">体位</button>
-    <button class="menuButton" onclick="showPage('situationPage')">状況</button>
     <button class="menuButton" onclick="showPage('characterPage')">キャラクター</button>
   </div>
 
 
-  <!-- ベース（見出し分けをやめてフラットに） -->
+  <!-- ベース -->
   <div id="basePage" class="page">
     <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
     <h1>ベース</h1>
@@ -297,6 +304,123 @@
       <button onclick="addPrompt('downcast eyes')">うつむく</button>
       <button onclick="addPrompt('looking diagonally upward')">斜め上を見る</button>
       <button onclick="addPrompt('looking diagonally downward')">斜め下を見る</button>
+    </div>
+  </div>
+
+
+  <!-- 状況（道具カテゴリ追加） -->
+  <div id="situationPage" class="page">
+    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
+    <h1>状況</h1>
+
+    <h2>基本</h2>
+    <div class="buttons">
+      <button onclick="addPrompt('night')">夜</button>
+      <button onclick="addPrompt('day')">昼</button>
+      <button onclick="addPrompt('evening')">夕方</button>
+      <button onclick="addPrompt('morning')">朝</button>
+      <button onclick="addPrompt('indoors')">室内</button>
+      <button onclick="addPrompt('outdoors')">屋外</button>
+      <button onclick="addPrompt('bedroom')">寝室</button>
+      <button onclick="addPrompt('classroom')">教室</button>
+      <button onclick="addPrompt('bathroom')">浴室</button>
+      <button onclick="addPrompt('shower')">シャワー</button>
+      <button onclick="addPrompt('kitchen')">キッチン</button>
+      <button onclick="addPrompt('living room')">リビング</button>
+      <button onclick="addPrompt('stylish room')">おしゃれな部屋</button>
+      <button onclick="addPrompt('office')">オフィス</button>
+      <button onclick="addPrompt('hotel room')">ホテルの部屋</button>
+      <button onclick="addPrompt('beach')">ビーチ</button>
+      <button onclick="addPrompt('pool')">プール</button>
+      <button onclick="addPrompt('park')">公園</button>
+      <button onclick="addPrompt('street')">街中</button>
+      <button onclick="addPrompt('rooftop')">屋上</button>
+      <button onclick="addPrompt('train')">電車内</button>
+      <button onclick="addPrompt('car interior')">車内</button>
+      <button onclick="addPrompt('locker room')">更衣室</button>
+      <button onclick="addPrompt('library')">図書館</button>
+      <button onclick="addPrompt('stage')">ステージ</button>
+    </div>
+
+    <h2>道具</h2>
+    <div class="buttons">
+      <button onclick="addPrompt('condom')">コンドーム</button>
+      <button onclick="addPrompt('used condom')">使用済みコンドーム</button>
+      <button onclick="addPrompt('dildo')">ディルド</button>
+      <button onclick="addPrompt('vibrator')">バイブ</button>
+      <button onclick="addPrompt('vibrator in pussy')">バイブ挿入</button>
+      <button onclick="addPrompt('anal beads')">アナルビーズ</button>
+      <button onclick="addPrompt('butt plug')">アナルプラグ</button>
+      <button onclick="addPrompt('rope')">縄</button>
+      <button onclick="addPrompt('handcuffs')">手錠</button>
+      <button onclick="addPrompt('blindfold')">目隠し</button>
+      <button onclick="addPrompt('gag')">ボールギャグ</button>
+      <button onclick="addPrompt('collar and leash')">首輪とリード</button>
+      <button onclick="addPrompt('whip')">鞭</button>
+      <button onclick="addPrompt('paddle')">パドル</button>
+      <button onclick="addPrompt('lube')">ローション</button>
+      <button onclick="addPrompt('sex toy')">性具</button>
+    </div>
+  </div>
+
+
+  <!-- 体位 -->
+  <div id="posePage" class="page">
+    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
+    <h1>体位</h1>
+
+    <h2>基本</h2>
+    <div class="buttons">
+      <button onclick="addPrompt('standing')">立つ</button>
+      <button onclick="addPrompt('sitting')">座る</button>
+      <button onclick="addPrompt('lying')">横になる</button>
+      <button onclick="addPrompt('kneeling')">膝立ち</button>
+      <button onclick="addPrompt('crouching')">しゃがむ</button>
+      <button onclick="addPrompt('on all fours')">四つん這い</button>
+      <button onclick="addPrompt('leaning forward')">前かがみ</button>
+      <button onclick="addPrompt('arms up')">両腕を上げる</button>
+      <button onclick="addPrompt('arms behind back')">両手を後ろに</button>
+      <button onclick="addPrompt('hands on hips')">腰に手</button>
+      <button onclick="addPrompt('crossed arms')">腕組み</button>
+      <button onclick="addPrompt('legs spread')">脚を開く</button>
+      <button onclick="addPrompt('one leg raised')">片脚を上げる</button>
+      <button onclick="addPrompt('arching back')">背中を反らす</button>
+    </div>
+
+    <h2>前戯</h2>
+    <div class="buttons">
+      <button onclick="addPrompt('fellatio, oral, sucking penis')">フェラチオ</button>
+      <button onclick="addPrompt('cunnilingus, oral, licking pussy')">クンニ</button>
+      <button onclick="addPrompt('handjob, stroking penis')">手コキ</button>
+      <button onclick="addPrompt('paizuri, titjob, breast sex')">パイズリ</button>
+      <button onclick="addPrompt('footjob')">足コキ</button>
+      <button onclick="addPrompt('kissing, deep kiss')">ディープキス</button>
+      <button onclick="addPrompt('neck kissing, licking neck')">首筋を舐める</button>
+      <button onclick="addPrompt('licking nipple, nipple play')">乳首を舐める</button>
+      <button onclick="addPrompt('fingering, fingering pussy')">指入れ</button>
+      <button onclick="addPrompt('grinding, dry humping')">素股</button>
+      <button onclick="addPrompt('teasing, light touching')">焦らし</button>
+    </div>
+
+    <h2>性交体位</h2>
+    <div class="buttons">
+      <button onclick="addPrompt('missionary position, man on top, woman on her back with legs spread, face to face, deep penetration')">正常位</button>
+      <button onclick="addPrompt('missionary with woman’s legs over man’s shoulders, deep angle')">脚を上げた正常位</button>
+      <button onclick="addPrompt('missionary, one of woman’s legs raised high, other wrapped around man’s waist')">片脚を上げた正常位</button>
+      <button onclick="addPrompt('missionary, man holding woman’s knees to her chest')">膝を抱えた正常位</button>
+      <button onclick="addPrompt('sitting face to face, woman straddling man on a chair or bed, intimate eye contact')">対面座位</button>
+      <button onclick="addPrompt('standing face to face, woman with one leg raised, man supporting her thigh')">立位対面</button>
+      <button onclick="addPrompt('doggy style, woman on all fours, man behind, arched back')">後背位</button>
+      <button onclick="addPrompt('prone bone, woman lying flat on her stomach, man on top from behind')">顔を伏せた後背位</button>
+      <button onclick="addPrompt('kneeling doggy, both on knees, man thrusting from behind')">後背位(膝立ち)</button>
+      <button onclick="addPrompt('standing doggy, woman bent over a table or wall, man standing behind')">立ちバック</button>
+      <button onclick="addPrompt('cowgirl, woman on top facing man, riding, hands on his chest')">騎乗位</button>
+      <button onclick="addPrompt('reverse cowgirl, woman on top facing away, looking back over her shoulder')">逆騎乗位</button>
+      <button onclick="addPrompt('cowgirl leaning forward, breasts close to man’s face')">騎乗位(前傾)</button>
+      <button onclick="addPrompt('reverse cowgirl, woman leaning back with hands on the bed for support')">騎乗位(後ろに手をつく)</button>
+      <button onclick="addPrompt('spooning position, both lying on their side, man behind')">側位</button>
+      <button onclick="addPrompt('side by side facing each other, legs intertwined')">側位対面</button>
+      <button onclick="addPrompt('69 position, mutual oral, one on top of the other')">69</button>
     </div>
   </div>
 
@@ -501,12 +625,13 @@
   </div>
 
 
-  <!-- 見た目 -->
+  <!-- 見た目（ポーズページ追加） -->
   <div id="appearancePage" class="page">
     <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
     <h1>見た目</h1>
     <button class="menuButton" onclick="showPage('clothingPage')">服装</button>
     <button class="menuButton" onclick="showPage('hairstylePage')">髪型</button>
+    <button class="menuButton" onclick="showPage('appearancePosePage')">ポーズ</button>
   </div>
 
 
@@ -584,12 +709,10 @@
   </div>
 
 
-  <!-- 体位 -->
-  <div id="posePage" class="page">
-    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
-    <h1>体位</h1>
-
-    <h2>基本</h2>
+  <!-- 見た目 - ポーズ（新規） -->
+  <div id="appearancePosePage" class="page">
+    <button class="backButton" onclick="showPage('appearancePage')">← 戻る</button>
+    <h1>ポーズ</h1>
     <div class="buttons">
       <button onclick="addPrompt('standing')">立つ</button>
       <button onclick="addPrompt('sitting')">座る</button>
@@ -598,85 +721,24 @@
       <button onclick="addPrompt('crouching')">しゃがむ</button>
       <button onclick="addPrompt('on all fours')">四つん這い</button>
       <button onclick="addPrompt('leaning forward')">前かがみ</button>
+      <button onclick="addPrompt('leaning back')">後ろに寄りかかる</button>
       <button onclick="addPrompt('arms up')">両腕を上げる</button>
       <button onclick="addPrompt('arms behind back')">両手を後ろに</button>
       <button onclick="addPrompt('hands on hips')">腰に手</button>
       <button onclick="addPrompt('crossed arms')">腕組み</button>
+      <button onclick="addPrompt('hands covering face')">両手で顔を隠す</button>
+      <button onclick="addPrompt('peace sign')">ピース</button>
+      <button onclick="addPrompt('waving')">手を振る</button>
+      <button onclick="addPrompt('pointing')">指差し</button>
       <button onclick="addPrompt('legs spread')">脚を開く</button>
       <button onclick="addPrompt('one leg raised')">片脚を上げる</button>
+      <button onclick="addPrompt('legs crossed')">脚を組む</button>
       <button onclick="addPrompt('arching back')">背中を反らす</button>
-    </div>
-
-    <h2>前戯</h2>
-    <div class="buttons">
-      <button onclick="addPrompt('fellatio, oral, sucking penis')">フェラチオ</button>
-      <button onclick="addPrompt('cunnilingus, oral, licking pussy')">クンニ</button>
-      <button onclick="addPrompt('handjob, stroking penis')">手コキ</button>
-      <button onclick="addPrompt('paizuri, titjob, breast sex')">パイズリ</button>
-      <button onclick="addPrompt('footjob')">足コキ</button>
-      <button onclick="addPrompt('kissing, deep kiss')">ディープキス</button>
-      <button onclick="addPrompt('neck kissing, licking neck')">首筋を舐める</button>
-      <button onclick="addPrompt('licking nipple, nipple play')">乳首を舐める</button>
-      <button onclick="addPrompt('fingering, fingering pussy')">指入れ</button>
-      <button onclick="addPrompt('grinding, dry humping')">素股</button>
-      <button onclick="addPrompt('teasing, light touching')">焦らし</button>
-    </div>
-
-    <h2>性交体位</h2>
-    <div class="buttons">
-      <button onclick="addPrompt('missionary position, man on top, woman on her back with legs spread, face to face, deep penetration')">正常位</button>
-      <button onclick="addPrompt('missionary with woman’s legs over man’s shoulders, deep angle')">脚を上げた正常位</button>
-      <button onclick="addPrompt('missionary, one of woman’s legs raised high, other wrapped around man’s waist')">片脚を上げた正常位</button>
-      <button onclick="addPrompt('missionary, man holding woman’s knees to her chest')">膝を抱えた正常位</button>
-      <button onclick="addPrompt('sitting face to face, woman straddling man on a chair or bed, intimate eye contact')">対面座位</button>
-      <button onclick="addPrompt('standing face to face, woman with one leg raised, man supporting her thigh')">立位対面</button>
-      <button onclick="addPrompt('doggy style, woman on all fours, man behind, arched back')">後背位</button>
-      <button onclick="addPrompt('prone bone, woman lying flat on her stomach, man on top from behind')">顔を伏せた後背位</button>
-      <button onclick="addPrompt('kneeling doggy, both on knees, man thrusting from behind')">後背位(膝立ち)</button>
-      <button onclick="addPrompt('standing doggy, woman bent over a table or wall, man standing behind')">立ちバック</button>
-      <button onclick="addPrompt('cowgirl, woman on top facing man, riding, hands on his chest')">騎乗位</button>
-      <button onclick="addPrompt('reverse cowgirl, woman on top facing away, looking back over her shoulder')">逆騎乗位</button>
-      <button onclick="addPrompt('cowgirl leaning forward, breasts close to man’s face')">騎乗位(前傾)</button>
-      <button onclick="addPrompt('reverse cowgirl, woman leaning back with hands on the bed for support')">騎乗位(後ろに手をつく)</button>
-      <button onclick="addPrompt('spooning position, both lying on their side, man behind')">側位</button>
-      <button onclick="addPrompt('side by side facing each other, legs intertwined')">側位対面</button>
-      <button onclick="addPrompt('69 position, mutual oral, one on top of the other')">69</button>
-    </div>
-  </div>
-
-
-  <!-- 状況 -->
-  <div id="situationPage" class="page">
-    <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
-    <h1>状況</h1>
-
-    <h2>基本</h2>
-    <div class="buttons">
-      <button onclick="addPrompt('night')">夜</button>
-      <button onclick="addPrompt('day')">昼</button>
-      <button onclick="addPrompt('evening')">夕方</button>
-      <button onclick="addPrompt('morning')">朝</button>
-      <button onclick="addPrompt('indoors')">室内</button>
-      <button onclick="addPrompt('outdoors')">屋外</button>
-      <button onclick="addPrompt('bedroom')">寝室</button>
-      <button onclick="addPrompt('classroom')">教室</button>
-      <button onclick="addPrompt('bathroom')">浴室</button>
-      <button onclick="addPrompt('shower')">シャワー</button>
-      <button onclick="addPrompt('kitchen')">キッチン</button>
-      <button onclick="addPrompt('living room')">リビング</button>
-       <button onclick="addPrompt('stylish room')">おしゃれな部屋</button>
-      <button onclick="addPrompt('office')">オフィス</button>
-      <button onclick="addPrompt('hotel room')">ホテルの部屋</button>
-      <button onclick="addPrompt('beach')">ビーチ</button>
-      <button onclick="addPrompt('pool')">プール</button>
-      <button onclick="addPrompt('park')">公園</button>
-      <button onclick="addPrompt('street')">街中</button>
-      <button onclick="addPrompt('rooftop')">屋上</button>
-      <button onclick="addPrompt('train')">電車内</button>
-      <button onclick="addPrompt('car interior')">車内</button>
-      <button onclick="addPrompt('locker room')">更衣室</button>
-      <button onclick="addPrompt('library')">図書館</button>
-      <button onclick="addPrompt('stage')">ステージ</button>
+      <button onclick="addPrompt('from side')">横向き</button>
+      <button onclick="addPrompt('looking back')">振り返り</button>
+      <button onclick="addPrompt('twisted torso')">上半身をねじる</button>
+      <button onclick="addPrompt('stretching')">ストレッチ</button>
+      <button onclick="addPrompt('yawning')">あくび</button>
     </div>
   </div>
 
@@ -845,9 +907,9 @@
           const weightBadge = p.weight !== 1.0
             ? `<span class="weight">${p.weight}</span>`
             : '';
-          return `<span class="prompt-chip" draggable="true" data-index="${i}" title="タップで削除 / 長押しで重み変更 / ドラッグで並び替え">
+          return `<span class="prompt-chip" draggable="true" data-index="${i}" title="長押しで重み変更 / ドラッグで並び替え / ×で削除">
             ${escapeHtml(p.text)}${weightBadge}
-            <span class="remove">×</span>
+            <span class="remove" data-remove="${i}">×</span>
           </span>`;
         }).join('');
       }
@@ -866,40 +928,59 @@
     function attachChipEvents() {
       const chips = document.querySelectorAll('.prompt-chip');
       let dragSrcIndex = null;
+      let isDragging = false;
 
       chips.forEach(chip => {
+        // ×ボタンでのみ削除
+        const removeBtn = chip.querySelector('.remove');
+        if (removeBtn) {
+          removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            const index = parseInt(removeBtn.dataset.remove, 10);
+            removePrompt(index);
+          });
+          // ドラッグ開始を防ぐ
+          removeBtn.addEventListener('mousedown', (e) => e.stopPropagation());
+          removeBtn.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+        }
+
+        // 長押しで重み変更
         let pressTimer = null;
         let longPressed = false;
 
-        const start = (e) => {
+        const startPress = (e) => {
+          // ×を押した場合は無視
+          if (e.target.classList.contains('remove')) return;
           longPressed = false;
+          isDragging = false;
           pressTimer = setTimeout(() => {
-            longPressed = true;
-            const index = parseInt(chip.dataset.index, 10);
-            openWeightPanel(index);
+            if (!isDragging) {
+              longPressed = true;
+              const index = parseInt(chip.dataset.index, 10);
+              openWeightPanel(index);
+            }
           }, 500);
         };
 
-        const end = (e) => {
+        const cancelPress = () => {
           clearTimeout(pressTimer);
-          if (!longPressed && e.type !== 'dragend') {
-            if (!chip.classList.contains('dragging')) {
-              const index = parseInt(chip.dataset.index, 10);
-              removePrompt(index);
-            }
-          }
         };
 
-        const cancel = () => clearTimeout(pressTimer);
+        chip.addEventListener('mousedown', startPress);
+        chip.addEventListener('mouseup', cancelPress);
+        chip.addEventListener('mouseleave', cancelPress);
+        chip.addEventListener('touchstart', startPress, { passive: true });
+        chip.addEventListener('touchend', cancelPress);
+        chip.addEventListener('touchcancel', cancelPress);
 
-        chip.addEventListener('mousedown', start);
-        chip.addEventListener('mouseup', end);
-        chip.addEventListener('mouseleave', cancel);
-        chip.addEventListener('touchstart', start, { passive: true });
-        chip.addEventListener('touchend', end);
-        chip.addEventListener('touchcancel', cancel);
-
+        // ドラッグ＆ドロップ
         chip.addEventListener('dragstart', (e) => {
+          if (e.target.classList.contains('remove')) {
+            e.preventDefault();
+            return;
+          }
+          isDragging = true;
           dragSrcIndex = parseInt(chip.dataset.index, 10);
           chip.classList.add('dragging');
           e.dataTransfer.effectAllowed = 'move';
@@ -909,6 +990,8 @@
         chip.addEventListener('dragend', () => {
           chip.classList.remove('dragging');
           chips.forEach(c => c.classList.remove('drag-over'));
+          isDragging = false;
+          dragSrcIndex = null;
         });
 
         chip.addEventListener('dragover', (e) => {
@@ -932,6 +1015,7 @@
             savePrompts();
           }
           dragSrcIndex = null;
+          isDragging = false;
         });
       });
     }
