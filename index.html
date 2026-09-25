@@ -51,8 +51,17 @@
       text-align: left;
     }
 
+    /* プロンプト欄を画面上部に固定 */
+    #promptArea {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #f5f5f5;
+      padding-bottom: 10px;
+    }
+
     #prompt {
-      margin-top: 30px;
+      margin-top: 0;
       padding: 15px;
       background: white;
       border-radius: 10px;
@@ -94,10 +103,27 @@
 
 <body>
 
+  <!-- 共通プロンプト欄 -->
+
+  <div id="promptArea">
+
+    <div id="prompt">
+      ここに選択したプロンプトが表示されます
+    </div>
+
+    <button id="copyButton" onclick="copyPrompt()">
+      プロンプトをコピー
+    </button>
+
+    <button id="clearButton" onclick="clearPrompt()">
+      プロンプトを消去
+    </button>
+
+  </div>
+
+
   <!-- トップページ -->
   <div id="homePage" class="page active">
-
-    <h1>NovelAI Prompt Tool</h1>
 
     <button class="menuButton" onclick="showPage('basePage')">
       ベースプロンプト
@@ -130,197 +156,197 @@
   </div>
 
 
-<!-- ベースプロンプト -->
-<div id="basePage" class="page">
+  <!-- ベースプロンプト -->
+  <div id="basePage" class="page">
 
-  <button class="backButton" onclick="showPage('homePage')">
-    ← 戻る
-  </button>
-
-  <h1>ベースプロンプト</h1>
-
-  <h2>ベース</h2>
-
-  <div class="buttons">
-
-    <button onclick="addPrompt('anime coloring, {{official art}},highres,promotional art,4K,highly detailed,Curated,masterpiece , simple background,depth of field')">
-      ベース
+    <button class="backButton" onclick="showPage('homePage')">
+      ← 戻る
     </button>
 
-  </div>
+    <h1>ベースプロンプト</h1>
 
-  <h2>ネガティブ</h2>
+    <h2>ベース</h2>
 
-  <div class="buttons">
+    <div class="buttons">
 
-    <button onclick="addPrompt('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated')">
-      ネガティブ
-    </button>
+      <button onclick="addPrompt('anime coloring, {{official art}},highres,promotional art,4K,highly detailed,Curated,masterpiece , simple background,depth of field')">
+        ベース
+      </button>
 
-  </div>
+    </div>
 
-</div>
+    <h2>ネガティブ</h2>
 
+    <div class="buttons">
 
-<!-- 視点 -->
-<div id="viewPage" class="page">
+      <button onclick="addPrompt('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated')">
+        ネガティブ
+      </button>
 
-  <button class="backButton" onclick="showPage('homePage')">
-    ← 戻る
-  </button>
-
-  <h1>視点</h1>
-
-  <h2>基本の視点</h2>
-
-  <div class="buttons">
-
-    <button onclick="addPrompt('eye-level view')">
-      目線の高さ
-    </button>
-
-    <button onclick="addPrompt('low-angle view')">
-      下から見上げる
-    </button>
-
-    <button onclick="addPrompt('high-angle view')">
-      上から見下ろす
-    </button>
-
-    <button onclick="addPrompt(&quot;bird's-eye view&quot;)">
-      真上から見下ろす
-    </button>
-
-    <button onclick="addPrompt(&quot;worm's-eye view&quot;)">
-      かなり低い位置から見上げる
-    </button>
+    </div>
 
   </div>
 
 
-  <h2>カメラの位置</h2>
+  <!-- 視点 -->
+  <div id="viewPage" class="page">
 
-  <div class="buttons">
-
-    <button onclick="addPrompt('pov')">
-      主観
+    <button class="backButton" onclick="showPage('homePage')">
+      ← 戻る
     </button>
 
-    <button onclick="addPrompt('front view')">
-      正面
-    </button>
+    <h1>視点</h1>
 
-    <button onclick="addPrompt('side view')">
-      横
-    </button>
+    <h2>基本の視点</h2>
 
-    <button onclick="addPrompt('profile view')">
-      真横
-    </button>
+    <div class="buttons">
 
-    <button onclick="addPrompt('rear view')">
-      後ろ
-    </button>
+      <button onclick="addPrompt('eye-level view')">
+        目線の高さ
+      </button>
 
-    <button onclick="addPrompt('three-quarter view')">
-      斜め
-    </button>
+      <button onclick="addPrompt('low-angle view')">
+        下から見上げる
+      </button>
 
-    <button onclick="addPrompt('from behind')">
-      後方
-    </button>
+      <button onclick="addPrompt('high-angle view')">
+        上から見下ろす
+      </button>
 
-    <button onclick="addPrompt('from above')">
-      上方
-    </button>
+      <button onclick="addPrompt(&quot;bird's-eye view&quot;)">
+        真上から見下ろす
+      </button>
 
-    <button onclick="addPrompt('from below')">
-      下方
-    </button>
+      <button onclick="addPrompt(&quot;worm's-eye view&quot;)">
+        かなり低い位置から見上げる
+      </button>
 
-    <button onclick="addPrompt('wide shot')">
-      引いた構図
-    </button>
+    </div>
 
-    <button onclick="addPrompt('medium shot')">
-      中距離
-    </button>
 
-    <button onclick="addPrompt('long shot')">
-      全身+周囲
-    </button>
+    <h2>カメラの位置</h2>
 
-    <button onclick="addPrompt('close-up')">
-      近距離
-    </button>
+    <div class="buttons">
 
-    <button onclick="addPrompt('extreme close-up')">
-      かなり寄る
-    </button>
+      <button onclick="addPrompt('pov')">
+        主観
+      </button>
+
+      <button onclick="addPrompt('front view')">
+        正面
+      </button>
+
+      <button onclick="addPrompt('side view')">
+        横
+      </button>
+
+      <button onclick="addPrompt('profile view')">
+        真横
+      </button>
+
+      <button onclick="addPrompt('rear view')">
+        後ろ
+      </button>
+
+      <button onclick="addPrompt('three-quarter view')">
+        斜め
+      </button>
+
+      <button onclick="addPrompt('from behind')">
+        後方
+      </button>
+
+      <button onclick="addPrompt('from above')">
+        上方
+      </button>
+
+      <button onclick="addPrompt('from below')">
+        下方
+      </button>
+
+      <button onclick="addPrompt('wide shot')">
+        引いた構図
+      </button>
+
+      <button onclick="addPrompt('medium shot')">
+        中距離
+      </button>
+
+      <button onclick="addPrompt('long shot')">
+        全身+周囲
+      </button>
+
+      <button onclick="addPrompt('close-up')">
+        近距離
+      </button>
+
+      <button onclick="addPrompt('extreme close-up')">
+        かなり寄る
+      </button>
+
+    </div>
 
   </div>
 
-</div>
 
+  <!-- 視点（被写体側） -->
+  <div id="subjectViewPage" class="page">
 
-<!-- 視点（被写体側） -->
-<div id="subjectViewPage" class="page">
-
-  <button class="backButton" onclick="showPage('homePage')">
-    ← 戻る
-  </button>
-
-  <h1>視点（被写体側）</h1>
-
-  <div class="buttons">
-
-    <button onclick="addPrompt('looking at viewer')">
-      カメラ目線
+    <button class="backButton" onclick="showPage('homePage')">
+      ← 戻る
     </button>
 
-    <button onclick="addPrompt('looking away')">
-      視線を外す
-    </button>
+    <h1>視点（被写体側）</h1>
 
-    <button onclick="addPrompt('looking into the distance')">
-      遠くを見ている
-    </button>
+    <div class="buttons">
 
-    <button onclick="addPrompt('looking to the side')">
-      横を見る
-    </button>
+      <button onclick="addPrompt('looking at viewer')">
+        カメラ目線
+      </button>
 
-    <button onclick="addPrompt('looking back')">
-      振り返る
-    </button>
+      <button onclick="addPrompt('looking away')">
+        視線を外す
+      </button>
 
-    <button onclick="addPrompt('looking up')">
-      上を見る
-    </button>
+      <button onclick="addPrompt('looking into the distance')">
+        遠くを見ている
+      </button>
 
-    <button onclick="addPrompt('upturned eyes')">
-      上目遣い
-    </button>
+      <button onclick="addPrompt('looking to the side')">
+        横を見る
+      </button>
 
-    <button onclick="addPrompt('looking down')">
-      下を見る
-    </button>
+      <button onclick="addPrompt('looking back')">
+        振り返る
+      </button>
 
-    <button onclick="addPrompt('downcast eyes')">
-      うつむく
-    </button>
+      <button onclick="addPrompt('looking up')">
+        上を見る
+      </button>
 
-    <button onclick="addPrompt('looking diagonally upward')">
-      斜め上を見る
-    </button>
+      <button onclick="addPrompt('upturned eyes')">
+        上目遣い
+      </button>
 
-    <button onclick="addPrompt('looking diagonally downward')">
-      斜め下を見る
-    </button>
+      <button onclick="addPrompt('looking down')">
+        下を見る
+      </button>
+
+      <button onclick="addPrompt('downcast eyes')">
+        うつむく
+      </button>
+
+      <button onclick="addPrompt('looking diagonally upward')">
+        斜め上を見る
+      </button>
+
+      <button onclick="addPrompt('looking diagonally downward')">
+        斜め下を見る
+      </button>
+
+    </div>
 
   </div>
-
-</div>
 
 
   <!-- 表情 -->
@@ -519,21 +545,6 @@
     </div>
 
   </div>
-
-
-  <!-- 共通プロンプト欄 -->
-
-  <div id="prompt">
-    ここに選択したプロンプトが表示されます
-  </div>
-
-  <button id="copyButton" onclick="copyPrompt()">
-    プロンプトをコピー
-  </button>
-
-  <button id="clearButton" onclick="clearPrompt()">
-    プロンプトを消去
-  </button>
 
 
   <script>
