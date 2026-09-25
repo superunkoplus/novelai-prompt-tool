@@ -14,6 +14,8 @@ h3{font-size:15px;margin:20px 0 10px;color:#555}
 button{border:none;border-radius:10px;padding:11px 16px;font-size:15px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08);cursor:pointer;transition:transform .1s,background .15s;color:#222}
 button:active{transform:scale(.96)}
 button:hover{background:#f8f9fa}
+button.var-btn{background:#fef9c3;border:1px solid #fde68a}
+button.var-btn:hover{background:#fef08a}
 .menuButton{width:100%;margin-bottom:10px;padding:15px 18px;font-size:16px;text-align:left;font-weight:500}
 #promptArea{position:sticky;top:0;z-index:1000;background:#f0f2f5;margin:-16px -16px 16px;padding:16px;border-bottom:1px solid #e0e0e0}
 #prompt{margin:0;padding:14px;background:#fff;border-radius:12px;min-height:56px;word-break:break-word;box-shadow:0 1px 4px rgba(0,0,0,.06);display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}
@@ -71,11 +73,10 @@ button:hover{background:#f8f9fa}
   <button class="menuButton" onclick="showPage('viewPage')">視点</button>
   <button class="menuButton" onclick="showPage('subjectViewPage')">視点（被写体側）</button>
   <button class="menuButton" onclick="showPage('situationPage')">状況</button>
-  <button class="menuButton" onclick="showPage('posePage')">体位</button>
+  <button class="menuButton" onclick="showPage('sexPage')">性行</button>
   <button class="menuButton" onclick="showPage('bodyPage')">身体描写</button>
-  <button class="menuButton" onclick="showPage('fluidPage')">体液</button>
   <button class="menuButton" onclick="showPage('expressionPage')">表情</button>
-  <button class="menuButton" onclick="showPage('appearancePage')">見た目</button>
+  <button class="menuButton" onclick="showPage('appearancePage')">外見</button>
   <button class="menuButton" onclick="showPage('characterPage')">キャラクター</button>
 </div>
 
@@ -184,18 +185,19 @@ button:hover{background:#f8f9fa}
   </div>
   <h2>道具（詳細選択）</h2>
   <div class="buttons">
-    <button onclick="openVariation('condom')">コンドーム</button>
-    <button onclick="openVariation('dildo')">ディルド</button>
-    <button onclick="openVariation('vibrator')">バイブ</button>
-    <button onclick="openVariation('anal')">アナル系</button>
-    <button onclick="openVariation('restraint')">拘束具</button>
-    <button onclick="openVariation('other_toy')">その他性具</button>
+    <button class="var-btn" onclick="openVariation('condom')">コンドーム</button>
+    <button class="var-btn" onclick="openVariation('dildo')">ディルド</button>
+    <button class="var-btn" onclick="openVariation('vibrator')">バイブ</button>
+    <button class="var-btn" onclick="openVariation('anal')">アナル系</button>
+    <button class="var-btn" onclick="openVariation('restraint')">拘束具</button>
+    <button class="var-btn" onclick="openVariation('other_toy')">その他性具</button>
   </div>
 </div>
 
-<div id="posePage" class="page">
+<!-- 性行（旧体位） -->
+<div id="sexPage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
-  <h1>体位</h1>
+  <h1>性行</h1>
   <h2>基本</h2>
   <div class="buttons">
     <button onclick="addPrompt('standing')">立つ</button>
@@ -215,55 +217,83 @@ button:hover{background:#f8f9fa}
   </div>
   <h2>前戯（詳細選択）</h2>
   <div class="buttons">
-    <button onclick="openVariation('fellatio')">フェラチオ</button>
-    <button onclick="openVariation('cunnilingus')">クンニ</button>
-    <button onclick="openVariation('handjob')">手コキ</button>
-    <button onclick="openVariation('paizuri')">パイズリ</button>
+    <button class="var-btn" onclick="openVariation('kiss')">キス</button>
+    <button class="var-btn" onclick="openVariation('fellatio')">フェラチオ</button>
+    <button class="var-btn" onclick="openVariation('cunnilingus')">クンニ</button>
+    <button class="var-btn" onclick="openVariation('handjob')">手コキ</button>
+    <button class="var-btn" onclick="openVariation('paizuri')">パイズリ</button>
     <button onclick="addPrompt('footjob')">足コキ</button>
-    <button onclick="addPrompt('kissing, deep kiss')">ディープキス</button>
     <button onclick="addPrompt('neck kissing, licking neck')">首筋を舐める</button>
-    <button onclick="openVariation('nipple')">乳首責め</button>
-    <button onclick="openVariation('fingering')">指入れ</button>
+    <button class="var-btn" onclick="openVariation('nipple')">乳首責め</button>
+    <button class="var-btn" onclick="openVariation('fingering')">指入れ</button>
     <button onclick="addPrompt('grinding, dry humping')">素股</button>
     <button onclick="addPrompt('teasing, light touching')">焦らし</button>
   </div>
   <h2>性交体位（詳細選択）</h2>
   <div class="buttons">
-    <button onclick="openVariation('missionary')">正常位</button>
-    <button onclick="openVariation('doggy')">後背位</button>
-    <button onclick="openVariation('cowgirl')">騎乗位</button>
+    <button class="var-btn" onclick="openVariation('missionary')">正常位</button>
+    <button class="var-btn" onclick="openVariation('doggy')">後背位</button>
+    <button class="var-btn" onclick="openVariation('cowgirl')">騎乗位</button>
     <button onclick="addPrompt('sitting face to face, woman straddling man on a chair or bed, intimate eye contact')">対面座位</button>
     <button onclick="addPrompt('standing face to face, woman with one leg raised, man supporting her thigh')">立位対面</button>
     <button onclick="addPrompt('spooning position, both lying on their side, man behind')">側位</button>
     <button onclick="addPrompt('side by side facing each other, legs intertwined')">側位対面</button>
     <button onclick="addPrompt('69 position, mutual oral, one on top of the other')">69</button>
   </div>
-</div>
-
-<!-- 身体描写（新規） -->
-<div id="bodyPage" class="page">
-  <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
-  <h1>身体描写</h1>
-  <h2>詳細選択あり</h2>
+  <h2>エフェクト</h2>
   <div class="buttons">
-    <button onclick="openVariation('breasts')">おっぱい</button>
-    <button onclick="openVariation('ass')">お尻・太もも</button>
-    <button onclick="openVariation('pussy')">性器</button>
-    <button onclick="openVariation('skin')">肌の状態</button>
-    <button onclick="openVariation('body_focus')">身体の強調</button>
+    <button class="var-btn" onclick="openVariation('thrust')">腰振り・ピストン</button>
+    <button class="var-btn" onclick="openVariation('bounce')">揺れ・バウンス</button>
+    <button onclick="addPrompt('motion lines, speed lines')">モーションライン</button>
+    <button onclick="addPrompt('afterimage, multiple exposure')">残像</button>
+    <button onclick="addPrompt('intense movement, dynamic pose')">激しい動き</button>
+    <button onclick="addPrompt('clenching, tightening')">締め付け</button>
+    <button onclick="addPrompt('twitching, convulsing')">痙攣・ピクピク</button>
   </div>
 </div>
 
-<!-- 体液（新規） -->
-<div id="fluidPage" class="page">
+<!-- 身体描写（体液＋ポーズ統合） -->
+<div id="bodyPage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
-  <h1>体液</h1>
-  <h2>詳細選択あり</h2>
+  <h1>身体描写</h1>
+  <h2>身体の詳細</h2>
   <div class="buttons">
-    <button onclick="openVariation('love_juice')">愛液</button>
-    <button onclick="openVariation('semen')">精液</button>
-    <button onclick="openVariation('saliva')">よだれ・唾液</button>
-    <button onclick="openVariation('sweat')">汗</button>
+    <button class="var-btn" onclick="openVariation('breasts')">おっぱい</button>
+    <button class="var-btn" onclick="openVariation('ass')">お尻・太もも</button>
+    <button class="var-btn" onclick="openVariation('pussy')">性器</button>
+    <button class="var-btn" onclick="openVariation('skin')">肌の状態</button>
+    <button class="var-btn" onclick="openVariation('body_focus')">身体の強調</button>
+  </div>
+  <h2>体液</h2>
+  <div class="buttons">
+    <button class="var-btn" onclick="openVariation('love_juice')">愛液</button>
+    <button class="var-btn" onclick="openVariation('semen')">精液</button>
+    <button class="var-btn" onclick="openVariation('saliva')">よだれ・唾液</button>
+    <button class="var-btn" onclick="openVariation('sweat')">汗</button>
+  </div>
+  <h2>ポーズ（エロ向け）</h2>
+  <div class="buttons">
+    <button onclick="addPrompt('standing')">立つ</button>
+    <button onclick="addPrompt('sitting')">座る</button>
+    <button onclick="addPrompt('lying')">横になる</button>
+    <button onclick="addPrompt('kneeling')">膝立ち</button>
+    <button onclick="addPrompt('crouching')">しゃがむ</button>
+    <button onclick="addPrompt('on all fours')">四つん這い</button>
+    <button onclick="addPrompt('leaning forward')">前かがみ</button>
+    <button onclick="addPrompt('arching back')">背中を反らす</button>
+    <button onclick="addPrompt('legs spread')">脚を開く</button>
+    <button onclick="addPrompt('one leg raised')">片脚を上げる</button>
+    <button onclick="addPrompt('presenting, presenting ass, presenting pussy')">差し出し・見せつけ</button>
+    <button onclick="addPrompt('spread legs, M-legs')">M字開脚</button>
+    <button onclick="addPrompt('all fours, face down ass up')">尻を高く上げる</button>
+    <button onclick="addPrompt('bent over, bent over table')">前屈み・机に手をつく</button>
+    <button onclick="addPrompt('lying on back, legs up')">仰向けで脚上げ</button>
+    <button onclick="addPrompt('lying on side')">横向き</button>
+    <button onclick="addPrompt('squatting, deep squat')">しゃがみ込み</button>
+    <button onclick="addPrompt('hands behind head')">頭の後ろで手を組む</button>
+    <button onclick="addPrompt('arms behind back')">両手を後ろに</button>
+    <button onclick="addPrompt('covering breasts, covering pussy')">局部を隠す</button>
+    <button onclick="addPrompt('stretching, body stretch')">体を伸ばす</button>
   </div>
 </div>
 
@@ -449,12 +479,12 @@ button:hover{background:#f8f9fa}
   </div>
 </div>
 
+<!-- 外見（旧見た目） -->
 <div id="appearancePage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
-  <h1>見た目</h1>
+  <h1>外見</h1>
   <button class="menuButton" onclick="showPage('clothingPage')">服装</button>
   <button class="menuButton" onclick="showPage('hairstylePage')">髪型</button>
-  <button class="menuButton" onclick="showPage('appearancePosePage')">ポーズ</button>
 </div>
 
 <div id="clothingPage" class="page">
@@ -463,18 +493,18 @@ button:hover{background:#f8f9fa}
   <h3>基本（状態選択あり）</h3>
   <div class="buttons">
     <button onclick="addPrompt('Plain white T-shirt')">白の無地のTシャツ</button>
-    <button onclick="openVariation('lingerie')">ランジェリー</button>
-    <button onclick="openVariation('bikini')">ビキニ系</button>
-    <button onclick="openVariation('school_swimsuit')">スクール水着</button>
-    <button onclick="openVariation('uniform')">制服</button>
-    <button onclick="openVariation('nurse_maid')">ナース・メイド</button>
+    <button class="var-btn" onclick="openVariation('lingerie')">ランジェリー</button>
+    <button class="var-btn" onclick="openVariation('bikini')">ビキニ系</button>
+    <button class="var-btn" onclick="openVariation('school_swimsuit')">スクール水着</button>
+    <button class="var-btn" onclick="openVariation('uniform')">制服</button>
+    <button class="var-btn" onclick="openVariation('nurse_maid')">ナース・メイド</button>
     <button onclick="addPrompt('bunny suit')">バニー衣装</button>
     <button onclick="addPrompt('china dress')">チャイナドレス</button>
     <button onclick="addPrompt('qipao')">旗袍</button>
     <button onclick="addPrompt('gym uniform')">体操服</button>
     <button onclick="addPrompt('bloomers')">ブルマ</button>
-    <button onclick="openVariation('office')">OL・スーツ</button>
-    <button onclick="openVariation('clothing_state')">着衣の状態（汎用）</button>
+    <button class="var-btn" onclick="openVariation('office')">OL・スーツ</button>
+    <button class="var-btn" onclick="openVariation('clothing_state')">着衣の状態（汎用）</button>
     <button onclick="addPrompt('garter belt')">ガーターベルト</button>
     <button onclick="addPrompt('stockings')">ストッキング</button>
     <button onclick="addPrompt('thighhighs')">サイハイソックス</button>
@@ -509,38 +539,6 @@ button:hover{background:#f8f9fa}
     <button onclick="addPrompt('wet hair')">濡れた髪</button>
     <button onclick="addPrompt('hair over one eye')">片目隠れ</button>
     <button onclick="addPrompt('ahoge')">アホ毛</button>
-  </div>
-</div>
-
-<div id="appearancePosePage" class="page">
-  <button class="backButton" onclick="showPage('appearancePage')">← 戻る</button>
-  <h1>ポーズ</h1>
-  <div class="buttons">
-    <button onclick="addPrompt('standing')">立つ</button>
-    <button onclick="addPrompt('sitting')">座る</button>
-    <button onclick="addPrompt('lying')">横になる</button>
-    <button onclick="addPrompt('kneeling')">膝立ち</button>
-    <button onclick="addPrompt('crouching')">しゃがむ</button>
-    <button onclick="addPrompt('on all fours')">四つん這い</button>
-    <button onclick="addPrompt('leaning forward')">前かがみ</button>
-    <button onclick="addPrompt('leaning back')">後ろに寄りかかる</button>
-    <button onclick="addPrompt('arms up')">両腕を上げる</button>
-    <button onclick="addPrompt('arms behind back')">両手を後ろに</button>
-    <button onclick="addPrompt('hands on hips')">腰に手</button>
-    <button onclick="addPrompt('crossed arms')">腕組み</button>
-    <button onclick="addPrompt('hands covering face')">両手で顔を隠す</button>
-    <button onclick="addPrompt('peace sign')">ピース</button>
-    <button onclick="addPrompt('waving')">手を振る</button>
-    <button onclick="addPrompt('pointing')">指差し</button>
-    <button onclick="addPrompt('legs spread')">脚を開く</button>
-    <button onclick="addPrompt('one leg raised')">片脚を上げる</button>
-    <button onclick="addPrompt('legs crossed')">脚を組む</button>
-    <button onclick="addPrompt('arching back')">背中を反らす</button>
-    <button onclick="addPrompt('from side')">横向き</button>
-    <button onclick="addPrompt('looking back')">振り返り</button>
-    <button onclick="addPrompt('twisted torso')">上半身をねじる</button>
-    <button onclick="addPrompt('stretching')">ストレッチ</button>
-    <button onclick="addPrompt('yawning')">あくび</button>
   </div>
 </div>
 
@@ -617,219 +615,42 @@ button:hover{background:#f8f9fa}
 let prompts=[],currentWeightIndex=-1;
 const WEIGHTS=[0.8,1.0,1.1,1.2,1.3,1.5];
 const VARIATIONS={
-condom:{title:"コンドームの状態",options:[
-{label:"付けている途中",prompt:"putting on condom, rolling condom onto penis",desc:"装着しようとしている"},
-{label:"装着済み",prompt:"wearing condom, condom on penis",desc:"すでに付いている"},
-{label:"使用済み・廃棄",prompt:"used condom, discarded condom",desc:"使い終わって捨ててある"},
-{label:"包装を開けている",prompt:"opening condom package, condom wrapper",desc:"袋を破っている"},
-{label:"精液が入っている",prompt:"used condom filled with semen",desc:"中に精液が溜まっている"}
-]},
-dildo:{title:"ディルドの使い方",options:[
-{label:"膣に挿入中",prompt:"dildo insertion, dildo in pussy",desc:"膣に入っている"},
-{label:"アナルに挿入",prompt:"anal dildo, dildo in ass",desc:"アナルに入っている"},
-{label:"持っている・見せている",prompt:"holding dildo, presenting dildo",desc:"手に持って見せている"},
-{label:"舐める・咥える",prompt:"sucking dildo, licking dildo",desc:"口で扱っている"},
-{label:"置いてある",prompt:"dildo on floor, dildo on table",desc:"置かれている"}
-]},
-vibrator:{title:"バイブの使い方",options:[
-{label:"膣に挿入中",prompt:"vibrator in pussy, vibrating",desc:"中で振動している"},
-{label:"クリトリスに当てている",prompt:"vibrator on clitoris, clitoral stimulation",desc:"外側で刺激"},
-{label:"アナルに挿入",prompt:"anal vibrator, vibrator in ass",desc:"アナル使用"},
-{label:"遠隔操作中",prompt:"remote controlled vibrator, public vibrator",desc:"遠隔で動かされている"},
-{label:"持っている",prompt:"holding vibrator",desc:"手に持っている"}
-]},
-anal:{title:"アナル系道具",options:[
-{label:"アナルビーズ",prompt:"anal beads, pulling anal beads",desc:"ビーズを出し入れ"},
-{label:"アナルプラグ装着",prompt:"butt plug, wearing butt plug",desc:"プラグが刺さっている"},
-{label:"テールプラグ",prompt:"anal tail plug, fox tail plug",desc:"しっぽ付き"},
-{label:"拡張中",prompt:"anal stretching, anal gape",desc:"広げている"}
-]},
-restraint:{title:"拘束の状態",options:[
-{label:"縄で縛られている",prompt:"bound, shibari, rope bondage",desc:"縄縛り"},
-{label:"手錠",prompt:"handcuffs, hands cuffed",desc:"手が拘束"},
-{label:"目隠し",prompt:"blindfold, blindfolded",desc:"目が見えない"},
-{label:"ボールギャグ",prompt:"ball gag, gagged",desc:"口を塞がれている"},
-{label:"首輪とリード",prompt:"collar and leash, being led",desc:"リードで引かれている"},
-{label:"手足を固定",prompt:"spread eagle, limbs restrained",desc:"大の字に固定"}
-]},
-other_toy:{title:"その他の性具",options:[
-{label:"ローション",prompt:"lube, covered in lube",desc:"ローション塗れ"},
-{label:"鞭",prompt:"whip, being whipped",desc:"鞭打ち"},
-{label:"パドル",prompt:"paddle, spanking with paddle",desc:"叩かれている"},
-{label:"乳首クリップ",prompt:"nipple clamps",desc:"乳首を挟んでいる"},
-{label:"オナホール",prompt:"onahole, fleshlight",desc:"ホール使用"}
-]},
-fellatio:{title:"フェラチオの状態",options:[
-{label:"咥えている",prompt:"fellatio, oral, sucking penis, penis in mouth",desc:"口に含んでいる"},
-{label:"先端を舐めている",prompt:"licking penis, licking tip of penis",desc:"先を舐めている"},
-{label:"深喉",prompt:"deepthroat, throat bulge",desc:"奥まで咥えている"},
-{label:"顔に精液",prompt:"facial, cum on face",desc:"顔にかけられている"},
-{label:"口内射精",prompt:"cum in mouth, swallowing cum",desc:"口の中に出されている"}
-]},
-cunnilingus:{title:"クンニの状態",options:[
-{label:"舐めている",prompt:"cunnilingus, oral, licking pussy",desc:"普通に舐めている"},
-{label:"クリトリス集中",prompt:"licking clitoris, clitoral stimulation",desc:"クリトリスを重点的に"},
-{label:"顔を埋めている",prompt:"face in pussy, smothered",desc:"顔を押し付けている"},
-{label:"愛液を舐めている",prompt:"licking juices, wet pussy",desc:"愛液を舐め取っている"}
-]},
-handjob:{title:"手コキの状態",options:[
-{label:"しごいている",prompt:"handjob, stroking penis",desc:"手でしごいている"},
-{label:"両手で",prompt:"two-handed handjob",desc:"両手を使っている"},
-{label:"射精させている",prompt:"handjob, cumming, ejaculation",desc:"射精に導いている"},
-{label:"先端を刺激",prompt:"teasing tip of penis, rubbing glans",desc:"先を重点的に"}
-]},
-paizuri:{title:"パイズリの状態",options:[
-{label:"挟んでいる",prompt:"paizuri, titjob, breast sex, penis between breasts",desc:"胸で挟んでいる"},
-{label:"動かしながら",prompt:"paizuri, moving breasts, active titjob",desc:"上下に動かしている"},
-{label:"射精",prompt:"paizuri, cum on breasts, cum between breasts",desc:"胸に出されている"},
-{label:"顔も使っている",prompt:"paizuri, licking tip while titjob",desc:"パイズリしながら先端を舐め"}
-]},
-nipple:{title:"乳首責め",options:[
-{label:"舐めている",prompt:"licking nipple, nipple play",desc:"舌で舐めている"},
-{label:"吸っている",prompt:"sucking nipple, nursing",desc:"口で吸っている"},
-{label:"摘まんでいる",prompt:"pinching nipple, twisting nipple",desc:"指で摘まんでいる"},
-{label:"噛んでいる",prompt:"biting nipple",desc:"軽く歯を立てている"}
-]},
-fingering:{title:"指入れの状態",options:[
-{label:"指を入れている",prompt:"fingering, fingering pussy, fingers in pussy",desc:"指を挿入している"},
-{label:"複数本",prompt:"multiple fingers in pussy, fingering",desc:"何本も入れている"},
-{label:"Gスポット刺激",prompt:"fingering g-spot, curling fingers",desc:"内側を刺激"},
-{label:"アナルに指",prompt:"anal fingering, fingers in ass",desc:"アナルに指入れ"}
-]},
-missionary:{title:"正常位のバリエーション",options:[
-{label:"基本の正常位",prompt:"missionary position, man on top, woman on her back with legs spread, face to face, deep penetration",desc:"標準的な形"},
-{label:"脚を肩に",prompt:"missionary with woman’s legs over man’s shoulders, deep angle",desc:"深く入る角度"},
-{label:"片脚上げ",prompt:"missionary, one of woman’s legs raised high, other wrapped around man’s waist",desc:"片脚を上げている"},
-{label:"膝を抱える",prompt:"missionary, man holding woman’s knees to her chest",desc:"膝を胸に押し付ける"}
-]},
-doggy:{title:"後背位のバリエーション",options:[
-{label:"基本の後背位",prompt:"doggy style, woman on all fours, man behind, arched back",desc:"四つん這い"},
-{label:"顔を伏せた後背位",prompt:"prone bone, woman lying flat on her stomach, man on top from behind",desc:"うつ伏せ"},
-{label:"膝立ち後背位",prompt:"kneeling doggy, both on knees, man thrusting from behind",desc:"両方が膝立ち"},
-{label:"立ちバック",prompt:"standing doggy, woman bent over a table or wall, man standing behind",desc:"立ったまま"}
-]},
-cowgirl:{title:"騎乗位のバリエーション",options:[
-{label:"基本の騎乗位",prompt:"cowgirl, woman on top facing man, riding, hands on his chest",desc:"対面で乗っている"},
-{label:"逆騎乗位",prompt:"reverse cowgirl, woman on top facing away, looking back over her shoulder",desc:"背を向けて乗っている"},
-{label:"前傾騎乗位",prompt:"cowgirl leaning forward, breasts close to man’s face",desc:"前かがみで胸が近い"},
-{label:"後ろに手をつく",prompt:"reverse cowgirl, woman leaning back with hands on the bed for support",desc:"体を反らせている"}
-]},
-lingerie:{title:"ランジェリーの状態",options:[
-{label:"普通に着ている",prompt:"lingerie, wearing lingerie",desc:"きちんと着ている"},
-{label:"ずらしている",prompt:"lingerie aside, panties aside, pulled aside",desc:"挿入しやすいようにずらす"},
-{label:"はだけている",prompt:"open lingerie, unbuttoned lingerie, disheveled lingerie",desc:"乱れている"},
-{label:"半分脱がされている",prompt:"half-removed lingerie, lingerie around thighs",desc:"途中まで脱がされている"},
-{label:"破れている",prompt:"torn lingerie, ripped lingerie",desc:"破れている"}
-]},
-bikini:{title:"ビキニの状態",options:[
-{label:"普通に着ている",prompt:"bikini, micro bikini",desc:"普通に着ている"},
-{label:"紐を解いている",prompt:"untied bikini, bikini strings undone",desc:"紐が解けている"},
-{label:"ずらしている",prompt:"bikini aside, pulled aside bikini",desc:"ずらされている"},
-{label:"濡れている",prompt:"wet bikini, see-through bikini",desc:"水で透けている"},
-{label:"半分脱げている",prompt:"half-removed bikini, bikini around ankles",desc:"途中まで脱げている"}
-]},
-school_swimsuit:{title:"スクール水着の状態",options:[
-{label:"普通に着ている",prompt:"school swimsuit",desc:"普通に着ている"},
-{label:"ずらしている",prompt:"school swimsuit aside, pulled aside",desc:"局部を出している"},
-{label:"ずり下げ",prompt:"school swimsuit pulled down, around thighs",desc:"腰まで下げている"},
-{label:"濡れている",prompt:"wet school swimsuit, see-through school swimsuit",desc:"濡れて透けている"},
-{label:"破れている",prompt:"torn school swimsuit",desc:"破れている"}
-]},
-uniform:{title:"制服の状態",options:[
-{label:"きちんと着ている",prompt:"school uniform, short skirt",desc:"普通に着ている"},
-{label:"シャツはだけ",prompt:"open shirt, unbuttoned blouse, school uniform",desc:"ボタンを外している"},
-{label:"スカートめくれ",prompt:"skirt lift, lifted skirt, upskirt",desc:"スカートがめくれている"},
-{label:"乱れている",prompt:"disheveled uniform, messy clothes",desc:"服が乱れている"},
-{label:"半脱ぎ",prompt:"half-undressed, clothes around waist",desc:"途中まで脱がされている"}
-]},
-nurse_maid:{title:"ナース・メイドの状態",options:[
-{label:"普通に着ている",prompt:"nurse outfit",desc:"ナース服"},
-{label:"メイド服",prompt:"maid outfit",desc:"メイド服"},
-{label:"はだけている",prompt:"open nurse outfit, unbuttoned, cleavage",desc:"胸元が開いている"},
-{label:"スカートめくれ",prompt:"skirt lift, maid outfit, upskirt",desc:"スカートが上がっている"},
-{label:"乱れている",prompt:"disheveled nurse outfit, messy clothes",desc:"服が乱れている"}
-]},
-office:{title:"OL・スーツの状態",options:[
-{label:"きちんと着ている",prompt:"office lady, tight skirt, suit",desc:"普通のOL"},
-{label:"ブラウスはだけ",prompt:"suit, unbuttoned blouse, open shirt",desc:"ボタンを外している"},
-{label:"タイトスカートめくれ",prompt:"skirt lift, tight skirt, upskirt",desc:"スカートが上がっている"},
-{label:"乱れている",prompt:"disheveled office lady, messy clothes",desc:"服が乱れている"}
-]},
-clothing_state:{title:"着衣の状態（汎用）",options:[
-{label:"はだけている",prompt:"open clothes, unbuttoned, disheveled clothes",desc:"服が開いている"},
-{label:"ずらしている",prompt:"clothes aside, pulled aside",desc:"局部を出すようにずらす"},
-{label:"半分脱がされている",prompt:"half-undressed, clothes around waist or thighs",desc:"途中まで脱げている"},
-{label:"破れている",prompt:"torn clothes, ripped clothes",desc:"破れている"},
-{label:"濡れている",prompt:"wet clothes, see-through clothes",desc:"濡れて透けている"},
-{label:"全裸",prompt:"completely nude, naked",desc:"何も着ていない"},
-{label:"下着だけ",prompt:"underwear only, in underwear",desc:"下着姿"}
-]},
-// 身体描写
-breasts:{title:"おっぱいの描写",options:[
-{label:"大きいおっぱい",prompt:"large breasts, big breasts",desc:"サイズ強調"},
-{label:"垂れたおっぱい",prompt:"sagging breasts, soft breasts",desc:"柔らかい・垂れている"},
-{label:"ピンと張ったおっぱい",prompt:"perky breasts, firm breasts",desc:"ハリがある"},
-{label:"揺れおっぱい",prompt:"bouncing breasts, jiggle",desc:"動いている・揺れている"},
-{label:"強調・寄せている",prompt:"cleavage, squeezed breasts, pressed breasts",desc:"寄せて谷間を作っている"},
-{label:"乳首が見えている",prompt:"nipples visible, erect nipples",desc:"勃起した乳首が見える"},
-{label:"おっぱいを掴まれている",prompt:"groping breasts, hands on breasts",desc:"触られている"}
-]},
-ass:{title:"お尻・太ももの描写",options:[
-{label:"大きなお尻",prompt:"large ass, big butt, thick thighs",desc:"ボリュームのある尻・太もも"},
-{label:"桃尻",prompt:"peach ass, round ass",desc:"丸くて形の良い尻"},
-{label:"尻を強調",prompt:"ass focus, presenting ass",desc:"尻を向けている・強調"},
-{label:"尻を掴まれている",prompt:"groping ass, hands on ass",desc:"触られている"},
-{label:"太ももに手",prompt:"hands on thighs, stroking thighs",desc:"太ももを触っている"}
-]},
-pussy:{title:"性器の描写",options:[
-{label:"濡れている",prompt:"wet pussy, dripping pussy, soaked",desc:"愛液で濡れている"},
-{label:"開いている",prompt:"spread pussy, open pussy, gaping",desc:"開いている状態"},
-{label:"挿入されている",prompt:"penis in pussy, penetration, vaginal penetration",desc:"挿入中"},
-{label:"クリトリス強調",prompt:"visible clitoris, swollen clitoris",desc:"クリトリスが目立つ"},
-{label:"性器アップ",prompt:"pussy focus, close-up pussy",desc:"局部を強調した構図"}
-]},
-skin:{title:"肌の状態",options:[
-{label:"汗だく",prompt:"sweaty, covered in sweat, glistening skin",desc:"汗で光っている"},
-{label:"赤み・興奮で赤い",prompt:"flushed skin, red skin, aroused flush",desc:"興奮で赤くなっている"},
-{label:"オイル・光沢",prompt:"oiled skin, shiny skin, glossy skin",desc:"テカっている"},
-{label:"キス跡・吸い跡",prompt:"hickeys, love bites, kiss marks",desc:"痕がついている"}
-]},
-body_focus:{title:"身体の強調",options:[
-{label:"おっぱいフォーカス",prompt:"breast focus, chest focus",desc:"胸に焦点"},
-{label:"尻フォーカス",prompt:"ass focus, butt focus",desc:"尻に焦点"},
-{label:"局部フォーカス",prompt:"pussy focus, crotch focus",desc:"性器に焦点"},
-{label:"全身を見せる",prompt:"full body, entirely visible",desc:"全身が入っている"},
-{label:"上半身強調",prompt:"upper body focus",desc:"上半身中心"}
-]},
-// 体液
-love_juice:{title:"愛液",options:[
-{label:"愛液が流れている",prompt:"pussy juice, love juice, dripping, wet",desc:"流れ落ちている"},
-{label:"太ももを伝う",prompt:"pussy juice on thighs, trails of juice",desc:"太ももの内側を伝っている"},
-{label:"シーツに染み",prompt:"wet stain on sheets, soaked sheets",desc:"染みになっている"},
-{label:"糸を引いている",prompt:"string of pussy juice, sticky",desc:"粘ついて糸を引く"}
-]},
-semen:{title:"精液",options:[
-{label:"顔にかかっている",prompt:"facial, cum on face, cum on cheeks",desc:"顔射"},
-{label:"胸にかかっている",prompt:"cum on breasts, cum on chest",desc:"胸に出されている"},
-{label:"中出し",prompt:"cum in pussy, creampie, internal cumshot",desc:"中に出されている"},
-{label:"お腹・体にかかっている",prompt:"cum on stomach, cum on body",desc:"体に飛び散っている"},
-{label:"口に出されている",prompt:"cum in mouth, cum on tongue",desc:"口内"},
-{label:"大量の精液",prompt:"excessive cum, lots of cum, cum overflow",desc:"量が多め"}
-]},
-saliva:{title:"よだれ・唾液",options:[
-{label:"よだれが垂れている",prompt:"drool, drooling, saliva",desc:"口から垂れている"},
-{label:"舌に唾液",prompt:"saliva on tongue, wet tongue",desc:"舌が湿っている"},
-{label:"キスで唾液交換",prompt:"saliva trail, string of saliva, deep kiss",desc:"糸を引くキス"}
-]},
-sweat:{title:"汗",options:[
-{label:"汗だく",prompt:"sweat, sweaty body, covered in sweat",desc:"全身汗"},
-{label:"額の汗",prompt:"sweat on forehead, beads of sweat",desc:"額に汗"},
-{label:"汗で肌が光る",prompt:"glistening sweat, shiny with sweat",desc:"汗でテカっている"}
-]}
+condom:{title:"コンドームの状態",options:[{label:"付けている途中",prompt:"putting on condom, rolling condom onto penis",desc:"装着しようとしている"},{label:"装着済み",prompt:"wearing condom, condom on penis",desc:"すでに付いている"},{label:"使用済み・廃棄",prompt:"used condom, discarded condom",desc:"使い終わって捨ててある"},{label:"包装を開けている",prompt:"opening condom package, condom wrapper",desc:"袋を破っている"},{label:"精液が入っている",prompt:"used condom filled with semen",desc:"中に精液が溜まっている"}]},
+dildo:{title:"ディルドの使い方",options:[{label:"膣に挿入中",prompt:"dildo insertion, dildo in pussy",desc:"膣に入っている"},{label:"アナルに挿入",prompt:"anal dildo, dildo in ass",desc:"アナルに入っている"},{label:"持っている・見せている",prompt:"holding dildo, presenting dildo",desc:"手に持って見せている"},{label:"舐める・咥える",prompt:"sucking dildo, licking dildo",desc:"口で扱っている"},{label:"置いてある",prompt:"dildo on floor, dildo on table",desc:"置かれている"}]},
+vibrator:{title:"バイブの使い方",options:[{label:"膣に挿入中",prompt:"vibrator in pussy, vibrating",desc:"中で振動している"},{label:"クリトリスに当てている",prompt:"vibrator on clitoris, clitoral stimulation",desc:"外側で刺激"},{label:"アナルに挿入",prompt:"anal vibrator, vibrator in ass",desc:"アナル使用"},{label:"遠隔操作中",prompt:"remote controlled vibrator, public vibrator",desc:"遠隔で動かされている"},{label:"持っている",prompt:"holding vibrator",desc:"手に持っている"}]},
+anal:{title:"アナル系道具",options:[{label:"アナルビーズ",prompt:"anal beads, pulling anal beads",desc:"ビーズを出し入れ"},{label:"アナルプラグ装着",prompt:"butt plug, wearing butt plug",desc:"プラグが刺さっている"},{label:"テールプラグ",prompt:"anal tail plug, fox tail plug",desc:"しっぽ付き"},{label:"拡張中",prompt:"anal stretching, anal gape",desc:"広げている"}]},
+restraint:{title:"拘束の状態",options:[{label:"縄で縛られている",prompt:"bound, shibari, rope bondage",desc:"縄縛り"},{label:"手錠",prompt:"handcuffs, hands cuffed",desc:"手が拘束"},{label:"目隠し",prompt:"blindfold, blindfolded",desc:"目が見えない"},{label:"ボールギャグ",prompt:"ball gag, gagged",desc:"口を塞がれている"},{label:"首輪とリード",prompt:"collar and leash, being led",desc:"リードで引かれている"},{label:"手足を固定",prompt:"spread eagle, limbs restrained",desc:"大の字に固定"}]},
+other_toy:{title:"その他の性具",options:[{label:"ローション",prompt:"lube, covered in lube",desc:"ローション塗れ"},{label:"鞭",prompt:"whip, being whipped",desc:"鞭打ち"},{label:"パドル",prompt:"paddle, spanking with paddle",desc:"叩かれている"},{label:"乳首クリップ",prompt:"nipple clamps",desc:"乳首を挟んでいる"},{label:"オナホール",prompt:"onahole, fleshlight",desc:"ホール使用"}]},
+kiss:{title:"キスの状態",options:[{label:"ディープキス",prompt:"deep kiss, french kiss, tongue kiss",desc:"舌を絡めるキス"},{label:"軽いキス",prompt:"kiss, light kiss, peck",desc:"軽いキス"},{label:"首筋へのキス",prompt:"neck kiss, kissing neck",desc:"首にキスしている"},{label:"唾液が糸を引く",prompt:"saliva trail, string of saliva, messy kiss",desc:"よだれが繋がっている"},{label:"キスしながら抱きつく",prompt:"kissing while embracing, passionate kiss",desc:"抱擁しながらのキス"}]},
+fellatio:{title:"フェラチオの状態",options:[{label:"咥えている",prompt:"fellatio, oral, sucking penis, penis in mouth",desc:"口に含んでいる"},{label:"先端を舐めている",prompt:"licking penis, licking tip of penis",desc:"先を舐めている"},{label:"深喉",prompt:"deepthroat, throat bulge",desc:"奥まで咥えている"},{label:"顔に精液",prompt:"facial, cum on face",desc:"顔にかけられている"},{label:"口内射精",prompt:"cum in mouth, swallowing cum",desc:"口の中に出されている"}]},
+cunnilingus:{title:"クンニの状態",options:[{label:"舐めている",prompt:"cunnilingus, oral, licking pussy",desc:"普通に舐めている"},{label:"クリトリス集中",prompt:"licking clitoris, clitoral stimulation",desc:"クリトリスを重点的に"},{label:"顔を埋めている",prompt:"face in pussy, smothered",desc:"顔を押し付けている"},{label:"愛液を舐めている",prompt:"licking juices, wet pussy",desc:"愛液を舐め取っている"}]},
+handjob:{title:"手コキの状態",options:[{label:"しごいている",prompt:"handjob, stroking penis",desc:"手でしごいている"},{label:"両手で",prompt:"two-handed handjob",desc:"両手を使っている"},{label:"射精させている",prompt:"handjob, cumming, ejaculation",desc:"射精に導いている"},{label:"先端を刺激",prompt:"teasing tip of penis, rubbing glans",desc:"先を重点的に"}]},
+paizuri:{title:"パイズリの状態",options:[{label:"挟んでいる",prompt:"paizuri, titjob, breast sex, penis between breasts",desc:"胸で挟んでいる"},{label:"動かしながら",prompt:"paizuri, moving breasts, active titjob",desc:"上下に動かしている"},{label:"射精",prompt:"paizuri, cum on breasts, cum between breasts",desc:"胸に出されている"},{label:"顔も使っている",prompt:"paizuri, licking tip while titjob",desc:"パイズリしながら先端を舐め"}]},
+nipple:{title:"乳首責め",options:[{label:"舐めている",prompt:"licking nipple, nipple play",desc:"舌で舐めている"},{label:"吸っている",prompt:"sucking nipple, nursing",desc:"口で吸っている"},{label:"摘まんでいる",prompt:"pinching nipple, twisting nipple",desc:"指で摘まんでいる"},{label:"噛んでいる",prompt:"biting nipple",desc:"軽く歯を立てている"}]},
+fingering:{title:"指入れの状態",options:[{label:"指を入れている",prompt:"fingering, fingering pussy, fingers in pussy",desc:"指を挿入している"},{label:"複数本",prompt:"multiple fingers in pussy, fingering",desc:"何本も入れている"},{label:"Gスポット刺激",prompt:"fingering g-spot, curling fingers",desc:"内側を刺激"},{label:"アナルに指",prompt:"anal fingering, fingers in ass",desc:"アナルに指入れ"}]},
+missionary:{title:"正常位のバリエーション",options:[{label:"基本の正常位",prompt:"missionary position, man on top, woman on her back with legs spread, face to face, deep penetration",desc:"標準的な形"},{label:"脚を肩に",prompt:"missionary with woman’s legs over man’s shoulders, deep angle",desc:"深く入る角度"},{label:"片脚上げ",prompt:"missionary, one of woman’s legs raised high, other wrapped around man’s waist",desc:"片脚を上げている"},{label:"膝を抱える",prompt:"missionary, man holding woman’s knees to her chest",desc:"膝を胸に押し付ける"}]},
+doggy:{title:"後背位のバリエーション",options:[{label:"基本の後背位",prompt:"doggy style, woman on all fours, man behind, arched back",desc:"四つん這い"},{label:"顔を伏せた後背位",prompt:"prone bone, woman lying flat on her stomach, man on top from behind",desc:"うつ伏せ"},{label:"膝立ち後背位",prompt:"kneeling doggy, both on knees, man thrusting from behind",desc:"両方が膝立ち"},{label:"立ちバック",prompt:"standing doggy, woman bent over a table or wall, man standing behind",desc:"立ったまま"}]},
+cowgirl:{title:"騎乗位のバリエーション",options:[{label:"基本の騎乗位",prompt:"cowgirl, woman on top facing man, riding, hands on his chest",desc:"対面で乗っている"},{label:"逆騎乗位",prompt:"reverse cowgirl, woman on top facing away, looking back over her shoulder",desc:"背を向けて乗っている"},{label:"前傾騎乗位",prompt:"cowgirl leaning forward, breasts close to man’s face",desc:"前かがみで胸が近い"},{label:"後ろに手をつく",prompt:"reverse cowgirl, woman leaning back with hands on the bed for support",desc:"体を反らせている"}]},
+thrust:{title:"腰振り・ピストン",options:[{label:"激しく腰を振っている",prompt:"thrusting, intense thrusting, pistoning",desc:"激しいピストン"},{label:"ゆっくり腰を動かす",prompt:"slow thrusting, grinding",desc:"ゆっくりとした動き"},{label:"深く突き上げる",prompt:"deep thrust, deep penetration, bottoming out",desc:"奥まで突いている"},{label:"浅いピストン",prompt:"shallow thrusting, teasing thrusts",desc:"浅く動いている"}]},
+bounce:{title:"揺れ・バウンス",options:[{label:"おっぱいが揺れている",prompt:"bouncing breasts, jiggle",desc:"胸が揺れている"},{label:"尻が揺れている",prompt:"bouncing ass, jiggling butt",desc:"尻が揺れている"},{label:"体全体が揺れている",prompt:"body bounce, bouncing",desc:"体がバウンドしている"}]},
+lingerie:{title:"ランジェリーの状態",options:[{label:"普通に着ている",prompt:"lingerie, wearing lingerie",desc:"きちんと着ている"},{label:"ずらしている",prompt:"lingerie aside, panties aside, pulled aside",desc:"挿入しやすいようにずらす"},{label:"はだけている",prompt:"open lingerie, unbuttoned lingerie, disheveled lingerie",desc:"乱れている"},{label:"半分脱がされている",prompt:"half-removed lingerie, lingerie around thighs",desc:"途中まで脱がされている"},{label:"破れている",prompt:"torn lingerie, ripped lingerie",desc:"破れている"}]},
+bikini:{title:"ビキニの状態",options:[{label:"普通に着ている",prompt:"bikini, micro bikini",desc:"普通に着ている"},{label:"紐を解いている",prompt:"untied bikini, bikini strings undone",desc:"紐が解けている"},{label:"ずらしている",prompt:"bikini aside, pulled aside bikini",desc:"ずらされている"},{label:"濡れている",prompt:"wet bikini, see-through bikini",desc:"水で透けている"},{label:"半分脱げている",prompt:"half-removed bikini, bikini around ankles",desc:"途中まで脱げている"}]},
+school_swimsuit:{title:"スクール水着の状態",options:[{label:"普通に着ている",prompt:"school swimsuit",desc:"普通に着ている"},{label:"ずらしている",prompt:"school swimsuit aside, pulled aside",desc:"局部を出している"},{label:"ずり下げ",prompt:"school swimsuit pulled down, around thighs",desc:"腰まで下げている"},{label:"濡れている",prompt:"wet school swimsuit, see-through school swimsuit",desc:"濡れて透けている"},{label:"破れている",prompt:"torn school swimsuit",desc:"破れている"}]},
+uniform:{title:"制服の状態",options:[{label:"きちんと着ている",prompt:"school uniform, short skirt",desc:"普通に着ている"},{label:"シャツはだけ",prompt:"open shirt, unbuttoned blouse, school uniform",desc:"ボタンを外している"},{label:"スカートめくれ",prompt:"skirt lift, lifted skirt, upskirt",desc:"スカートがめくれている"},{label:"乱れている",prompt:"disheveled uniform, messy clothes",desc:"服が乱れている"},{label:"半脱ぎ",prompt:"half-undressed, clothes around waist",desc:"途中まで脱がされている"}]},
+nurse_maid:{title:"ナース・メイドの状態",options:[{label:"普通に着ている",prompt:"nurse outfit",desc:"ナース服"},{label:"メイド服",prompt:"maid outfit",desc:"メイド服"},{label:"はだけている",prompt:"open nurse outfit, unbuttoned, cleavage",desc:"胸元が開いている"},{label:"スカートめくれ",prompt:"skirt lift, maid outfit, upskirt",desc:"スカートが上がっている"},{label:"乱れている",prompt:"disheveled nurse outfit, messy clothes",desc:"服が乱れている"}]},
+office:{title:"OL・スーツの状態",options:[{label:"きちんと着ている",prompt:"office lady, tight skirt, suit",desc:"普通のOL"},{label:"ブラウスはだけ",prompt:"suit, unbuttoned blouse, open shirt",desc:"ボタンを外している"},{label:"タイトスカートめくれ",prompt:"skirt lift, tight skirt, upskirt",desc:"スカートが上がっている"},{label:"乱れている",prompt:"disheveled office lady, messy clothes",desc:"服が乱れている"}]},
+clothing_state:{title:"着衣の状態（汎用）",options:[{label:"はだけている",prompt:"open clothes, unbuttoned, disheveled clothes",desc:"服が開いている"},{label:"ずらしている",prompt:"clothes aside, pulled aside",desc:"局部を出すようにずらす"},{label:"半分脱がされている",prompt:"half-undressed, clothes around waist or thighs",desc:"途中まで脱げている"},{label:"破れている",prompt:"torn clothes, ripped clothes",desc:"破れている"},{label:"濡れている",prompt:"wet clothes, see-through clothes",desc:"濡れて透けている"},{label:"全裸",prompt:"completely nude, naked",desc:"何も着ていない"},{label:"下着だけ",prompt:"underwear only, in underwear",desc:"下着姿"}]},
+breasts:{title:"おっぱいの描写",options:[{label:"大きいおっぱい",prompt:"large breasts, big breasts",desc:"サイズ強調"},{label:"垂れたおっぱい",prompt:"sagging breasts, soft breasts",desc:"柔らかい・垂れている"},{label:"ピンと張ったおっぱい",prompt:"perky breasts, firm breasts",desc:"ハリがある"},{label:"揺れおっぱい",prompt:"bouncing breasts, jiggle",desc:"動いている・揺れている"},{label:"強調・寄せている",prompt:"cleavage, squeezed breasts, pressed breasts",desc:"寄せて谷間を作っている"},{label:"乳首が見えている",prompt:"nipples visible, erect nipples",desc:"勃起した乳首が見える"},{label:"おっぱいを掴まれている",prompt:"groping breasts, hands on breasts",desc:"触られている"}]},
+ass:{title:"お尻・太ももの描写",options:[{label:"大きなお尻",prompt:"large ass, big butt, thick thighs",desc:"ボリュームのある尻・太もも"},{label:"桃尻",prompt:"peach ass, round ass",desc:"丸くて形の良い尻"},{label:"尻を強調",prompt:"ass focus, presenting ass",desc:"尻を向けている・強調"},{label:"尻を掴まれている",prompt:"groping ass, hands on ass",desc:"触られている"},{label:"太ももに手",prompt:"hands on thighs, stroking thighs",desc:"太ももを触っている"}]},
+pussy:{title:"性器の描写",options:[{label:"濡れている",prompt:"wet pussy, dripping pussy, soaked",desc:"愛液で濡れている"},{label:"開いている",prompt:"spread pussy, open pussy, gaping",desc:"開いている状態"},{label:"挿入されている",prompt:"penis in pussy, penetration, vaginal penetration",desc:"挿入中"},{label:"クリトリス強調",prompt:"visible clitoris, swollen clitoris",desc:"クリトリスが目立つ"},{label:"性器アップ",prompt:"pussy focus, close-up pussy",desc:"局部を強調した構図"}]},
+skin:{title:"肌の状態",options:[{label:"汗だく",prompt:"sweaty, covered in sweat, glistening skin",desc:"汗で光っている"},{label:"赤み・興奮で赤い",prompt:"flushed skin, red skin, aroused flush",desc:"興奮で赤くなっている"},{label:"オイル・光沢",prompt:"oiled skin, shiny skin, glossy skin",desc:"テカっている"},{label:"キス跡・吸い跡",prompt:"hickeys, love bites, kiss marks",desc:"痕がついている"}]},
+body_focus:{title:"身体の強調",options:[{label:"おっぱいフォーカス",prompt:"breast focus, chest focus",desc:"胸に焦点"},{label:"尻フォーカス",prompt:"ass focus, butt focus",desc:"尻に焦点"},{label:"局部フォーカス",prompt:"pussy focus, crotch focus",desc:"性器に焦点"},{label:"全身を見せる",prompt:"full body, entirely visible",desc:"全身が入っている"},{label:"上半身強調",prompt:"upper body focus",desc:"上半身中心"}]},
+love_juice:{title:"愛液",options:[{label:"愛液が流れている",prompt:"pussy juice, love juice, dripping, wet",desc:"流れ落ちている"},{label:"太ももを伝う",prompt:"pussy juice on thighs, trails of juice",desc:"太ももの内側を伝っている"},{label:"シーツに染み",prompt:"wet stain on sheets, soaked sheets",desc:"染みになっている"},{label:"糸を引いている",prompt:"string of pussy juice, sticky",desc:"粘ついて糸を引く"}]},
+semen:{title:"精液",options:[{label:"顔にかかっている",prompt:"facial, cum on face, cum on cheeks",desc:"顔射"},{label:"胸にかかっている",prompt:"cum on breasts, cum on chest",desc:"胸に出されている"},{label:"中出し",prompt:"cum in pussy, creampie, internal cumshot",desc:"中に出されている"},{label:"お腹・体にかかっている",prompt:"cum on stomach, cum on body",desc:"体に飛び散っている"},{label:"口に出されている",prompt:"cum in mouth, cum on tongue",desc:"口内"},{label:"大量の精液",prompt:"excessive cum, lots of cum, cum overflow",desc:"量が多め"}]},
+saliva:{title:"よだれ・唾液",options:[{label:"よだれが垂れている",prompt:"drool, drooling, saliva",desc:"口から垂れている"},{label:"舌に唾液",prompt:"saliva on tongue, wet tongue",desc:"舌が湿っている"},{label:"キスで唾液交換",prompt:"saliva trail, string of saliva, deep kiss",desc:"糸を引くキス"}]},
+sweat:{title:"汗",options:[{label:"汗だく",prompt:"sweat, sweaty body, covered in sweat",desc:"全身汗"},{label:"額の汗",prompt:"sweat on forehead, beads of sweat",desc:"額に汗"},{label:"汗で肌が光る",prompt:"glistening sweat, shiny with sweat",desc:"汗でテカっている"}]}
 };
-
 const CONFLICT_PAIRS=[["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],["solo","2girls"],["solo","1boy 1girl"],["solo","multiple girls"],["1girl","2girls"],["1girl","3girls"],["day","night"],["morning","night"],["indoors","outdoors"]];
-
 try{const s=localStorage.getItem("novelai_prompts_v2");if(s)prompts=JSON.parse(s)}catch(e){}
 function savePrompts(){try{localStorage.setItem("novelai_prompts_v2",JSON.stringify(prompts))}catch(e){}}
 function addPrompt(t){if(prompts.some(p=>p.text===t))return;prompts.push({text:t,weight:1.0});updatePrompt();savePrompts()}
