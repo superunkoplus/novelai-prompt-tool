@@ -96,7 +96,7 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button onclick="addPrompt('2girls')">2girls</button>
     <button onclick="addPrompt('3girls')">3girls</button>
     <button onclick="addPrompt('1boy')">1boy</button>
-    <button onclick="addPrompt('1boy 1girl')">1boy 1girl</button>
+    <button onclick="addPrompt('1boy, 1girl')">1boy 1girl</button>
     <button onclick="addPrompt('2boys')">2boys</button>
     <button onclick="addPrompt('multiple girls')">multiple girls</button>
     <button onclick="addPrompt('solo')">solo</button>
@@ -218,8 +218,8 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button onclick="addPrompt('classroom after school')">放課後の教室</button>
     <button onclick="addPrompt('gym storage')">体育倉庫</button>
     <button onclick="addPrompt('rooftop at night')">夜の屋上</button>
-    <button onclick="addPrompt('bed')">ベッドの上</button>
-    <button onclick="addPrompt('floor')">床の上</button>
+    <button onclick="addPrompt('on bed')">ベッドの上</button>
+    <button onclick="addPrompt('on floor')">床の上</button>
     <button onclick="addPrompt('against wall')">壁際</button>
   </div>
 </div>
@@ -246,6 +246,12 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button onclick="addPrompt('soft lighting')">柔らかい光</button>
     <button onclick="addPrompt('backlighting')">逆光</button>
     <button onclick="addPrompt('neon lights')">ネオン</button>
+    <button onclick="addPrompt('walls')">壁</button>
+    <button onclick="addPrompt('plain wall')">無地の壁</button>
+    <button onclick="addPrompt('brick wall')">レンガの壁</button>
+    <button onclick="addPrompt('concrete wall')">コンクリートの壁</button>
+    <button onclick="addPrompt('wooden wall')">木の壁</button>
+    <button onclick="addPrompt('against wall')">壁に寄りかかる</button>
   </div>
 </div>
 
@@ -374,6 +380,8 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button onclick="addPrompt('hands on knees')">膝に手</button>
     <button onclick="addPrompt('reaching out')">手を伸ばす</button>
     <button onclick="addPrompt('hugging knees')">膝を抱える</button>
+    <button class="var-btn" onclick="openVariation('head_pat')">頭を撫でる</button>
+    <button class="var-btn" onclick="openVariation('body_press')">身体を密着させる</button>
   </div>
 </div>
 
@@ -795,18 +803,20 @@ ekiben:{title:"駅弁",options:[{label:"基本の駅弁",prompt:"ekiben, standin
 thrust:{title:"腰振り・ピストン",options:[{label:"激しく腰を振っている",prompt:"thrusting, intense thrusting, pistoning",desc:"激しいピストン"},{label:"ゆっくり腰を動かす",prompt:"slow thrusting, grinding",desc:"ゆっくりとした動き"},{label:"深く突き上げる",prompt:"deep thrust, deep penetration, bottoming out",desc:"奥まで突いている"},{label:"浅いピストン",prompt:"shallow thrusting, teasing thrusts",desc:"浅く動いている"}]},
 bounce:{title:"揺れ・バウンス",options:[{label:"おっぱいが揺れている",prompt:"bouncing breasts, jiggle",desc:"胸が揺れている"},{label:"尻が揺れている",prompt:"bouncing ass, jiggling butt",desc:"尻が揺れている"},{label:"体全体が揺れている",prompt:"body bounce, bouncing",desc:"体がバウンドしている"}]},
 body_reaction:{title:"身体の反応",options:[{label:"腰が浮かる",prompt:"hips rising, arching from pleasure",desc:"快感で腰が浮く"},{label:"足が震える",prompt:"trembling legs, shaking legs",desc:"足ががくがくする"},{label:"力が入る・踏ん張る",prompt:"clenching, tensing up, gripping",desc:"力を入れている"},{label:"体をくねらせる",prompt:"writhing, squirming from pleasure",desc:"くねくね動く"},{label:"背中を大きく反らす",prompt:"arching back strongly, extreme arch",desc:"大きく反る"}]},
+head_pat:{title:"頭を撫でる",options:[{label:"男性が女性の頭を撫でる",prompt:"man stroking woman's head, headpat, hand on head",desc:"男性→女性"},{label:"女性が男性の頭を撫でる",prompt:"woman stroking man's head, headpat, hand on head",desc:"女性→男性"},{label:"優しく撫でる",prompt:"gentle headpat, stroking hair",desc:"優しい触れ方"},{label:"抱きながら撫でる",prompt:"headpat while hugging, stroking head in embrace",desc:"抱擁しながら"}]},
+body_press:{title:"身体を密着させる",options:[{label:"密着している",prompt:"bodies pressed together, close contact, skin to skin",desc:"体同士がくっついている"},{label:"正面から密着",prompt:"chest to chest, bodies pressed face to face",desc:"正面で押し付ける"},{label:"後ろから密着",prompt:"body pressed from behind, back to chest",desc:"後ろから寄り添う"},{label:"抱きしめて密着",prompt:"tight embrace, bodies tightly pressed",desc:"強く抱きしめる"},{label:"壁に押し付けて密着",prompt:"pressed against wall, bodies flush",desc:"壁際で密着"}]},
 breasts:{title:"おっぱい",options:[{label:"大きいおっぱい",prompt:"large breasts, big breasts",desc:"サイズ強調"},{label:"垂れたおっぱい",prompt:"sagging breasts, soft breasts",desc:"柔らかい・垂れている"},{label:"ピンと張ったおっぱい",prompt:"perky breasts, firm breasts",desc:"ハリがある"},{label:"揺れおっぱい",prompt:"bouncing breasts, jiggle",desc:"動いている・揺れている"},{label:"強調・寄せている",prompt:"cleavage, squeezed breasts, pressed breasts",desc:"寄せて谷間を作っている"},{label:"乳首が見えている",prompt:"nipples visible, erect nipples",desc:"勃起した乳首が見える"},{label:"おっぱいを掴まれている",prompt:"groping breasts, hands on breasts",desc:"触られている"}]},
 ass:{title:"お尻・太もも",options:[{label:"大きなお尻",prompt:"large ass, big butt, thick thighs",desc:"ボリュームのある尻・太もも"},{label:"桃尻",prompt:"peach ass, round ass",desc:"丸くて形の良い尻"},{label:"尻を強調",prompt:"ass focus, presenting ass",desc:"尻を向けている・強調"},{label:"尻を掴まれている",prompt:"groping ass, hands on ass",desc:"触られている"},{label:"太ももに手",prompt:"hands on thighs, stroking thighs",desc:"太ももを触っている"}]},
 pussy:{title:"性器",options:[{label:"濡れている",prompt:"wet pussy, dripping pussy, soaked",desc:"愛液で濡れている"},{label:"開いている",prompt:"spread pussy, open pussy, gaping",desc:"開いている状態"},{label:"挿入されている",prompt:"penis in pussy, penetration, vaginal penetration",desc:"挿入中"},{label:"クリトリス強調",prompt:"visible clitoris, swollen clitoris",desc:"クリトリスが目立つ"},{label:"性器アップ",prompt:"pussy focus, close-up pussy",desc:"局部を強調した構図"}]},
 skin:{title:"肌の状態",options:[{label:"汗だく",prompt:"sweaty, covered in sweat, glistening skin",desc:"汗で光っている"},{label:"赤み・興奮で赤い",prompt:"flushed skin, red skin, aroused flush",desc:"興奮で赤くなっている"},{label:"オイル・光沢",prompt:"oiled skin, shiny skin, glossy skin",desc:"テカっている"},{label:"キス跡・吸い跡",prompt:"hickeys, love bites, kiss marks",desc:"痕がついている"}]},
 body_focus:{title:"身体の強調",options:[{label:"おっぱいフォーカス",prompt:"breast focus, chest focus",desc:"胸に焦点"},{label:"尻フォーカス",prompt:"ass focus, butt focus",desc:"尻に焦点"},{label:"局部フォーカス",prompt:"pussy focus, crotch focus",desc:"性器に焦点"},{label:"全身を見せる",prompt:"full body, entirely visible",desc:"全身が入っている"},{label:"上半身強調",prompt:"upper body focus",desc:"上半身中心"}]},
-love_juice:{title:"愛液",options:[{label:"愛液が流れている",prompt:"pussy juice, love juice, dripping, wet",desc:"流れ落ちている"},{label:"太ももを伝う",prompt:"pussy juice on thighs, trails of juice",desc:"太ももの内側を伝っている"},{label:"シーツに染み",prompt:"wet stain on sheets, soaked sheets",desc:"染みになっている"},{label:"糸を引いている",prompt:"string of pussy juice, sticky",desc:"粘ついて糸を引く"}]},
+love_juice:{title:"愛液",options:[{label:"愛液が流れている",prompt:"pussy juice, love juice, dripping, wet",desc:"流れ落ちている"},{label:"太ももを伝う",prompt:"pussy juice on thighs, trails of juice",desc:"太ももの内側を伝っている"},{label:"シーツに染み",prompt:"wet stain on sheets, soaked sheets",desc:"染みになっている"},{label:"糸を引いている",prompt:"string of pussy juice, sticky",desc:"粘ついて糸を引く"},{label:"我慢汁",prompt:"pre-cum, precum, precum dripping",desc:"先走り・我慢汁"},{label:"潮吹き",prompt:"squirting, female ejaculation",desc:"潮を吹いている"}]},
 semen:{title:"精液",options:[{label:"顔にかかっている",prompt:"facial, cum on face, cum on cheeks",desc:"顔射"},{label:"胸にかかっている",prompt:"cum on breasts, cum on chest",desc:"胸に出されている"},{label:"中出し",prompt:"cum in pussy, creampie, internal cumshot",desc:"中に出されている"},{label:"お腹・体にかかっている",prompt:"cum on stomach, cum on body",desc:"体に飛び散っている"},{label:"口に出されている",prompt:"cum in mouth, cum on tongue",desc:"口内"},{label:"大量の精液",prompt:"excessive cum, lots of cum, cum overflow",desc:"量が多め"}]},
 saliva:{title:"よだれ・唾液",options:[{label:"よだれが垂れている",prompt:"drool, drooling, saliva",desc:"口から垂れている"},{label:"舌に唾液",prompt:"saliva on tongue, wet tongue",desc:"舌が湿っている"},{label:"キスで唾液交換",prompt:"saliva trail, string of saliva, deep kiss",desc:"糸を引くキス"}]},
 sweat:{title:"汗",options:[{label:"汗だく",prompt:"sweat, sweaty body, covered in sweat",desc:"全身汗"},{label:"額の汗",prompt:"sweat on forehead, beads of sweat",desc:"額に汗"},{label:"汗で肌が光る",prompt:"glistening sweat, shiny with sweat",desc:"汗でテカっている"}]}
 };
 
-const CONFLICT_PAIRS=[["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],["solo","2girls"],["solo","1boy 1girl"],["solo","multiple girls"],["1girl","2girls"],["1girl","3girls"],["day","night"],["morning","night"],["indoors","outdoors"],["white background","black background"],["simple background","detailed background"]];
+const CONFLICT_PAIRS=[["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],["solo","2girls"],["solo","1boy"],["solo","multiple girls"],["1girl","2girls"],["1girl","3girls"],["day","night"],["morning","night"],["indoors","outdoors"],["white background","black background"],["simple background","detailed background"]];
 
 try{const s=localStorage.getItem("novelai_prompts_v2");if(s)prompts=JSON.parse(s)}catch(e){}
 try{if(localStorage.getItem("novelai_theme")==="dark")document.body.classList.add("dark")}catch(e){}
