@@ -13,11 +13,11 @@ h1{font-size:22px;margin:0 0 20px;font-weight:700}
 h2{font-size:16px;margin:24px 0 12px;color:var(--muted);border-left:4px solid var(--accent);padding-left:10px}
 h3{font-size:15px;margin:20px 0 10px;color:var(--muted)}
 .buttons{display:flex;flex-wrap:wrap;gap:8px}
-button{border:none;border-radius:10px;padding:11px 16px;font-size:15px;background:var(--card);box-shadow:var(--shadow);cursor:pointer;color:var(--text)}
+button{border:none;border-radius:10px;padding:11px 16px;font-size:15px;background:var(--card);box-shadow:var(--shadow);cursor:pointer;color:var(--text);-webkit-touch-callout:none;user-select:none}
 button:active{transform:scale(.96)}
 button.var-btn{background:var(--var-bg);border:1px solid var(--var-border)}
 button.selected{opacity:.45;pointer-events:none;text-decoration:line-through}
-button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!important;border:1px solid var(--danger)!important}
+button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!important;border:1px solid var(--danger)!important;opacity:1;pointer-events:auto;text-decoration:none}
 .menuButton{width:100%;margin-bottom:10px;padding:15px 18px;font-size:16px;text-align:left;font-weight:500}
 #promptArea{position:sticky;top:0;z-index:1000;background:var(--bg);margin:-16px -16px 16px;padding:16px;border-bottom:1px solid var(--border)}
 #prompt{margin:0;padding:14px;background:var(--card);border-radius:12px;min-height:56px;word-break:break-word;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;max-height:120px;overflow:hidden;transition:max-height .25s}
@@ -25,52 +25,58 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 #prompt .placeholder{color:var(--muted);font-size:14px;padding:4px 0}
 #promptExpand{display:none;width:100%;text-align:center;padding:8px;margin-top:4px;font-size:13px;color:var(--accent);background:var(--card);border-radius:8px;border:1px dashed var(--border);cursor:pointer}
 #promptExpand.show{display:block}
-.prompt-chip{display:inline-flex;align-items:center;gap:4px;background:var(--accent-soft);color:var(--accent);border-radius:20px;padding:5px 8px 5px 10px;font-size:13px;max-width:100%;word-break:break-all;user-select:none}
+.prompt-chip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--accent);border-radius:20px;padding:6px 10px 6px 12px;font-size:13px;max-width:100%;word-break:break-all;user-select:none;cursor:pointer}
 .prompt-chip .weight{font-size:11px;background:var(--accent);color:#fff;border-radius:10px;padding:1px 6px}
-.prompt-chip .move-btn{font-size:11px;line-height:1;padding:4px 5px;opacity:.7;border-radius:6px;background:transparent;border:none;color:var(--accent);cursor:pointer;box-shadow:none}
 .prompt-chip .remove{font-size:15px;line-height:1;opacity:.7;font-weight:bold;padding:2px 5px;cursor:pointer;border-radius:50%}
-#conflictWarning{display:none;margin-top:8px;padding:8px 12px;background:var(--danger-soft);color:var(--danger);border-radius:8px;font-size:13px}
-#conflictWarning.active{display:block}
-.prompt-actions{display:flex;gap:8px;margin-top:12px;align-items:center}
+.prompt-actions{display:flex;gap:8px;margin-top:12px;align-items:center;position:relative}
+#copyMsg{display:none;position:absolute;bottom:100%;left:0;right:0;text-align:center;font-size:13px;color:var(--accent);padding:4px;margin-bottom:4px}
+#copyMsg.show{display:block}
 #copyButton,#clearButton{flex:1;padding:13px;font-size:15px;font-weight:600}
 #copyButton{background:var(--accent);color:#fff}
 #clearButton{background:var(--card);color:var(--danger);border:1px solid #fad2cf}
-#themeButton{background:var(--card);color:var(--text);padding:10px 12px;font-size:16px;flex:0 0 auto;min-width:44px}
 .backButton{margin-bottom:16px;background:var(--card);padding:10px 16px;font-size:14px}
 .page{display:none}.page.active{display:block}
 .count{font-size:13px;color:var(--muted);margin-top:6px;text-align:right}
-#weightOverlay,#variationOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center;padding:16px}
-#weightOverlay.active,#variationOverlay.active{display:flex}
-#weightPanel,#variationPanel{background:var(--card);border-radius:16px;padding:20px;width:100%;max-width:380px;max-height:80vh;overflow-y:auto;text-align:center;color:var(--text)}
-#weightPanel h3,#variationPanel h3{margin:0 0 16px;font-size:17px}
-#weightPanel .weight-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-#weightPanel .weight-btns button{min-width:56px;padding:12px 10px;font-size:15px;font-weight:600}
-#weightPanel .weight-btns button.active{background:var(--accent);color:#fff}
-#weightPanel .cancel,#variationPanel .cancel{margin-top:16px;width:100%;background:var(--bg)}
-#variationPanel .var-list{display:flex;flex-direction:column;gap:8px}
-#variationPanel .var-list button{width:100%;text-align:left;padding:13px 16px;font-size:15px;background:var(--bg);border:1px solid var(--border)}
-#variationPanel .var-list button .desc{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center;padding:16px}
+.overlay.active{display:flex}
+.panel{background:var(--card);border-radius:16px;padding:20px;width:100%;max-width:380px;max-height:80vh;overflow-y:auto;text-align:center;color:var(--text)}
+.panel h3{margin:0 0 16px;font-size:17px}
+.panel .list{display:flex;flex-direction:column;gap:8px}
+.panel .list button{width:100%;text-align:left;padding:13px 16px;font-size:15px;background:var(--bg);border:1px solid var(--border)}
+.panel .list button .desc{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.panel .cancel{margin-top:16px;width:100%;background:var(--bg)}
+.panel .row{display:flex;gap:8px;margin-top:12px}
+.panel .row button{flex:1}
+.panel .yes{background:var(--accent);color:#fff}
+.panel .no{background:var(--bg)}
+#weightButtons{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+#weightButtons button{min-width:56px;padding:12px 10px;font-size:15px;font-weight:600}
+#weightButtons button.active{background:var(--accent);color:#fff}
 #searchBox{width:100%;padding:12px 14px;font-size:15px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);margin-top:8px}
 #searchResults{margin-top:10px;display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto}
 #searchResults button{width:100%;text-align:left;padding:12px 14px;font-size:14px}
 #searchResults .empty{color:var(--muted);font-size:13px;padding:8px}
+#hintToast{display:none;position:fixed;bottom:24px;left:16px;right:16px;background:var(--card);color:var(--text);padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:3000;font-size:14px;text-align:center;border:1px solid var(--border)}
+#hintToast.show{display:block}
 </style>
 </head>
 <body>
 <div id="promptArea">
   <div id="prompt"><span class="placeholder">ここに選択したプロンプトが表示されます</span></div>
   <div id="promptExpand" onclick="togglePromptExpand()">… タップで展開</div>
-  <div id="conflictWarning"></div>
   <div class="count" id="promptCount">0 個選択中</div>
   <div class="prompt-actions">
+    <div id="copyMsg">コピーしました！</div>
     <button id="copyButton" onclick="copyPrompt()">プロンプトをコピー</button>
     <button id="clearButton" onclick="clearPrompt()">すべて消去</button>
-    <button id="themeButton" onclick="toggleTheme()">🌙</button>
   </div>
 </div>
 
-<div id="weightOverlay"><div id="weightPanel"><h3>重みを変更</h3><div class="weight-btns" id="weightButtons"></div><button class="cancel" onclick="closeWeightPanel()">キャンセル</button></div></div>
-<div id="variationOverlay"><div id="variationPanel"><h3 id="variationTitle">詳細を選択</h3><div class="var-list" id="variationList"></div><button class="cancel" onclick="closeVariationPanel()">キャンセル</button></div></div>
+<div id="chipMenuOverlay" class="overlay"><div class="panel"><h3 id="chipMenuTitle">操作</h3><div class="list" id="chipMenuList"></div><button class="cancel" onclick="closeChipMenu()">キャンセル</button></div></div>
+<div id="weightOverlay" class="overlay"><div class="panel"><h3>重みを変更</h3><div id="weightButtons"></div><button class="cancel" onclick="closeWeightPanel()">キャンセル</button></div></div>
+<div id="variationOverlay" class="overlay"><div class="panel"><h3 id="variationTitle">詳細を選択</h3><div class="list" id="variationList"></div><button class="cancel" onclick="closeVariationPanel()">キャンセル</button></div></div>
+<div id="conflictOverlay" class="overlay"><div class="panel"><h3 id="conflictMsg"></h3><div class="row"><button class="yes" onclick="confirmConflictAdd()">はい</button><button class="no" onclick="closeConflict()">いいえ</button></div></div></div>
+<div id="hintToast"></div>
 
 <div id="homePage" class="page active">
   <button class="menuButton" onclick="showPage('basePage')">ベース</button>
@@ -85,6 +91,8 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <h2 style="margin-top:28px">検索</h2>
   <input id="searchBox" type="search" placeholder="タグ名で検索" oninput="runSearch(this.value)">
   <div id="searchResults"></div>
+  <h2 style="margin-top:28px">設定</h2>
+  <button class="menuButton" onclick="toggleTheme()" id="themeButton">🌙 ダークモード切替</button>
 </div>
 
 <div id="basePage" class="page">
@@ -92,14 +100,14 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <h1>ベース</h1>
   <h2>複数キャラ</h2>
   <div class="buttons">
-    <button onclick="addPrompt('1girl')">1girl</button>
-    <button onclick="addPrompt('2girls')">2girls</button>
-    <button onclick="addPrompt('3girls')">3girls</button>
-    <button onclick="addPrompt('1boy')">1boy</button>
-    <button onclick="addPrompt('1boy, 1girl')">1boy 1girl</button>
-    <button onclick="addPrompt('2boys')">2boys</button>
-    <button onclick="addPrompt('multiple girls')">multiple girls</button>
-    <button onclick="addPrompt('solo')">solo</button>
+    <button data-desc="女性1人" onclick="addP('1girl','1girl','basePage')">1girl</button>
+    <button data-desc="女性2人" onclick="addP('2girls','2girls','basePage')">2girls</button>
+    <button data-desc="女性3人" onclick="addP('3girls','3girls','basePage')">3girls</button>
+    <button data-desc="男性1人" onclick="addP('1boy','1boy','basePage')">1boy</button>
+    <button data-desc="男女1人ずつ" onclick="addP('1boy, 1girl','1boy 1girl','basePage')">1boy 1girl</button>
+    <button data-desc="男性2人" onclick="addP('2boys','2boys','basePage')">2boys</button>
+    <button data-desc="複数の女性" onclick="addP('multiple girls','multiple girls','basePage')">multiple girls</button>
+    <button data-desc="単独の人物" onclick="addP('solo','solo','basePage')">solo</button>
   </div>
   <h2>役割分担</h2>
   <div class="buttons">
@@ -109,10 +117,10 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   </div>
   <h2>基本</h2>
   <div class="buttons">
-    <button onclick="addPrompt('anime coloring, {{official art}}, highres, promotional art, 4K, highly detailed, Curated, masterpiece, simple background, depth of field')">ベース</button>
-    <button onclick="addPrompt('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated')">ネガティブ</button>
-    <button onclick="addPrompt('nsfw, mosaic censoring')">モザイク</button>
-    <button onclick="addPrompt('black pubic hair')">陰毛</button>
+    <button data-desc="品質向上の定番タグ一式" onclick="addP('anime coloring, {{official art}}, highres, promotional art, 4K, highly detailed, Curated, masterpiece, simple background, depth of field','ベース','basePage')">ベース</button>
+    <button data-desc="品質低下を抑える除外タグ" onclick="addP('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated','ネガティブ','basePage')">ネガティブ</button>
+    <button data-desc="モザイク検閲" onclick="addP('nsfw, mosaic censoring','モザイク','basePage')">モザイク</button>
+    <button data-desc="黒い陰毛" onclick="addP('black pubic hair','陰毛','basePage')">陰毛</button>
   </div>
 </div>
 
@@ -121,32 +129,32 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <h1>視点</h1>
   <h2>基本の視点</h2>
   <div class="buttons">
-    <button onclick="addPrompt('eye-level view')">目線の高さ</button>
-    <button onclick="addPrompt('low-angle view')">下から見上げる</button>
-    <button onclick="addPrompt('high-angle view')">上から見下ろす</button>
-    <button onclick="addPrompt(&quot;bird's-eye view&quot;)">真上から</button>
-    <button onclick="addPrompt(&quot;worm's-eye view&quot;)">かなり低い位置から</button>
+    <button data-desc="目の高さからの視線" onclick="addP('eye-level view','目線の高さ','viewPage')">目線の高さ</button>
+    <button data-desc="下から見上げるアングル" onclick="addP('low-angle view','下から見上げる','viewPage')">下から見上げる</button>
+    <button data-desc="上から見下ろすアングル" onclick="addP('high-angle view','上から見下ろす','viewPage')">上から見下ろす</button>
+    <button data-desc="真上から見下ろす" onclick="addP(&quot;bird's-eye view&quot;,'真上から','viewPage')">真上から</button>
+    <button data-desc="地面に近い低い位置から" onclick="addP(&quot;worm's-eye view&quot;,'かなり低い位置から','viewPage')">かなり低い位置から</button>
   </div>
   <h2>カメラの位置</h2>
   <div class="buttons">
-    <button onclick="addPrompt('pov')">主観</button>
-    <button onclick="addPrompt('front view')">正面</button>
-    <button onclick="addPrompt('side view')">横</button>
-    <button onclick="addPrompt('profile view')">真横</button>
-    <button onclick="addPrompt('rear view')">後ろ</button>
-    <button onclick="addPrompt('three-quarter view')">斜め</button>
-    <button onclick="addPrompt('from behind')">後方</button>
-    <button onclick="addPrompt('from above')">上方</button>
-    <button onclick="addPrompt('from below')">下方</button>
-    <button onclick="addPrompt('wide shot')">引いた構図</button>
-    <button onclick="addPrompt('medium shot')">中距離</button>
-    <button onclick="addPrompt('long shot')">全身+周囲</button>
-    <button onclick="addPrompt('close-up')">近距離</button>
-    <button onclick="addPrompt('extreme close-up')">かなり寄る</button>
-    <button onclick="addPrompt('dutch angle')">ダッチアングル</button>
-    <button onclick="addPrompt('over the shoulder')">肩越し</button>
-    <button onclick="addPrompt('fisheye')">魚眼</button>
-    <button onclick="addPrompt('cinematic angle')">シネマティック</button>
+    <button data-desc="主観視点（自分の目線）" onclick="addP('pov','主観','viewPage')">主観</button>
+    <button data-desc="正面からの構図" onclick="addP('front view','正面','viewPage')">正面</button>
+    <button data-desc="横からの構図" onclick="addP('side view','横','viewPage')">横</button>
+    <button data-desc="真横の横顔" onclick="addP('profile view','真横','viewPage')">真横</button>
+    <button data-desc="後ろからの構図" onclick="addP('rear view','後ろ','viewPage')">後ろ</button>
+    <button data-desc="斜め45度前後" onclick="addP('three-quarter view','斜め','viewPage')">斜め</button>
+    <button data-desc="背後から" onclick="addP('from behind','後方','viewPage')">後方</button>
+    <button data-desc="上方向から" onclick="addP('from above','上方','viewPage')">上方</button>
+    <button data-desc="下方向から" onclick="addP('from below','下方','viewPage')">下方</button>
+    <button data-desc="引きの構図" onclick="addP('wide shot','引いた構図','viewPage')">引いた構図</button>
+    <button data-desc="中距離の構図" onclick="addP('medium shot','中距離','viewPage')">中距離</button>
+    <button data-desc="全身と周囲が入る" onclick="addP('long shot','全身+周囲','viewPage')">全身+周囲</button>
+    <button data-desc="寄った構図" onclick="addP('close-up','近距離','viewPage')">近距離</button>
+    <button data-desc="かなり寄った構図" onclick="addP('extreme close-up','かなり寄る','viewPage')">かなり寄る</button>
+    <button data-desc="カメラを斜めに傾ける構図" onclick="addP('dutch angle','ダッチアングル','viewPage')">ダッチアングル</button>
+    <button data-desc="肩越しに見る構図" onclick="addP('over the shoulder','肩越し','viewPage')">肩越し</button>
+    <button data-desc="魚眼レンズ風" onclick="addP('fisheye','魚眼','viewPage')">魚眼</button>
+    <button data-desc="映画的なアングル" onclick="addP('cinematic angle','シネマティック','viewPage')">シネマティック</button>
   </div>
 </div>
 
@@ -154,20 +162,20 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('homePage')">← 戻る</button>
   <h1>視点（被写体側）</h1>
   <div class="buttons">
-    <button onclick="addPrompt('looking at viewer')">カメラ目線</button>
-    <button onclick="addPrompt('looking away')">視線を外す</button>
-    <button onclick="addPrompt('looking into the distance')">遠くを見ている</button>
-    <button onclick="addPrompt('looking to the side')">横を見る</button>
-    <button onclick="addPrompt('looking back')">振り返る</button>
-    <button onclick="addPrompt('looking up')">上を見る</button>
-    <button onclick="addPrompt('upturned eyes')">上目遣い</button>
-    <button onclick="addPrompt('looking down')">下を見る</button>
-    <button onclick="addPrompt('downcast eyes')">うつむく</button>
-    <button onclick="addPrompt('looking diagonally upward')">斜め上を見る</button>
-    <button onclick="addPrompt('looking diagonally downward')">斜め下を見る</button>
-    <button onclick="addPrompt('eyes closed')">目を閉じる</button>
-    <button onclick="addPrompt('half-closed eyes')">半目</button>
-    <button onclick="addPrompt('winking')">ウインク</button>
+    <button data-desc="カメラ＝視聴者を見る" onclick="addP('looking at viewer','カメラ目線','subjectViewPage')">カメラ目線</button>
+    <button data-desc="視線を外している" onclick="addP('looking away','視線を外す','subjectViewPage')">視線を外す</button>
+    <button data-desc="遠くを見ている" onclick="addP('looking into the distance','遠くを見ている','subjectViewPage')">遠くを見ている</button>
+    <button data-desc="横を見ている" onclick="addP('looking to the side','横を見る','subjectViewPage')">横を見る</button>
+    <button data-desc="振り返っている" onclick="addP('looking back','振り返る','subjectViewPage')">振り返る</button>
+    <button data-desc="上を向いている" onclick="addP('looking up','上を見る','subjectViewPage')">上を見る</button>
+    <button data-desc="上目遣い" onclick="addP('upturned eyes','上目遣い','subjectViewPage')">上目遣い</button>
+    <button data-desc="下を見ている" onclick="addP('looking down','下を見る','subjectViewPage')">下を見る</button>
+    <button data-desc="うつむいている" onclick="addP('downcast eyes','うつむく','subjectViewPage')">うつむく</button>
+    <button data-desc="斜め上を見る" onclick="addP('looking diagonally upward','斜め上を見る','subjectViewPage')">斜め上を見る</button>
+    <button data-desc="斜め下を見る" onclick="addP('looking diagonally downward','斜め下を見る','subjectViewPage')">斜め下を見る</button>
+    <button data-desc="目を閉じている" onclick="addP('eyes closed','目を閉じる','subjectViewPage')">目を閉じる</button>
+    <button data-desc="半開きの目" onclick="addP('half-closed eyes','半目','subjectViewPage')">半目</button>
+    <button data-desc="片目をつぶる" onclick="addP('winking','ウインク','subjectViewPage')">ウインク</button>
   </div>
 </div>
 
@@ -183,44 +191,44 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('situationPage')">← 戻る</button>
   <h1>場所</h1>
   <div class="buttons">
-    <button onclick="addPrompt('night')">夜</button>
-    <button onclick="addPrompt('day')">昼</button>
-    <button onclick="addPrompt('evening')">夕方</button>
-    <button onclick="addPrompt('morning')">朝</button>
-    <button onclick="addPrompt('indoors')">室内</button>
-    <button onclick="addPrompt('outdoors')">屋外</button>
-    <button onclick="addPrompt('bedroom')">寝室</button>
-    <button onclick="addPrompt('classroom')">教室</button>
-    <button onclick="addPrompt('bathroom')">浴室</button>
-    <button onclick="addPrompt('shower')">シャワー</button>
-    <button onclick="addPrompt('kitchen')">キッチン</button>
-    <button onclick="addPrompt('living room')">リビング</button>
-    <button onclick="addPrompt('stylish room')">おしゃれな部屋</button>
-    <button onclick="addPrompt('office')">オフィス</button>
-    <button onclick="addPrompt('hotel room')">ホテルの部屋</button>
-    <button onclick="addPrompt('beach')">ビーチ</button>
-    <button onclick="addPrompt('pool')">プール</button>
-    <button onclick="addPrompt('park')">公園</button>
-    <button onclick="addPrompt('street')">街中</button>
-    <button onclick="addPrompt('rooftop')">屋上</button>
-    <button onclick="addPrompt('train')">電車内</button>
-    <button onclick="addPrompt('car interior')">車内</button>
-    <button onclick="addPrompt('locker room')">更衣室</button>
-    <button onclick="addPrompt('library')">図書館</button>
-    <button onclick="addPrompt('stage')">ステージ</button>
-    <button onclick="addPrompt('onsen, hot spring')">温泉</button>
-    <button onclick="addPrompt('changing room')">試着室</button>
-    <button onclick="addPrompt('elevator')">エレベーター</button>
-    <button onclick="addPrompt('alley')">路地</button>
-    <button onclick="addPrompt('rain')">雨</button>
-    <button onclick="addPrompt('cafe')">カフェ</button>
-    <button onclick="addPrompt('restaurant')">レストラン</button>
-    <button onclick="addPrompt('classroom after school')">放課後の教室</button>
-    <button onclick="addPrompt('gym storage')">体育倉庫</button>
-    <button onclick="addPrompt('rooftop at night')">夜の屋上</button>
-    <button onclick="addPrompt('on bed')">ベッドの上</button>
-    <button onclick="addPrompt('on floor')">床の上</button>
-    <button onclick="addPrompt('against wall')">壁際</button>
+    <button onclick="addP('night','夜','placePage')">夜</button>
+    <button onclick="addP('day','昼','placePage')">昼</button>
+    <button onclick="addP('evening','夕方','placePage')">夕方</button>
+    <button onclick="addP('morning','朝','placePage')">朝</button>
+    <button onclick="addP('indoors','室内','placePage')">室内</button>
+    <button onclick="addP('outdoors','屋外','placePage')">屋外</button>
+    <button onclick="addP('bedroom','寝室','placePage')">寝室</button>
+    <button onclick="addP('classroom','教室','placePage')">教室</button>
+    <button onclick="addP('bathroom','浴室','placePage')">浴室</button>
+    <button onclick="addP('shower','シャワー','placePage')">シャワー</button>
+    <button onclick="addP('kitchen','キッチン','placePage')">キッチン</button>
+    <button onclick="addP('living room','リビング','placePage')">リビング</button>
+    <button onclick="addP('stylish room','おしゃれな部屋','placePage')">おしゃれな部屋</button>
+    <button onclick="addP('office','オフィス','placePage')">オフィス</button>
+    <button onclick="addP('hotel room','ホテルの部屋','placePage')">ホテルの部屋</button>
+    <button onclick="addP('beach','ビーチ','placePage')">ビーチ</button>
+    <button onclick="addP('pool','プール','placePage')">プール</button>
+    <button onclick="addP('park','公園','placePage')">公園</button>
+    <button onclick="addP('street','街中','placePage')">街中</button>
+    <button onclick="addP('rooftop','屋上','placePage')">屋上</button>
+    <button onclick="addP('train','電車内','placePage')">電車内</button>
+    <button onclick="addP('car interior','車内','placePage')">車内</button>
+    <button onclick="addP('locker room','更衣室','placePage')">更衣室</button>
+    <button onclick="addP('library','図書館','placePage')">図書館</button>
+    <button onclick="addP('stage','ステージ','placePage')">ステージ</button>
+    <button onclick="addP('onsen, hot spring','温泉','placePage')">温泉</button>
+    <button onclick="addP('changing room','試着室','placePage')">試着室</button>
+    <button onclick="addP('elevator','エレベーター','placePage')">エレベーター</button>
+    <button onclick="addP('alley','路地','placePage')">路地</button>
+    <button onclick="addP('rain','雨','placePage')">雨</button>
+    <button onclick="addP('cafe','カフェ','placePage')">カフェ</button>
+    <button onclick="addP('restaurant','レストラン','placePage')">レストラン</button>
+    <button onclick="addP('classroom after school','放課後の教室','placePage')">放課後の教室</button>
+    <button onclick="addP('gym storage','体育倉庫','placePage')">体育倉庫</button>
+    <button onclick="addP('rooftop at night','夜の屋上','placePage')">夜の屋上</button>
+    <button onclick="addP('on bed','ベッドの上','placePage')">ベッドの上</button>
+    <button onclick="addP('on floor','床の上','placePage')">床の上</button>
+    <button onclick="addP('against wall','壁際','placePage')">壁際</button>
   </div>
 </div>
 
@@ -228,30 +236,30 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('situationPage')">← 戻る</button>
   <h1>背景</h1>
   <div class="buttons">
-    <button onclick="addPrompt('blurred background')">ぼかされた背景</button>
-    <button onclick="addPrompt('minimal background')">情報を減らす</button>
-    <button onclick="addPrompt('simple background')">シンプル背景</button>
-    <button onclick="addPrompt('white background')">白背景</button>
-    <button onclick="addPrompt('black background')">黒背景</button>
-    <button onclick="addPrompt('gradient background')">グラデーション背景</button>
-    <button onclick="addPrompt('detailed background')">詳細な背景</button>
-    <button onclick="addPrompt('bokeh')">ボケ</button>
-    <button onclick="addPrompt('depth of field')">被写界深度</button>
-    <button onclick="addPrompt('no background')">背景なし</button>
-    <button onclick="addPrompt('scenery')">風景</button>
-    <button onclick="addPrompt('cityscape')">街並み</button>
-    <button onclick="addPrompt('nature')">自然</button>
-    <button onclick="addPrompt('indoor lighting')">室内照明</button>
-    <button onclick="addPrompt('dramatic lighting')">ドラマチック照明</button>
-    <button onclick="addPrompt('soft lighting')">柔らかい光</button>
-    <button onclick="addPrompt('backlighting')">逆光</button>
-    <button onclick="addPrompt('neon lights')">ネオン</button>
-    <button onclick="addPrompt('walls')">壁</button>
-    <button onclick="addPrompt('plain wall')">無地の壁</button>
-    <button onclick="addPrompt('brick wall')">レンガの壁</button>
-    <button onclick="addPrompt('concrete wall')">コンクリートの壁</button>
-    <button onclick="addPrompt('wooden wall')">木の壁</button>
-    <button onclick="addPrompt('against wall')">壁に寄りかかる</button>
+    <button data-desc="背景をぼかす" onclick="addP('blurred background','ぼかされた背景','backgroundPage')">ぼかされた背景</button>
+    <button data-desc="背景の情報量を減らす" onclick="addP('minimal background','情報を減らす','backgroundPage')">情報を減らす</button>
+    <button data-desc="シンプルな背景" onclick="addP('simple background','シンプル背景','backgroundPage')">シンプル背景</button>
+    <button onclick="addP('white background','白背景','backgroundPage')">白背景</button>
+    <button onclick="addP('black background','黒背景','backgroundPage')">黒背景</button>
+    <button onclick="addP('gradient background','グラデーション背景','backgroundPage')">グラデーション背景</button>
+    <button onclick="addP('detailed background','詳細な背景','backgroundPage')">詳細な背景</button>
+    <button data-desc="背景の玉ボケ" onclick="addP('bokeh','ボケ','backgroundPage')">ボケ</button>
+    <button data-desc="手前と奥のピント差" onclick="addP('depth of field','被写界深度','backgroundPage')">被写界深度</button>
+    <button onclick="addP('no background','背景なし','backgroundPage')">背景なし</button>
+    <button onclick="addP('scenery','風景','backgroundPage')">風景</button>
+    <button onclick="addP('cityscape','街並み','backgroundPage')">街並み</button>
+    <button onclick="addP('nature','自然','backgroundPage')">自然</button>
+    <button onclick="addP('indoor lighting','室内照明','backgroundPage')">室内照明</button>
+    <button onclick="addP('dramatic lighting','ドラマチック照明','backgroundPage')">ドラマチック照明</button>
+    <button onclick="addP('soft lighting','柔らかい光','backgroundPage')">柔らかい光</button>
+    <button onclick="addP('backlighting','逆光','backgroundPage')">逆光</button>
+    <button onclick="addP('neon lights','ネオン','backgroundPage')">ネオン</button>
+    <button onclick="addP('walls','壁','backgroundPage')">壁</button>
+    <button onclick="addP('plain wall','無地の壁','backgroundPage')">無地の壁</button>
+    <button onclick="addP('brick wall','レンガの壁','backgroundPage')">レンガの壁</button>
+    <button onclick="addP('concrete wall','コンクリートの壁','backgroundPage')">コンクリートの壁</button>
+    <button onclick="addP('wooden wall','木の壁','backgroundPage')">木の壁</button>
+    <button onclick="addP('against wall','壁に寄りかかる','backgroundPage')">壁に寄りかかる</button>
   </div>
 </div>
 
@@ -282,20 +290,20 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button class="var-btn" onclick="openVariation('analingus')">アナル舐め</button>
     <button class="var-btn" onclick="openVariation('balls')">玉・睾丸</button>
     <button class="var-btn" onclick="openVariation('fingering')">指入れ</button>
-    <button onclick="addPrompt('footjob')">足コキ</button>
-    <button onclick="addPrompt('neck kissing, licking neck')">首筋を舐める</button>
-    <button onclick="addPrompt('grinding, dry humping')">素股</button>
-    <button onclick="addPrompt('teasing, light touching')">焦らし</button>
-    <button onclick="addPrompt('body licking, licking body')">体を舐める</button>
-    <button onclick="addPrompt('ear licking, whispering')">耳舐め・囁き</button>
-    <button onclick="addPrompt('thighjob')">太ももコキ</button>
-    <button onclick="addPrompt('armpit licking')">脇舐め</button>
-    <button onclick="addPrompt('navel licking')">へそ舐め</button>
-    <button onclick="addPrompt('kissing while fingering')">キスしながら指入れ</button>
-    <button onclick="addPrompt('mutual masturbation')">相互オナニー</button>
-    <button onclick="addPrompt('spanking')">お尻を叩く</button>
-    <button onclick="addPrompt('hair pulling')">髪を掴む</button>
-    <button onclick="addPrompt('choking lightly')">首を軽く締める</button>
+    <button onclick="addP('footjob','足コキ','sexPage')">足コキ</button>
+    <button onclick="addP('neck kissing, licking neck','首筋を舐める','sexPage')">首筋を舐める</button>
+    <button onclick="addP('grinding, dry humping','素股','sexPage')">素股</button>
+    <button onclick="addP('teasing, light touching','焦らし','sexPage')">焦らし</button>
+    <button onclick="addP('body licking, licking body','体を舐める','sexPage')">体を舐める</button>
+    <button onclick="addP('ear licking, whispering','耳舐め・囁き','sexPage')">耳舐め・囁き</button>
+    <button onclick="addP('thighjob','太ももコキ','sexPage')">太ももコキ</button>
+    <button onclick="addP('armpit licking','脇舐め','sexPage')">脇舐め</button>
+    <button onclick="addP('navel licking','へそ舐め','sexPage')">へそ舐め</button>
+    <button onclick="addP('kissing while fingering','キスしながら指入れ','sexPage')">キスしながら指入れ</button>
+    <button onclick="addP('mutual masturbation','相互オナニー','sexPage')">相互オナニー</button>
+    <button onclick="addP('spanking','お尻を叩く','sexPage')">お尻を叩く</button>
+    <button onclick="addP('hair pulling','髪を掴む','sexPage')">髪を掴む</button>
+    <button onclick="addP('choking lightly','首を軽く締める','sexPage')">首を軽く締める</button>
   </div>
   <h2>性交体位</h2>
   <div class="buttons">
@@ -305,33 +313,33 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button class="var-btn" onclick="openVariation('mating_press')">種付けプレス</button>
     <button class="var-btn" onclick="openVariation('daisuki_hold')">だいしゅきホールド</button>
     <button class="var-btn" onclick="openVariation('ekiben')">駅弁</button>
-    <button onclick="addPrompt('sitting face to face, woman straddling man on a chair or bed, intimate eye contact')">対面座位</button>
-    <button onclick="addPrompt('standing face to face, woman with one leg raised, man supporting her thigh')">立位対面</button>
-    <button onclick="addPrompt('spooning position, both lying on their side, man behind')">側位</button>
-    <button onclick="addPrompt('side by side facing each other, legs intertwined')">側位対面</button>
-    <button onclick="addPrompt('69 position, mutual oral, one on top of the other')">69</button>
-    <button onclick="addPrompt('full nelson, legs held up')">フルネルソン</button>
-    <button onclick="addPrompt('amazon position, woman on top dominating')">アマゾネス体位</button>
-    <button onclick="addPrompt('lotus position, sitting face to face, legs wrapped')">座位（密着）</button>
-    <button onclick="addPrompt('against wall, standing sex')">壁ドン立位</button>
-    <button onclick="addPrompt('table sex, bent over table')">机の上</button>
-    <button onclick="addPrompt('suspended congress')">吊り下げ体位</button>
-    <button onclick="addPrompt('reverse missionary')">逆正常位</button>
+    <button onclick="addP('sitting face to face, woman straddling man on a chair or bed, intimate eye contact','対面座位','sexPage')">対面座位</button>
+    <button onclick="addP('standing face to face, woman with one leg raised, man supporting her thigh','立位対面','sexPage')">立位対面</button>
+    <button onclick="addP('spooning position, both lying on their side, man behind','側位','sexPage')">側位</button>
+    <button onclick="addP('side by side facing each other, legs intertwined','側位対面','sexPage')">側位対面</button>
+    <button onclick="addP('69 position, mutual oral, one on top of the other','69','sexPage')">69</button>
+    <button onclick="addP('full nelson, legs held up','フルネルソン','sexPage')">フルネルソン</button>
+    <button onclick="addP('amazon position, woman on top dominating','アマゾネス体位','sexPage')">アマゾネス体位</button>
+    <button onclick="addP('lotus position, sitting face to face, legs wrapped','座位（密着）','sexPage')">座位（密着）</button>
+    <button onclick="addP('against wall, standing sex','壁ドン立位','sexPage')">壁ドン立位</button>
+    <button onclick="addP('table sex, bent over table','机の上','sexPage')">机の上</button>
+    <button onclick="addP('suspended congress','吊り下げ体位','sexPage')">吊り下げ体位</button>
+    <button onclick="addP('reverse missionary','逆正常位','sexPage')">逆正常位</button>
   </div>
   <h2>エフェクト・反応</h2>
   <div class="buttons">
     <button class="var-btn" onclick="openVariation('thrust')">腰振り・ピストン</button>
     <button class="var-btn" onclick="openVariation('bounce')">揺れ・バウンス</button>
     <button class="var-btn" onclick="openVariation('body_reaction')">身体の反応</button>
-    <button onclick="addPrompt('motion lines, speed lines')">モーションライン</button>
-    <button onclick="addPrompt('afterimage, multiple exposure')">残像</button>
-    <button onclick="addPrompt('intense movement, dynamic pose')">激しい動き</button>
-    <button onclick="addPrompt('clenching, tightening')">締め付け</button>
-    <button onclick="addPrompt('twitching, convulsing')">痙攣・ピクピク</button>
-    <button onclick="addPrompt('orgasm, climax')">絶頂中</button>
-    <button onclick="addPrompt('afterglow')">余韻</button>
-    <button onclick="addPrompt('creampie')">中出し</button>
-    <button onclick="addPrompt('cum overflow')">溢れ出す精液</button>
+    <button data-desc="動きを線で強調" onclick="addP('motion lines, speed lines','モーションライン','sexPage')">モーションライン</button>
+    <button data-desc="残像で動きを表現" onclick="addP('afterimage, multiple exposure','残像','sexPage')">残像</button>
+    <button onclick="addP('intense movement, dynamic pose','激しい動き','sexPage')">激しい動き</button>
+    <button onclick="addP('clenching, tightening','締め付け','sexPage')">締め付け</button>
+    <button onclick="addP('twitching, convulsing','痙攣・ピクピク','sexPage')">痙攣・ピクピク</button>
+    <button onclick="addP('orgasm, climax','絶頂中','sexPage')">絶頂中</button>
+    <button onclick="addP('afterglow','余韻','sexPage')">余韻</button>
+    <button onclick="addP('creampie','中出し','sexPage')">中出し</button>
+    <button onclick="addP('cum overflow','溢れ出す精液','sexPage')">溢れ出す精液</button>
   </div>
 </div>
 
@@ -355,31 +363,31 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   </div>
   <h2>ポーズ</h2>
   <div class="buttons">
-    <button onclick="addPrompt('standing')">立つ</button>
-    <button onclick="addPrompt('sitting')">座る</button>
-    <button onclick="addPrompt('lying')">横になる</button>
-    <button onclick="addPrompt('kneeling')">膝立ち</button>
-    <button onclick="addPrompt('crouching')">しゃがむ</button>
-    <button onclick="addPrompt('on all fours')">四つん這い</button>
-    <button onclick="addPrompt('leaning forward')">前かがみ</button>
-    <button onclick="addPrompt('arching back')">背中を反らす</button>
-    <button onclick="addPrompt('legs spread')">脚を開く</button>
-    <button onclick="addPrompt('one leg raised')">片脚を上げる</button>
-    <button onclick="addPrompt('presenting, presenting ass, presenting pussy')">差し出し・見せつけ</button>
-    <button onclick="addPrompt('spread legs, M-legs')">M字開脚</button>
-    <button onclick="addPrompt('all fours, face down ass up')">尻を高く上げる</button>
-    <button onclick="addPrompt('bent over, bent over table')">前屈み・机に手をつく</button>
-    <button onclick="addPrompt('lying on back, legs up')">仰向けで脚上げ</button>
-    <button onclick="addPrompt('lying on side')">横向き</button>
-    <button onclick="addPrompt('squatting, deep squat')">しゃがみ込み</button>
-    <button onclick="addPrompt('hands behind head')">頭の後ろで手を組む</button>
-    <button onclick="addPrompt('arms behind back')">両手を後ろに</button>
-    <button onclick="addPrompt('covering breasts, covering pussy')">局部を隠す</button>
-    <button onclick="addPrompt('stretching, body stretch')">体を伸ばす</button>
-    <button onclick="addPrompt('wariza, seiza')">正座・あぐら</button>
-    <button onclick="addPrompt('hands on knees')">膝に手</button>
-    <button onclick="addPrompt('reaching out')">手を伸ばす</button>
-    <button onclick="addPrompt('hugging knees')">膝を抱える</button>
+    <button onclick="addP('standing','立つ','bodyPage')">立つ</button>
+    <button onclick="addP('sitting','座る','bodyPage')">座る</button>
+    <button onclick="addP('lying','横になる','bodyPage')">横になる</button>
+    <button onclick="addP('kneeling','膝立ち','bodyPage')">膝立ち</button>
+    <button onclick="addP('crouching','しゃがむ','bodyPage')">しゃがむ</button>
+    <button onclick="addP('on all fours','四つん這い','bodyPage')">四つん這い</button>
+    <button onclick="addP('leaning forward','前かがみ','bodyPage')">前かがみ</button>
+    <button onclick="addP('arching back','背中を反らす','bodyPage')">背中を反らす</button>
+    <button onclick="addP('legs spread','脚を開く','bodyPage')">脚を開く</button>
+    <button onclick="addP('one leg raised','片脚を上げる','bodyPage')">片脚を上げる</button>
+    <button onclick="addP('presenting, presenting ass, presenting pussy','差し出し・見せつけ','bodyPage')">差し出し・見せつけ</button>
+    <button onclick="addP('spread legs, M-legs','M字開脚','bodyPage')">M字開脚</button>
+    <button onclick="addP('all fours, face down ass up','尻を高く上げる','bodyPage')">尻を高く上げる</button>
+    <button onclick="addP('bent over, bent over table','前屈み・机に手をつく','bodyPage')">前屈み・机に手をつく</button>
+    <button onclick="addP('lying on back, legs up','仰向けで脚上げ','bodyPage')">仰向けで脚上げ</button>
+    <button onclick="addP('lying on side','横向き','bodyPage')">横向き</button>
+    <button onclick="addP('squatting, deep squat','しゃがみ込み','bodyPage')">しゃがみ込み</button>
+    <button onclick="addP('hands behind head','頭の後ろで手を組む','bodyPage')">頭の後ろで手を組む</button>
+    <button onclick="addP('arms behind back','両手を後ろに','bodyPage')">両手を後ろに</button>
+    <button onclick="addP('covering breasts, covering pussy','局部を隠す','bodyPage')">局部を隠す</button>
+    <button onclick="addP('stretching, body stretch','体を伸ばす','bodyPage')">体を伸ばす</button>
+    <button onclick="addP('wariza, seiza','正座・あぐら','bodyPage')">正座・あぐら</button>
+    <button onclick="addP('hands on knees','膝に手','bodyPage')">膝に手</button>
+    <button onclick="addP('reaching out','手を伸ばす','bodyPage')">手を伸ばす</button>
+    <button onclick="addP('hugging knees','膝を抱える','bodyPage')">膝を抱える</button>
     <button class="var-btn" onclick="openVariation('head_pat')">頭を撫でる</button>
     <button class="var-btn" onclick="openVariation('body_press')">身体を密着させる</button>
   </div>
@@ -402,34 +410,34 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
   <h1>セクシー</h1>
   <div class="buttons">
-    <button onclick="addPrompt('ahegao')">アヘ顔</button>
-    <button onclick="addPrompt('torogao')">トロ顔</button>
-    <button onclick="addPrompt('seductive gaze')">誘惑する視線</button>
-    <button onclick="addPrompt('bedroom eyes')">色気のある半目</button>
-    <button onclick="addPrompt('licking lips')">唇を舐める</button>
-    <button onclick="addPrompt('parted lips')">唇が少し開いている</button>
-    <button onclick="addPrompt('slightly open mouth')">口がわずかに開いている</button>
-    <button onclick="addPrompt('flushed with arousal')">興奮で顔が赤い</button>
-    <button onclick="addPrompt('panting')">息切れ</button>
-    <button onclick="addPrompt('breathing heavily')">荒い息</button>
-    <button onclick="addPrompt('dazed expression')">快感でぼんやりする</button>
-    <button onclick="addPrompt('intoxicated look')">酔ったような目</button>
-    <button onclick="addPrompt('dreamy eyes')">夢見心地の目</button>
-    <button onclick="addPrompt('hungry gaze')">飢えた目</button>
-    <button onclick="addPrompt('teasing look')">焦らす目つき</button>
-    <button onclick="addPrompt('inviting expression')">誘っている</button>
-    <button onclick="addPrompt('rolling eyes back')">快感で目が上を向く</button>
-    <button onclick="addPrompt('tongue out slightly')">舌が少し出る</button>
-    <button onclick="addPrompt('drooling slightly')">少しよだれが出る</button>
-    <button onclick="addPrompt('orgasmic expression')">絶頂</button>
-    <button onclick="addPrompt('ecstasy face')">恍惚</button>
-    <button onclick="addPrompt('trembling with pleasure')">快感で震える</button>
-    <button onclick="addPrompt('biting lip')">唇を噛む</button>
-    <button onclick="addPrompt('moaning')">喘ぎ</button>
-    <button onclick="addPrompt('crying from pleasure')">快感で泣く</button>
-    <button onclick="addPrompt('confused arousal')">戸惑いながらの興奮</button>
-    <button onclick="addPrompt('pleasure face')">快感の表情</button>
-    <button onclick="addPrompt('fucked silly')">理性が飛ぶ</button>
+    <button data-desc="アヘ顔（快感で目が宙を泳ぐ）" onclick="addP('ahegao','アヘ顔','sexyExpressionPage')">アヘ顔</button>
+    <button data-desc="とろけた表情" onclick="addP('torogao','トロ顔','sexyExpressionPage')">トロ顔</button>
+    <button onclick="addP('seductive gaze','誘惑する視線','sexyExpressionPage')">誘惑する視線</button>
+    <button data-desc="色気のある半開きの目" onclick="addP('bedroom eyes','色気のある半目','sexyExpressionPage')">色気のある半目</button>
+    <button onclick="addP('licking lips','唇を舐める','sexyExpressionPage')">唇を舐める</button>
+    <button onclick="addP('parted lips','唇が少し開いている','sexyExpressionPage')">唇が少し開いている</button>
+    <button onclick="addP('slightly open mouth','口がわずかに開いている','sexyExpressionPage')">口がわずかに開いている</button>
+    <button onclick="addP('flushed with arousal','興奮で顔が赤い','sexyExpressionPage')">興奮で顔が赤い</button>
+    <button onclick="addP('panting','息切れ','sexyExpressionPage')">息切れ</button>
+    <button onclick="addP('breathing heavily','荒い息','sexyExpressionPage')">荒い息</button>
+    <button onclick="addP('dazed expression','快感でぼんやりする','sexyExpressionPage')">快感でぼんやりする</button>
+    <button onclick="addP('intoxicated look','酔ったような目','sexyExpressionPage')">酔ったような目</button>
+    <button onclick="addP('dreamy eyes','夢見心地の目','sexyExpressionPage')">夢見心地の目</button>
+    <button onclick="addP('hungry gaze','飢えた目','sexyExpressionPage')">飢えた目</button>
+    <button onclick="addP('teasing look','焦らす目つき','sexyExpressionPage')">焦らす目つき</button>
+    <button onclick="addP('inviting expression','誘っている','sexyExpressionPage')">誘っている</button>
+    <button onclick="addP('rolling eyes back','快感で目が上を向く','sexyExpressionPage')">快感で目が上を向く</button>
+    <button onclick="addP('tongue out slightly','舌が少し出る','sexyExpressionPage')">舌が少し出る</button>
+    <button onclick="addP('drooling slightly','少しよだれが出る','sexyExpressionPage')">少しよだれが出る</button>
+    <button onclick="addP('orgasmic expression','絶頂','sexyExpressionPage')">絶頂</button>
+    <button onclick="addP('ecstasy face','恍惚','sexyExpressionPage')">恍惚</button>
+    <button onclick="addP('trembling with pleasure','快感で震える','sexyExpressionPage')">快感で震える</button>
+    <button onclick="addP('biting lip','唇を噛む','sexyExpressionPage')">唇を噛む</button>
+    <button onclick="addP('moaning','喘ぎ','sexyExpressionPage')">喘ぎ</button>
+    <button onclick="addP('crying from pleasure','快感で泣く','sexyExpressionPage')">快感で泣く</button>
+    <button onclick="addP('confused arousal','戸惑いながらの興奮','sexyExpressionPage')">戸惑いながらの興奮</button>
+    <button onclick="addP('pleasure face','快感の表情','sexyExpressionPage')">快感の表情</button>
+    <button data-desc="快感で理性が飛んでいる様子" onclick="addP('fucked silly','理性が飛ぶ','sexyExpressionPage')">理性が飛ぶ</button>
   </div>
 </div>
 
@@ -437,31 +445,31 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
   <h1>笑顔</h1>
   <div class="buttons">
-    <button onclick="addPrompt('smiling')">笑顔</button>
-    <button onclick="addPrompt('soft smile')">柔らかい笑顔</button>
-    <button onclick="addPrompt('shy smile')">照れた笑顔</button>
-    <button onclick="addPrompt('bashful smile')">はにかんだ笑顔</button>
-    <button onclick="addPrompt('awkward smile')">気まずい笑顔</button>
-    <button onclick="addPrompt('embarrassed smile')">恥ずかしそうな笑顔</button>
-    <button onclick="addPrompt('wry smile')">苦笑い</button>
-    <button onclick="addPrompt('forced smile')">作り笑い</button>
-    <button onclick="addPrompt('business smile')">ビジネススマイル</button>
-    <button onclick="addPrompt('mischievous smile')">悪戯っぽい笑顔</button>
-    <button onclick="addPrompt('teasing smile')">からかうような笑顔</button>
-    <button onclick="addPrompt('seductive smile')">誘惑する笑顔</button>
-    <button onclick="addPrompt('mysterious smile')">謎めいた笑顔</button>
-    <button onclick="addPrompt('knowing smile')">意味深な笑顔</button>
-    <button onclick="addPrompt('tearful smile')">涙ぐみながらの笑顔</button>
-    <button onclick="addPrompt('sneering')">侮蔑の笑顔</button>
-    <button onclick="addPrompt('smiling through tears')">涙を流しながら笑う</button>
-    <button onclick="addPrompt('laughing')">声を出して笑う</button>
-    <button onclick="addPrompt('laughing hard')">腹を抱えて笑う</button>
-    <button onclick="addPrompt('giggling')">クスクス笑う</button>
-    <button onclick="addPrompt('chuckling')">小さめに笑う</button>
-    <button onclick="addPrompt('covering mouth while laughing')">口を手で覆って笑う</button>
-    <button onclick="addPrompt('eyes closed from laughing')">笑いすぎて目を細める</button>
-    <button onclick="addPrompt('teeth showing smile')">歯が見える笑顔</button>
-    <button onclick="addPrompt('one-sided smile')">片側だけ上がった笑顔</button>
+    <button onclick="addP('smiling','笑顔','smilePage')">笑顔</button>
+    <button onclick="addP('soft smile','柔らかい笑顔','smilePage')">柔らかい笑顔</button>
+    <button onclick="addP('shy smile','照れた笑顔','smilePage')">照れた笑顔</button>
+    <button onclick="addP('bashful smile','はにかんだ笑顔','smilePage')">はにかんだ笑顔</button>
+    <button onclick="addP('awkward smile','気まずい笑顔','smilePage')">気まずい笑顔</button>
+    <button onclick="addP('embarrassed smile','恥ずかしそうな笑顔','smilePage')">恥ずかしそうな笑顔</button>
+    <button onclick="addP('wry smile','苦笑い','smilePage')">苦笑い</button>
+    <button onclick="addP('forced smile','作り笑い','smilePage')">作り笑い</button>
+    <button onclick="addP('business smile','ビジネススマイル','smilePage')">ビジネススマイル</button>
+    <button onclick="addP('mischievous smile','悪戯っぽい笑顔','smilePage')">悪戯っぽい笑顔</button>
+    <button onclick="addP('teasing smile','からかうような笑顔','smilePage')">からかうような笑顔</button>
+    <button onclick="addP('seductive smile','誘惑する笑顔','smilePage')">誘惑する笑顔</button>
+    <button onclick="addP('mysterious smile','謎めいた笑顔','smilePage')">謎めいた笑顔</button>
+    <button onclick="addP('knowing smile','意味深な笑顔','smilePage')">意味深な笑顔</button>
+    <button onclick="addP('tearful smile','涙ぐみながらの笑顔','smilePage')">涙ぐみながらの笑顔</button>
+    <button onclick="addP('sneering','侮蔑の笑顔','smilePage')">侮蔑の笑顔</button>
+    <button onclick="addP('smiling through tears','涙を流しながら笑う','smilePage')">涙を流しながら笑う</button>
+    <button onclick="addP('laughing','声を出して笑う','smilePage')">声を出して笑う</button>
+    <button onclick="addP('laughing hard','腹を抱えて笑う','smilePage')">腹を抱えて笑う</button>
+    <button onclick="addP('giggling','クスクス笑う','smilePage')">クスクス笑う</button>
+    <button onclick="addP('chuckling','小さめに笑う','smilePage')">小さめに笑う</button>
+    <button onclick="addP('covering mouth while laughing','口を手で覆って笑う','smilePage')">口を手で覆って笑う</button>
+    <button onclick="addP('eyes closed from laughing','笑いすぎて目を細める','smilePage')">笑いすぎて目を細める</button>
+    <button onclick="addP('teeth showing smile','歯が見える笑顔','smilePage')">歯が見える笑顔</button>
+    <button onclick="addP('one-sided smile','片側だけ上がった笑顔','smilePage')">片側だけ上がった笑顔</button>
   </div>
 </div>
 
@@ -469,22 +477,22 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
   <h1>悲しみ</h1>
   <div class="buttons">
-    <button onclick="addPrompt('crying')">泣く</button>
-    <button onclick="addPrompt('sobbing')">すすり泣き</button>
-    <button onclick="addPrompt('weeping')">しくしく泣く</button>
-    <button onclick="addPrompt('teary-eyed')">今にも泣きそう</button>
-    <button onclick="addPrompt('tears streaming down face')">涙が頬を伝って流れる</button>
-    <button onclick="addPrompt('single tear rolling down cheek')">一筋の涙が頬を伝う</button>
-    <button onclick="addPrompt('crying with open mouth')">子供っぽく泣く</button>
-    <button onclick="addPrompt('crying with closed eyes')">目を閉じて泣く</button>
-    <button onclick="addPrompt('silently crying')">声を出さず泣く</button>
-    <button onclick="addPrompt('sniffing')">泣いた後鼻をすする</button>
-    <button onclick="addPrompt('red-rimmed eyes')">泣いた後の顔</button>
-    <button onclick="addPrompt('puffy eyes from crying')">泣いて目が腫れる</button>
-    <button onclick="addPrompt('devastated look')">打ちのめされた顔</button>
-    <button onclick="addPrompt('empty eyes')">虚ろな目</button>
-    <button onclick="addPrompt('looking down sadly')">悲しそうに下を向く</button>
-    <button onclick="addPrompt('biting lip in sadness')">悲しさで唇を噛む</button>
+    <button onclick="addP('crying','泣く','sadnessPage')">泣く</button>
+    <button onclick="addP('sobbing','すすり泣き','sadnessPage')">すすり泣き</button>
+    <button onclick="addP('weeping','しくしく泣く','sadnessPage')">しくしく泣く</button>
+    <button onclick="addP('teary-eyed','今にも泣きそう','sadnessPage')">今にも泣きそう</button>
+    <button onclick="addP('tears streaming down face','涙が頬を伝って流れる','sadnessPage')">涙が頬を伝って流れる</button>
+    <button onclick="addP('single tear rolling down cheek','一筋の涙が頬を伝う','sadnessPage')">一筋の涙が頬を伝う</button>
+    <button onclick="addP('crying with open mouth','子供っぽく泣く','sadnessPage')">子供っぽく泣く</button>
+    <button onclick="addP('crying with closed eyes','目を閉じて泣く','sadnessPage')">目を閉じて泣く</button>
+    <button onclick="addP('silently crying','声を出さず泣く','sadnessPage')">声を出さず泣く</button>
+    <button onclick="addP('sniffing','泣いた後鼻をすする','sadnessPage')">泣いた後鼻をすする</button>
+    <button onclick="addP('red-rimmed eyes','泣いた後の顔','sadnessPage')">泣いた後の顔</button>
+    <button onclick="addP('puffy eyes from crying','泣いて目が腫れる','sadnessPage')">泣いて目が腫れる</button>
+    <button onclick="addP('devastated look','打ちのめされた顔','sadnessPage')">打ちのめされた顔</button>
+    <button onclick="addP('empty eyes','虚ろな目','sadnessPage')">虚ろな目</button>
+    <button onclick="addP('looking down sadly','悲しそうに下を向く','sadnessPage')">悲しそうに下を向く</button>
+    <button onclick="addP('biting lip in sadness','悲しさで唇を噛む','sadnessPage')">悲しさで唇を噛む</button>
   </div>
 </div>
 
@@ -492,16 +500,16 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
   <h1>怒り</h1>
   <div class="buttons">
-    <button onclick="addPrompt('angry glare')">睨む</button>
-    <button onclick="addPrompt('furrowed brows')">眉間に皺を寄せる</button>
-    <button onclick="addPrompt('clenched teeth')">歯を食いしばる</button>
-    <button onclick="addPrompt('flushed with anger')">怒りで顔を赤くする</button>
-    <button onclick="addPrompt('cold stare')">感情を殺した怒り</button>
-    <button onclick="addPrompt('icy expression')">冷たい表情</button>
-    <button onclick="addPrompt('irritated look')">イライラした顔</button>
-    <button onclick="addPrompt('annoyed face')">うんざりした顔</button>
-    <button onclick="addPrompt('looking down on someone')">上から目線</button>
-    <button onclick="addPrompt('tight-lipped anger')">唇を結び怒りを堪える</button>
+    <button onclick="addP('angry glare','睨む','angerPage')">睨む</button>
+    <button onclick="addP('furrowed brows','眉間に皺を寄せる','angerPage')">眉間に皺を寄せる</button>
+    <button onclick="addP('clenched teeth','歯を食いしばる','angerPage')">歯を食いしばる</button>
+    <button onclick="addP('flushed with anger','怒りで顔を赤くする','angerPage')">怒りで顔を赤くする</button>
+    <button onclick="addP('cold stare','感情を殺した怒り','angerPage')">感情を殺した怒り</button>
+    <button onclick="addP('icy expression','冷たい表情','angerPage')">冷たい表情</button>
+    <button onclick="addP('irritated look','イライラした顔','angerPage')">イライラした顔</button>
+    <button onclick="addP('annoyed face','うんざりした顔','angerPage')">うんざりした顔</button>
+    <button onclick="addP('looking down on someone','上から目線','angerPage')">上から目線</button>
+    <button onclick="addP('tight-lipped anger','唇を結び怒りを堪える','angerPage')">唇を結び怒りを堪える</button>
   </div>
 </div>
 
@@ -509,17 +517,17 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
   <h1>恐怖</h1>
   <div class="buttons">
-    <button onclick="addPrompt('eyes wide open')">目を大きく見開く</button>
-    <button onclick="addPrompt('raised eyebrows')">眉を上げる</button>
-    <button onclick="addPrompt('mouth agape')">口を開け放している</button>
-    <button onclick="addPrompt('stunned expression')">呆然とした顔</button>
-    <button onclick="addPrompt('stiff expression')">強張った顔</button>
-    <button onclick="addPrompt('pale face')">青ざめた顔</button>
-    <button onclick="addPrompt('frightened eyes')">怯えた目</button>
-    <button onclick="addPrompt('trembling')">震える</button>
-    <button onclick="addPrompt('sweating nervously')">緊張で汗をかく</button>
-    <button onclick="addPrompt('covering mouth in shock')">ショックで口を手で覆う</button>
-    <button onclick="addPrompt('biting nails')">爪を噛む</button>
+    <button onclick="addP('eyes wide open','目を大きく見開く','fearPage')">目を大きく見開く</button>
+    <button onclick="addP('raised eyebrows','眉を上げる','fearPage')">眉を上げる</button>
+    <button onclick="addP('mouth agape','口を開け放している','fearPage')">口を開け放している</button>
+    <button onclick="addP('stunned expression','呆然とした顔','fearPage')">呆然とした顔</button>
+    <button onclick="addP('stiff expression','強張った顔','fearPage')">強張った顔</button>
+    <button onclick="addP('pale face','青ざめた顔','fearPage')">青ざめた顔</button>
+    <button onclick="addP('frightened eyes','怯えた目','fearPage')">怯えた目</button>
+    <button onclick="addP('trembling','震える','fearPage')">震える</button>
+    <button onclick="addP('sweating nervously','緊張で汗をかく','fearPage')">緊張で汗をかく</button>
+    <button onclick="addP('covering mouth in shock','ショックで口を手で覆う','fearPage')">ショックで口を手で覆う</button>
+    <button onclick="addP('biting nails','爪を噛む','fearPage')">爪を噛む</button>
   </div>
 </div>
 
@@ -527,15 +535,15 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
   <h1>恥じらい</h1>
   <div class="buttons">
-    <button onclick="addPrompt('blushing')">照れ</button>
-    <button onclick="addPrompt('heavy blush')">強い赤面</button>
-    <button onclick="addPrompt('red face')">顔全体が赤い</button>
-    <button onclick="addPrompt('looking away shyly')">恥ずかしそうに目を逸らす</button>
-    <button onclick="addPrompt('glancing sideways')">横目でちらっと見る</button>
-    <button onclick="addPrompt('peeking through fingers')">指の隙間から覗く</button>
-    <button onclick="addPrompt('covering face with hands')">両手で顔を隠す</button>
-    <button onclick="addPrompt('fidgeting')">そわそわする</button>
-    <button onclick="addPrompt('looking down bashfully')">はにかんで下を向く</button>
+    <button onclick="addP('blushing','照れ','shynessPage')">照れ</button>
+    <button onclick="addP('heavy blush','強い赤面','shynessPage')">強い赤面</button>
+    <button onclick="addP('red face','顔全体が赤い','shynessPage')">顔全体が赤い</button>
+    <button onclick="addP('looking away shyly','恥ずかしそうに目を逸らす','shynessPage')">恥ずかしそうに目を逸らす</button>
+    <button onclick="addP('glancing sideways','横目でちらっと見る','shynessPage')">横目でちらっと見る</button>
+    <button onclick="addP('peeking through fingers','指の隙間から覗く','shynessPage')">指の隙間から覗く</button>
+    <button onclick="addP('covering face with hands','両手で顔を隠す','shynessPage')">両手で顔を隠す</button>
+    <button onclick="addP('fidgeting','そわそわする','shynessPage')">そわそわする</button>
+    <button onclick="addP('looking down bashfully','はにかんで下を向く','shynessPage')">はにかんで下を向く</button>
   </div>
 </div>
 
@@ -543,17 +551,17 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
   <h1>嫌悪</h1>
   <div class="buttons">
-    <button onclick="addPrompt('reluctant face')">嫌がる</button>
-    <button onclick="addPrompt('unwilling face')">気の進まない</button>
-    <button onclick="addPrompt('pained expression')">苦しそうな顔</button>
-    <button onclick="addPrompt('distressed face')">困惑した顔</button>
-    <button onclick="addPrompt('grimacing')">しかめ面</button>
-    <button onclick="addPrompt('averted gaze')">視線を逸らす</button>
-    <button onclick="addPrompt('tightly closed mouth')">口を固く閉じる</button>
-    <button onclick="addPrompt('embarrassed reluctant')">恥ずかしそうに嫌がる</button>
-    <button onclick="addPrompt('resisting expression')">抵抗する顔</button>
-    <button onclick="addPrompt('shaking head')">首を横に振る</button>
-    <button onclick="addPrompt('sweat drop')">冷や汗</button>
+    <button onclick="addP('reluctant face','嫌がる','disgustPage')">嫌がる</button>
+    <button onclick="addP('unwilling face','気の進まない','disgustPage')">気の進まない</button>
+    <button onclick="addP('pained expression','苦しそうな顔','disgustPage')">苦しそうな顔</button>
+    <button onclick="addP('distressed face','困惑した顔','disgustPage')">困惑した顔</button>
+    <button onclick="addP('grimacing','しかめ面','disgustPage')">しかめ面</button>
+    <button onclick="addP('averted gaze','視線を逸らす','disgustPage')">視線を逸らす</button>
+    <button onclick="addP('tightly closed mouth','口を固く閉じる','disgustPage')">口を固く閉じる</button>
+    <button onclick="addP('embarrassed reluctant','恥ずかしそうに嫌がる','disgustPage')">恥ずかしそうに嫌がる</button>
+    <button onclick="addP('resisting expression','抵抗する顔','disgustPage')">抵抗する顔</button>
+    <button onclick="addP('shaking head','首を横に振る','disgustPage')">首を横に振る</button>
+    <button onclick="addP('sweat drop','冷や汗','disgustPage')">冷や汗</button>
   </div>
 </div>
 
@@ -561,15 +569,15 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
   <h1>呆れ</h1>
   <div class="buttons">
-    <button onclick="addPrompt('exasperated')">うんざり</button>
-    <button onclick="addPrompt('disappointed')">失望</button>
-    <button onclick="addPrompt('tired expression')">疲れた顔</button>
-    <button onclick="addPrompt('unamused')">面白くなさそう</button>
-    <button onclick="addPrompt('sighing')">ため息をつく</button>
-    <button onclick="addPrompt('furrowed brow')">眉をひそめる</button>
-    <button onclick="addPrompt('narrowed eyes')">目を細める</button>
-    <button onclick="addPrompt('slight frown')">軽く眉を下げる</button>
-    <button onclick="addPrompt('deadpan')">無表情</button>
+    <button onclick="addP('exasperated','うんざり','exasperationPage')">うんざり</button>
+    <button onclick="addP('disappointed','失望','exasperationPage')">失望</button>
+    <button onclick="addP('tired expression','疲れた顔','exasperationPage')">疲れた顔</button>
+    <button onclick="addP('unamused','面白くなさそう','exasperationPage')">面白くなさそう</button>
+    <button onclick="addP('sighing','ため息をつく','exasperationPage')">ため息をつく</button>
+    <button onclick="addP('furrowed brow','眉をひそめる','exasperationPage')">眉をひそめる</button>
+    <button onclick="addP('narrowed eyes','目を細める','exasperationPage')">目を細める</button>
+    <button onclick="addP('slight frown','軽く眉を下げる','exasperationPage')">軽く眉を下げる</button>
+    <button onclick="addP('deadpan','無表情','exasperationPage')">無表情</button>
   </div>
 </div>
 
@@ -585,7 +593,7 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <h1>服装</h1>
   <h3>基本（色→状態）</h3>
   <div class="buttons">
-    <button onclick="addPrompt('Plain white T-shirt')">白の無地のTシャツ</button>
+    <button onclick="addP('Plain white T-shirt','白の無地のTシャツ','clothingPage')">白の無地のTシャツ</button>
     <button class="var-btn" onclick="openClothingColor('lingerie')">ランジェリー</button>
     <button class="var-btn" onclick="openClothingColor('bikini')">ビキニ系</button>
     <button class="var-btn" onclick="openClothingColor('school_swimsuit')">スクール水着</button>
@@ -593,29 +601,29 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button class="var-btn" onclick="openClothingColor('nurse_maid')">ナース・メイド</button>
     <button class="var-btn" onclick="openVariation('bunny')">バニー衣装</button>
     <button class="var-btn" onclick="openClothingColor('china')">チャイナドレス</button>
-    <button onclick="addPrompt('gym uniform')">体操服</button>
-    <button onclick="addPrompt('bloomers')">ブルマ</button>
+    <button onclick="addP('gym uniform','体操服','clothingPage')">体操服</button>
+    <button onclick="addP('bloomers','ブルマ','clothingPage')">ブルマ</button>
     <button class="var-btn" onclick="openClothingColor('office')">OL・スーツ</button>
     <button class="var-btn" onclick="openVariation('clothing_state')">着衣の状態（汎用）</button>
-    <button onclick="addPrompt('garter belt')">ガーターベルト</button>
-    <button onclick="addPrompt('stockings')">ストッキング</button>
-    <button onclick="addPrompt('thighhighs')">サイハイソックス</button>
-    <button onclick="addPrompt('fishnet stockings')">網タイツ</button>
-    <button onclick="addPrompt('collar')">首輪</button>
-    <button onclick="addPrompt('choker')">チョーカー</button>
-    <button onclick="addPrompt('apron')">エプロン</button>
-    <button onclick="addPrompt('lab coat')">白衣</button>
-    <button onclick="addPrompt('cheerleader outfit')">チア衣装</button>
-    <button onclick="addPrompt('swimsuit')">水着</button>
-    <button onclick="addPrompt('towel')">タオルだけ</button>
-    <button onclick="addPrompt('open shirt')">シャツ一枚</button>
+    <button onclick="addP('garter belt','ガーターベルト','clothingPage')">ガーターベルト</button>
+    <button onclick="addP('stockings','ストッキング','clothingPage')">ストッキング</button>
+    <button onclick="addP('thighhighs','サイハイソックス','clothingPage')">サイハイソックス</button>
+    <button onclick="addP('fishnet stockings','網タイツ','clothingPage')">網タイツ</button>
+    <button onclick="addP('collar','首輪','clothingPage')">首輪</button>
+    <button onclick="addP('choker','チョーカー','clothingPage')">チョーカー</button>
+    <button onclick="addP('apron','エプロン','clothingPage')">エプロン</button>
+    <button onclick="addP('lab coat','白衣','clothingPage')">白衣</button>
+    <button onclick="addP('cheerleader outfit','チア衣装','clothingPage')">チア衣装</button>
+    <button onclick="addP('swimsuit','水着','clothingPage')">水着</button>
+    <button onclick="addP('towel','タオルだけ','clothingPage')">タオルだけ</button>
+    <button onclick="addP('open shirt','シャツ一枚','clothingPage')">シャツ一枚</button>
   </div>
   <h3>特殊</h3>
   <div class="buttons">
-    <button onclick="addPrompt('kitauji school uniform')">北宇治高校制服</button>
-    <button onclick="addPrompt('hatsuboshi gakuen school uniform')">初星学園制服</button>
-    <button onclick="addPrompt('kimi to semi blue (idolmaster)')">君とセミブルー</button>
-    <button onclick="addPrompt('cow print bikini, micro bikini, cow print elbow gloves, cow ears, small cow horns')">牛ビキニ</button>
+    <button onclick="addP('kitauji school uniform','北宇治高校制服','clothingPage')">北宇治高校制服</button>
+    <button onclick="addP('hatsuboshi gakuen school uniform','初星学園制服','clothingPage')">初星学園制服</button>
+    <button onclick="addP('kimi to semi blue (idolmaster)','君とセミブルー','clothingPage')">君とセミブルー</button>
+    <button onclick="addP('cow print bikini, micro bikini, cow print elbow gloves, cow ears, small cow horns','牛ビキニ','clothingPage')">牛ビキニ</button>
   </div>
 </div>
 
@@ -623,24 +631,24 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('appearancePage')">← 戻る</button>
   <h1>髪型</h1>
   <div class="buttons">
-    <button onclick="addPrompt('ponytail')">ポニーテール</button>
-    <button onclick="addPrompt('high ponytail')">ハイポニテ</button>
-    <button onclick="addPrompt('low ponytail')">ローポニテ</button>
-    <button onclick="addPrompt('side ponytail')">サイドポニテ</button>
-    <button onclick="addPrompt('hair bun')">お団子</button>
-    <button onclick="addPrompt('twin tails')">ツインテール</button>
-    <button onclick="addPrompt('long hair')">ロングヘア</button>
-    <button onclick="addPrompt('short hair')">ショートヘア</button>
-    <button onclick="addPrompt('medium hair')">ミディアムヘア</button>
-    <button onclick="addPrompt('braided hair')">三つ編み</button>
-    <button onclick="addPrompt('messy hair')">ボサボサ髪</button>
-    <button onclick="addPrompt('wet hair')">濡れた髪</button>
-    <button onclick="addPrompt('hair over one eye')">片目隠れ</button>
-    <button onclick="addPrompt('ahoge')">アホ毛</button>
-    <button onclick="addPrompt('hair down')">下ろした髪</button>
-    <button onclick="addPrompt('disheveled hair')">乱れた髪</button>
-    <button onclick="addPrompt('bob cut')">ボブ</button>
-    <button onclick="addPrompt('curly hair')">巻き髪</button>
+    <button onclick="addP('ponytail','ポニーテール','hairstylePage')">ポニーテール</button>
+    <button onclick="addP('high ponytail','ハイポニテ','hairstylePage')">ハイポニテ</button>
+    <button onclick="addP('low ponytail','ローポニテ','hairstylePage')">ローポニテ</button>
+    <button onclick="addP('side ponytail','サイドポニテ','hairstylePage')">サイドポニテ</button>
+    <button onclick="addP('hair bun','お団子','hairstylePage')">お団子</button>
+    <button onclick="addP('twin tails','ツインテール','hairstylePage')">ツインテール</button>
+    <button onclick="addP('long hair','ロングヘア','hairstylePage')">ロングヘア</button>
+    <button onclick="addP('short hair','ショートヘア','hairstylePage')">ショートヘア</button>
+    <button onclick="addP('medium hair','ミディアムヘア','hairstylePage')">ミディアムヘア</button>
+    <button onclick="addP('braided hair','三つ編み','hairstylePage')">三つ編み</button>
+    <button onclick="addP('messy hair','ボサボサ髪','hairstylePage')">ボサボサ髪</button>
+    <button onclick="addP('wet hair','濡れた髪','hairstylePage')">濡れた髪</button>
+    <button onclick="addP('hair over one eye','片目隠れ','hairstylePage')">片目隠れ</button>
+    <button onclick="addP('ahoge','アホ毛','hairstylePage')">アホ毛</button>
+    <button onclick="addP('hair down','下ろした髪','hairstylePage')">下ろした髪</button>
+    <button onclick="addP('disheveled hair','乱れた髪','hairstylePage')">乱れた髪</button>
+    <button onclick="addP('bob cut','ボブ','hairstylePage')">ボブ</button>
+    <button onclick="addP('curly hair','巻き髪','hairstylePage')">巻き髪</button>
   </div>
 </div>
 
@@ -657,30 +665,30 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <h1>竿役</h1>
   <h2>基本</h2>
   <div class="buttons">
-    <button onclick="addPrompt('boy')">男性</button>
-    <button onclick="addPrompt('teenage boy')">若い男性</button>
-    <button onclick="addPrompt('young man')">青年</button>
-    <button onclick="addPrompt('adult male')">成人男性</button>
-    <button onclick="addPrompt('faceless')">顔なし</button>
-    <button onclick="addPrompt('faceless male')">顔なし男性</button>
+    <button onclick="addP('boy','男性','malePage')">男性</button>
+    <button onclick="addP('teenage boy','若い男性','malePage')">若い男性</button>
+    <button onclick="addP('young man','青年','malePage')">青年</button>
+    <button onclick="addP('adult male','成人男性','malePage')">成人男性</button>
+    <button onclick="addP('faceless','顔なし','malePage')">顔なし</button>
+    <button onclick="addP('faceless male','顔なし男性','malePage')">顔なし男性</button>
   </div>
   <h2>体型</h2>
   <div class="buttons">
-    <button onclick="addPrompt('average build')">普通体型</button>
-    <button onclick="addPrompt('muscular')">筋肉質</button>
-    <button onclick="addPrompt('slim')">スリム</button>
-    <button onclick="addPrompt('athletic')">アスリート体型</button>
-    <button onclick="addPrompt('tall')">長身</button>
-    <button onclick="addPrompt('short')">低め</button>
-    <button onclick="addPrompt('broad shoulders')">広い肩幅</button>
+    <button onclick="addP('average build','普通体型','malePage')">普通体型</button>
+    <button onclick="addP('muscular','筋肉質','malePage')">筋肉質</button>
+    <button onclick="addP('slim','スリム','malePage')">スリム</button>
+    <button onclick="addP('athletic','アスリート体型','malePage')">アスリート体型</button>
+    <button onclick="addP('tall','長身','malePage')">長身</button>
+    <button onclick="addP('short','低め','malePage')">低め</button>
+    <button onclick="addP('broad shoulders','広い肩幅','malePage')">広い肩幅</button>
   </div>
   <h2>その他</h2>
   <div class="buttons">
-    <button onclick="addPrompt('male focus')">男性フォーカス</button>
-    <button onclick="addPrompt('from male pov')">男性視点</button>
-    <button onclick="addPrompt('erect penis')">勃起</button>
-    <button onclick="addPrompt('large penis')">大きい</button>
-    <button onclick="addPrompt('veiny penis')">血管が浮いた</button>
+    <button onclick="addP('male focus','男性フォーカス','malePage')">男性フォーカス</button>
+    <button onclick="addP('from male pov','男性視点','malePage')">男性視点</button>
+    <button onclick="addP('erect penis','勃起','malePage')">勃起</button>
+    <button onclick="addP('large penis','大きい','malePage')">大きい</button>
+    <button onclick="addP('veiny penis','血管が浮いた','malePage')">血管が浮いた</button>
   </div>
 </div>
 
@@ -688,22 +696,22 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('characterPage')">← 戻る</button>
   <h1>学園アイドルマスター</h1>
   <div class="buttons">
-    <button onclick="addPrompt('gakuen idolmaster')">学園アイドルマスター</button>
-    <button onclick="addPrompt('hanami saki')">花海咲季</button>
-    <button onclick="addPrompt('tsukimura temari')">月村手毬</button>
-    <button onclick="addPrompt('fuzita kotone')">藤田ことね</button>
-    <button onclick="addPrompt('shiun sumika')">紫雲清夏</button>
-    <button onclick="addPrompt('katsuragi lilja')">葛城リーリヤ</button>
-    <button onclick="addPrompt('hanami ume')">花海佑芽</button>
-    <button onclick="addPrompt('shinosawa hiro')">篠澤広</button>
-    <button onclick="addPrompt('kuramoto china')">倉本千奈</button>
-    <button onclick="addPrompt('hataya misuzu')">秦谷美鈴</button>
-    <button onclick="addPrompt('kaya rinha')">賀陽燐羽</button>
-    <button onclick="addPrompt('juo sena')">十王星南</button>
-    <button onclick="addPrompt('arimura mao')">有村麻央</button>
-    <button onclick="addPrompt('himesaki rinami')">姫崎莉波</button>
-    <button onclick="addPrompt('amaya tsubame')">雨夜燕</button>
-    <button onclick="addPrompt('neo asari')">根緒亜紗里</button>
+    <button onclick="addP('gakuen idolmaster','学園アイドルマスター','idolmasterPage')">学園アイドルマスター</button>
+    <button onclick="addP('hanami saki','花海咲季','idolmasterPage')">花海咲季</button>
+    <button onclick="addP('tsukimura temari','月村手毬','idolmasterPage')">月村手毬</button>
+    <button onclick="addP('fuzita kotone','藤田ことね','idolmasterPage')">藤田ことね</button>
+    <button onclick="addP('shiun sumika','紫雲清夏','idolmasterPage')">紫雲清夏</button>
+    <button onclick="addP('katsuragi lilja','葛城リーリヤ','idolmasterPage')">葛城リーリヤ</button>
+    <button onclick="addP('hanami ume','花海佑芽','idolmasterPage')">花海佑芽</button>
+    <button onclick="addP('shinosawa hiro','篠澤広','idolmasterPage')">篠澤広</button>
+    <button onclick="addP('kuramoto china','倉本千奈','idolmasterPage')">倉本千奈</button>
+    <button onclick="addP('hataya misuzu','秦谷美鈴','idolmasterPage')">秦谷美鈴</button>
+    <button onclick="addP('kaya rinha','賀陽燐羽','idolmasterPage')">賀陽燐羽</button>
+    <button onclick="addP('juo sena','十王星南','idolmasterPage')">十王星南</button>
+    <button onclick="addP('arimura mao','有村麻央','idolmasterPage')">有村麻央</button>
+    <button onclick="addP('himesaki rinami','姫崎莉波','idolmasterPage')">姫崎莉波</button>
+    <button onclick="addP('amaya tsubame','雨夜燕','idolmasterPage')">雨夜燕</button>
+    <button onclick="addP('neo asari','根緒亜紗里','idolmasterPage')">根緒亜紗里</button>
   </div>
 </div>
 
@@ -711,130 +719,135 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('characterPage')">← 戻る</button>
   <h1>響け！ユーフォニアム</h1>
   <div class="buttons">
-    <button onclick="addPrompt('hibike! euphonium')">響け！ユーフォニアム</button>
-    <button onclick="addPrompt('Liz to aoitori')">リズと青い鳥</button>
-    <button onclick="addPrompt('oumae kumiko')">黄前久美子</button>
-    <button onclick="addPrompt('kousaka reina')">高坂麗奈</button>
-    <button onclick="addPrompt('katou hazuki')">加藤葉月</button>
-    <button onclick="addPrompt('kawashima sapphire')">川島緑輝</button>
-    <button onclick="addPrompt('kuroe mayu')">黒江真由</button>
-    <button onclick="addPrompt('tsukamoto syuuichi')">塚本秀一</button>
-    <button onclick="addPrompt('kamaya tsubame')">釜屋つばめ</button>
-    <button onclick="addPrompt('tanaka asuka')">田中あすか</button>
-    <button onclick="addPrompt('nakaseko kaori')">中世古香織</button>
-    <button onclick="addPrompt('ogasawara haruka')">小笠原晴香</button>
-    <button onclick="addPrompt('saitou aoi')">斎藤葵</button>
-    <button onclick="addPrompt('nakagawa natsuki')">中川夏紀</button>
-    <button onclick="addPrompt('yoshikawa yuuko')">吉川優子</button>
-    <button onclick="addPrompt('kasaki nozomi')">傘木希美</button>
-    <button onclick="addPrompt('yoroizuka mizore')">鎧塚みぞれ</button>
-    <button onclick="addPrompt('nagase riko')">長瀬莉子</button>
-    <button onclick="addPrompt('gotou takuya')">後藤卓也</button>
-    <button onclick="addPrompt('hisaishi kanade')">久石奏</button>
-    <button onclick="addPrompt('kenzaki ririka')">剣崎梨々香</button>
-    <button onclick="addPrompt('suzuki mirei')">鈴木美玲</button>
-    <button onclick="addPrompt('suzuki satsuki')">鈴木さつき</button>
-    <button onclick="addPrompt('tsuninaga motomu')">月永求</button>
-    <button onclick="addPrompt('hariya kaho')">針谷佳穂</button>
-    <button onclick="addPrompt('kamaya suzume')">釜屋すずめ</button>
-    <button onclick="addPrompt('kamiishi yayoi')">上石弥生</button>
-    <button onclick="addPrompt('yoshii sari')">義井沙里</button>
-    <button onclick="addPrompt('taki noboru')">滝昇</button>
-    <button onclick="addPrompt('matsumoto michie')">松本美知恵</button>
-    <button onclick="addPrompt('hashimoto masahiro')">橋本真博</button>
-    <button onclick="addPrompt('niiyama satomi')">新山聡美</button>
-    <button onclick="addPrompt('oumae mamiko')">黄前麻美子</button>
+    <button onclick="addP('hibike! euphonium','響け！ユーフォニアム','euphoniumPage')">響け！ユーフォニアム</button>
+    <button onclick="addP('Liz to aoitori','リズと青い鳥','euphoniumPage')">リズと青い鳥</button>
+    <button onclick="addP('oumae kumiko','黄前久美子','euphoniumPage')">黄前久美子</button>
+    <button onclick="addP('kousaka reina','高坂麗奈','euphoniumPage')">高坂麗奈</button>
+    <button onclick="addP('katou hazuki','加藤葉月','euphoniumPage')">加藤葉月</button>
+    <button onclick="addP('kawashima sapphire','川島緑輝','euphoniumPage')">川島緑輝</button>
+    <button onclick="addP('kuroe mayu','黒江真由','euphoniumPage')">黒江真由</button>
+    <button onclick="addP('tsukamoto syuuichi','塚本秀一','euphoniumPage')">塚本秀一</button>
+    <button onclick="addP('kamaya tsubame','釜屋つばめ','euphoniumPage')">釜屋つばめ</button>
+    <button onclick="addP('tanaka asuka','田中あすか','euphoniumPage')">田中あすか</button>
+    <button onclick="addP('nakaseko kaori','中世古香織','euphoniumPage')">中世古香織</button>
+    <button onclick="addP('ogasawara haruka','小笠原晴香','euphoniumPage')">小笠原晴香</button>
+    <button onclick="addP('saitou aoi','斎藤葵','euphoniumPage')">斎藤葵</button>
+    <button onclick="addP('nakagawa natsuki','中川夏紀','euphoniumPage')">中川夏紀</button>
+    <button onclick="addP('yoshikawa yuuko','吉川優子','euphoniumPage')">吉川優子</button>
+    <button onclick="addP('kasaki nozomi','傘木希美','euphoniumPage')">傘木希美</button>
+    <button onclick="addP('yoroizuka mizore','鎧塚みぞれ','euphoniumPage')">鎧塚みぞれ</button>
+    <button onclick="addP('nagase riko','長瀬莉子','euphoniumPage')">長瀬莉子</button>
+    <button onclick="addP('gotou takuya','後藤卓也','euphoniumPage')">後藤卓也</button>
+    <button onclick="addP('hisaishi kanade','久石奏','euphoniumPage')">久石奏</button>
+    <button onclick="addP('kenzaki ririka','剣崎梨々香','euphoniumPage')">剣崎梨々香</button>
+    <button onclick="addP('suzuki mirei','鈴木美玲','euphoniumPage')">鈴木美玲</button>
+    <button onclick="addP('suzuki satsuki','鈴木さつき','euphoniumPage')">鈴木さつき</button>
+    <button onclick="addP('tsuninaga motomu','月永求','euphoniumPage')">月永求</button>
+    <button onclick="addP('hariya kaho','針谷佳穂','euphoniumPage')">針谷佳穂</button>
+    <button onclick="addP('kamaya suzume','釜屋すずめ','euphoniumPage')">釜屋すずめ</button>
+    <button onclick="addP('kamiishi yayoi','上石弥生','euphoniumPage')">上石弥生</button>
+    <button onclick="addP('yoshii sari','義井沙里','euphoniumPage')">義井沙里</button>
+    <button onclick="addP('taki noboru','滝昇','euphoniumPage')">滝昇</button>
+    <button onclick="addP('matsumoto michie','松本美知恵','euphoniumPage')">松本美知恵</button>
+    <button onclick="addP('hashimoto masahiro','橋本真博','euphoniumPage')">橋本真博</button>
+    <button onclick="addP('niiyama satomi','新山聡美','euphoniumPage')">新山聡美</button>
+    <button onclick="addP('oumae mamiko','黄前麻美子','euphoniumPage')">黄前麻美子</button>
   </div>
 </div>
 
 <script>
-let prompts=[],currentWeightIndex=-1,pendingClothing=null,promptExpanded=false;
+let prompts=[],currentWeightIndex=-1,pendingClothing=null,promptExpanded=false,pendingConflict=null,chipMenuIndex=-1;
 const WEIGHTS=[0.8,1.0,1.1,1.2,1.3,1.5],SEARCH_INDEX=[],COLLAPSE_THRESHOLD=5;
 function toKanaNorm(s){return s.replace(/[\u3041-\u3096]/g,ch=>String.fromCharCode(ch.charCodeAt(0)+0x60))}
 function matchSearch(q,text){const nq=toKanaNorm(q.toLowerCase()),nt=toKanaNorm((text||"").toLowerCase());return nt.includes(nq)||(text||"").toLowerCase().includes(q.toLowerCase())}
 
-const CLOTHING_COLORS={
-  lingerie:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"紫",value:"purple"}],
-  bikini:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"ネイビー",value:"navy"},{label:"青",value:"blue"}],
-  school_swimsuit:[{label:"ネイビー",value:"navy"},{label:"黒",value:"black"},{label:"白",value:"white"}],
-  uniform:[{label:"紺",value:"navy"},{label:"黒",value:"black"},{label:"指定なし",value:""}],
-  nurse_maid:[{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"黒",value:"black"}],
-  office:[{label:"黒",value:"black"},{label:"グレー",value:"gray"},{label:"ネイビー",value:"navy"}],
-  china:[{label:"赤",value:"red"},{label:"青",value:"blue"},{label:"黄",value:"yellow"},{label:"紫",value:"purple"},{label:"白",value:"white"}]
-};
-const CLOTHING_STATES={
-  lingerie:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", lingerie aside, panties aside, pulled aside"},{label:"はだけている",suffix:", open lingerie, disheveled lingerie"},{label:"半分脱がされている",suffix:", half-removed lingerie, lingerie around thighs"},{label:"破れている",suffix:", torn lingerie, ripped lingerie"}],
-  bikini:[{label:"普通に着ている",suffix:""},{label:"マイクロビキニ",suffix:", micro bikini"},{label:"紐ビキニ",suffix:", string bikini"},{label:"紐を解いている",suffix:", untied bikini, bikini strings undone"},{label:"ずらしている",suffix:", bikini aside, pulled aside bikini"},{label:"濡れている",suffix:", wet bikini, see-through bikini"},{label:"半分脱げている",suffix:", half-removed bikini, bikini around ankles"}],
-  school_swimsuit:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", school swimsuit aside, pulled aside"},{label:"ずり下げ",suffix:", school swimsuit pulled down, around thighs"},{label:"濡れている",suffix:", wet school swimsuit, see-through school swimsuit"},{label:"破れている",suffix:", torn school swimsuit"}],
-  uniform:[{label:"普通に着ている",suffix:", short skirt"},{label:"シャツはだけ",suffix:", open shirt, unbuttoned blouse, short skirt"},{label:"スカートめくれ",suffix:", skirt lift, lifted skirt, upskirt"},{label:"乱れている",suffix:", disheveled uniform, messy clothes"},{label:"半脱ぎ",suffix:", half-undressed, clothes around waist"}],
-  nurse_maid:[{label:"普通に着ている",suffix:""},{label:"はだけている",suffix:", open, unbuttoned, cleavage"},{label:"スカートめくれ",suffix:", skirt lift, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],
-  office:[{label:"普通に着ている",suffix:", tight skirt"},{label:"ブラウスはだけ",suffix:", unbuttoned blouse, open shirt, tight skirt"},{label:"スカートめくれ",suffix:", skirt lift, tight skirt, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],
-  china:[{label:"普通に着ている",suffix:""},{label:"スリット高め",suffix:", high slit"},{label:"はだけている",suffix:", open china dress"},{label:"乱れている",suffix:", disheveled china dress"}]
-};
+const CLOTHING_COLORS={lingerie:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"紫",value:"purple"}],bikini:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"ネイビー",value:"navy"},{label:"青",value:"blue"}],school_swimsuit:[{label:"ネイビー",value:"navy"},{label:"黒",value:"black"},{label:"白",value:"white"}],uniform:[{label:"紺",value:"navy"},{label:"黒",value:"black"},{label:"指定なし",value:""}],nurse_maid:[{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"黒",value:"black"}],office:[{label:"黒",value:"black"},{label:"グレー",value:"gray"},{label:"ネイビー",value:"navy"}],china:[{label:"赤",value:"red"},{label:"青",value:"blue"},{label:"黄",value:"yellow"},{label:"紫",value:"purple"},{label:"白",value:"white"}]};
+const CLOTHING_STATES={lingerie:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", lingerie aside, panties aside, pulled aside"},{label:"はだけている",suffix:", open lingerie, disheveled lingerie"},{label:"半分脱がされている",suffix:", half-removed lingerie, lingerie around thighs"},{label:"破れている",suffix:", torn lingerie, ripped lingerie"}],bikini:[{label:"普通に着ている",suffix:""},{label:"マイクロビキニ",suffix:", micro bikini"},{label:"紐ビキニ",suffix:", string bikini"},{label:"紐を解いている",suffix:", untied bikini, bikini strings undone"},{label:"ずらしている",suffix:", bikini aside, pulled aside bikini"},{label:"濡れている",suffix:", wet bikini, see-through bikini"},{label:"半分脱げている",suffix:", half-removed bikini, bikini around ankles"}],school_swimsuit:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", school swimsuit aside, pulled aside"},{label:"ずり下げ",suffix:", school swimsuit pulled down, around thighs"},{label:"濡れている",suffix:", wet school swimsuit, see-through school swimsuit"},{label:"破れている",suffix:", torn school swimsuit"}],uniform:[{label:"普通に着ている",suffix:", short skirt"},{label:"シャツはだけ",suffix:", open shirt, unbuttoned blouse, short skirt"},{label:"スカートめくれ",suffix:", skirt lift, lifted skirt, upskirt"},{label:"乱れている",suffix:", disheveled uniform, messy clothes"},{label:"半脱ぎ",suffix:", half-undressed, clothes around waist"}],nurse_maid:[{label:"普通に着ている",suffix:""},{label:"はだけている",suffix:", open, unbuttoned, cleavage"},{label:"スカートめくれ",suffix:", skirt lift, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],office:[{label:"普通に着ている",suffix:", tight skirt"},{label:"ブラウスはだけ",suffix:", unbuttoned blouse, open shirt, tight skirt"},{label:"スカートめくれ",suffix:", skirt lift, tight skirt, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],china:[{label:"普通に着ている",suffix:""},{label:"スリット高め",suffix:", high slit"},{label:"はだけている",suffix:", open china dress"},{label:"乱れている",suffix:", disheveled china dress"}]};
 const CLOTHING_BASE={lingerie:"lingerie",bikini:"bikini",school_swimsuit:"school swimsuit",uniform:"school uniform",nurse_maid:"nurse outfit",office:"office lady, suit",china:"china dress"};
 
 const VARIATIONS={
-role_position:{title:"上下関係・体位",options:[{label:"男性が上",prompt:"man on top, male on top",desc:"男性が上にいる"},{label:"女性が上",prompt:"woman on top, female on top",desc:"女性が上にいる"},{label:"対面",prompt:"face to face, facing each other",desc:"お互いを見ている体勢"},{label:"後ろから",prompt:"from behind, rear entry",desc:"後ろから"}]},
-role_dominance:{title:"攻め・受け",options:[{label:"男性が攻め",prompt:"dominant male, male dominant",desc:"男性が主導"},{label:"女性が攻め",prompt:"dominant female, female dominant",desc:"女性が主導"},{label:"互いに積極的",prompt:"mutual, equal participation",desc:"どちらも積極的"}]},
-role_gaze:{title:"視線の関係",options:[{label:"お互いを見つめ合う",prompt:"looking at each other, eye contact",desc:"視線を合わせる"},{label:"男性が女性を見る",prompt:"man looking at woman",desc:"男性視点"},{label:"女性が男性を見る",prompt:"woman looking at man",desc:"女性視点"},{label:"どちらも上を向く",prompt:"both looking up",desc:"快感で上を向く"}]},
-bunny:{title:"バニー衣装",options:[{label:"通常のバニー",prompt:"bunny suit, bunny ears, playboy bunny",desc:"定番のバニー"},{label:"逆バニー",prompt:"reverse bunny suit, reverse bunny",desc:"胸と股が開いた逆バニー"},{label:"黒バニー",prompt:"black bunny suit, bunny ears",desc:"黒"},{label:"白バニー",prompt:"white bunny suit, bunny ears",desc:"白"},{label:"ピンクバニー",prompt:"pink bunny suit, bunny ears",desc:"ピンク"}]},
-clothing_state:{title:"着衣の状態（汎用）",options:[{label:"はだけている",prompt:"open clothes, unbuttoned, disheveled clothes",desc:"服が開いている"},{label:"ずらしている",prompt:"clothes aside, pulled aside",desc:"局部を出すようにずらす"},{label:"半分脱がされている",prompt:"half-undressed, clothes around waist or thighs",desc:"途中まで脱げている"},{label:"破れている",prompt:"torn clothes, ripped clothes",desc:"破れている"},{label:"濡れている",prompt:"wet clothes, see-through clothes",desc:"濡れて透けている"},{label:"全裸",prompt:"completely nude, naked",desc:"何も着ていない"},{label:"下着だけ",prompt:"underwear only, in underwear",desc:"下着姿"}]},
-condom:{title:"コンドーム",options:[{label:"付けている途中",prompt:"putting on condom, rolling condom onto penis",desc:"装着しようとしている"},{label:"装着済み",prompt:"wearing condom, condom on penis",desc:"すでに付いている"},{label:"使用済み・廃棄",prompt:"used condom, discarded condom",desc:"使い終わって捨ててある"},{label:"包装を開けている",prompt:"opening condom package, condom wrapper",desc:"袋を破っている"},{label:"精液が入っている",prompt:"used condom filled with semen",desc:"中に精液が溜まっている"}]},
-dildo:{title:"ディルド",options:[{label:"膣に挿入中",prompt:"dildo insertion, dildo in pussy",desc:"膣に入っている"},{label:"アナルに挿入",prompt:"anal dildo, dildo in ass",desc:"アナルに入っている"},{label:"持っている・見せている",prompt:"holding dildo, presenting dildo",desc:"手に持って見せている"},{label:"舐める・咥える",prompt:"sucking dildo, licking dildo",desc:"口で扱っている"},{label:"置いてある",prompt:"dildo on floor, dildo on table",desc:"置かれている"}]},
-vibrator:{title:"バイブ",options:[{label:"膣に挿入中",prompt:"vibrator in pussy, vibrating",desc:"中で振動している"},{label:"クリトリスに当てている",prompt:"vibrator on clitoris, clitoral stimulation",desc:"外側で刺激"},{label:"アナルに挿入",prompt:"anal vibrator, vibrator in ass",desc:"アナル使用"},{label:"遠隔操作中",prompt:"remote controlled vibrator, public vibrator",desc:"遠隔で動かされている"},{label:"持っている",prompt:"holding vibrator",desc:"手に持っている"}]},
-anal:{title:"アナル系道具",options:[{label:"アナルビーズ",prompt:"anal beads, pulling anal beads",desc:"ビーズを出し入れ"},{label:"アナルプラグ装着",prompt:"butt plug, wearing butt plug",desc:"プラグが刺さっている"},{label:"テールプラグ",prompt:"anal tail plug, fox tail plug",desc:"しっぽ付き"},{label:"拡張中",prompt:"anal stretching, anal gape",desc:"広げている"}]},
-restraint:{title:"拘束",options:[{label:"縄で縛られている",prompt:"bound, shibari, rope bondage",desc:"縄縛り"},{label:"手錠",prompt:"handcuffs, hands cuffed",desc:"手が拘束"},{label:"目隠し",prompt:"blindfold, blindfolded",desc:"目が見えない"},{label:"ボールギャグ",prompt:"ball gag, gagged",desc:"口を塞がれている"},{label:"首輪とリード",prompt:"collar and leash, being led",desc:"リードで引かれている"},{label:"手足を固定",prompt:"spread eagle, limbs restrained",desc:"大の字に固定"}]},
-other_toy:{title:"その他性具",options:[{label:"ローション",prompt:"lube, covered in lube",desc:"ローション塗れ"},{label:"鞭",prompt:"whip, being whipped",desc:"鞭打ち"},{label:"パドル",prompt:"paddle, spanking with paddle",desc:"叩かれている"},{label:"乳首クリップ",prompt:"nipple clamps",desc:"乳首を挟んでいる"},{label:"オナホール",prompt:"onahole, fleshlight",desc:"ホール使用"}]},
-kiss:{title:"キス",options:[{label:"ディープキス",prompt:"deep kiss, french kiss, tongue kiss",desc:"舌を絡めるキス"},{label:"軽いキス",prompt:"kiss, light kiss, peck",desc:"軽いキス"},{label:"首筋へのキス",prompt:"neck kiss, kissing neck",desc:"首にキスしている"},{label:"唾液が糸を引く",prompt:"saliva trail, string of saliva, messy kiss",desc:"よだれが繋がっている"},{label:"キスしながら抱きつく",prompt:"kissing while embracing, passionate kiss",desc:"抱擁しながらのキス"}]},
-fellatio:{title:"フェラチオ",options:[{label:"咥えている",prompt:"fellatio, oral, sucking penis, penis in mouth",desc:"口に含んでいる"},{label:"先端を舐めている",prompt:"licking penis, licking tip of penis",desc:"先を舐めている"},{label:"深喉",prompt:"deepthroat, throat bulge",desc:"奥まで咥えている"},{label:"顔に精液",prompt:"facial, cum on face",desc:"顔にかけられている"},{label:"口内射精",prompt:"cum in mouth, swallowing cum",desc:"口の中に出されている"}]},
-cunnilingus:{title:"クンニ",options:[{label:"舐めている",prompt:"cunnilingus, oral, licking pussy",desc:"普通に舐めている"},{label:"クリトリス集中",prompt:"licking clitoris, clitoral stimulation",desc:"クリトリスを重点的に"},{label:"顔を埋めている",prompt:"face in pussy, smothered",desc:"顔を押し付けている"},{label:"愛液を舐めている",prompt:"licking juices, wet pussy",desc:"愛液を舐め取っている"}]},
-handjob:{title:"手コキ",options:[{label:"しごいている",prompt:"handjob, stroking penis",desc:"手でしごいている"},{label:"両手で",prompt:"two-handed handjob",desc:"両手を使っている"},{label:"射精させている",prompt:"handjob, cumming, ejaculation",desc:"射精に導いている"},{label:"先端を刺激",prompt:"teasing tip of penis, rubbing glans",desc:"先を重点的に"}]},
-paizuri:{title:"パイズリ",options:[{label:"挟んでいる",prompt:"paizuri, titjob, breast sex, penis between breasts",desc:"胸で挟んでいる"},{label:"動かしながら",prompt:"paizuri, moving breasts, active titjob",desc:"上下に動かしている"},{label:"射精",prompt:"paizuri, cum on breasts, cum between breasts",desc:"胸に出されている"},{label:"顔も使っている",prompt:"paizuri, licking tip while titjob",desc:"パイズリしながら先端を舐め"}]},
-nipple:{title:"乳首責め",options:[{label:"女性の乳首を舐める",prompt:"licking nipple, nipple play, female nipples",desc:"女性の乳首"},{label:"女性の乳首を吸う",prompt:"sucking nipple, nursing, female nipples",desc:"女性の乳首を吸う"},{label:"女性の乳首を摘まむ",prompt:"pinching nipple, twisting nipple, female nipples",desc:"女性の乳首"},{label:"男性の乳首を舐める",prompt:"licking male nipple, male nipple play",desc:"男性の乳首"},{label:"男性の乳首を摘まむ",prompt:"pinching male nipple, male nipple play",desc:"男性の乳首"},{label:"男性の乳首を吸う",prompt:"sucking male nipple, male nipple play",desc:"男性の乳首を吸う"}]},
-analingus:{title:"アナル舐め",options:[{label:"アナルを舐めている",prompt:"analingus, rimming, licking anus",desc:"普通に舐めている"},{label:"深く舌を入れている",prompt:"tongue in ass, deep rimming",desc:"舌を挿入している"},{label:"顔を埋めている",prompt:"face in ass, smothered",desc:"顔を押し付けている"}]},
-balls:{title:"玉・睾丸",options:[{label:"玉を舐めている",prompt:"licking balls, sucking balls, testis",desc:"玉舐め"},{label:"玉を優しく触る",prompt:"fondling balls, cupping balls",desc:"手で触っている"},{label:"玉を吸い上げる",prompt:"sucking balls, balls in mouth",desc:"口に含んでいる"}]},
-fingering:{title:"指入れ",options:[{label:"指を入れている",prompt:"fingering, fingering pussy, fingers in pussy",desc:"指を挿入している"},{label:"複数本",prompt:"multiple fingers in pussy, fingering",desc:"何本も入れている"},{label:"Gスポット刺激",prompt:"fingering g-spot, curling fingers",desc:"内側を刺激"},{label:"アナルに指",prompt:"anal fingering, fingers in ass",desc:"アナルに指入れ"}]},
-missionary:{title:"正常位",options:[{label:"基本の正常位",prompt:"missionary position, man on top, woman on her back with legs spread, face to face, deep penetration",desc:"標準的な形"},{label:"脚を肩に",prompt:"missionary with woman’s legs over man’s shoulders, deep angle",desc:"深く入る角度"},{label:"片脚上げ",prompt:"missionary, one of woman’s legs raised high, other wrapped around man’s waist",desc:"片脚を上げている"},{label:"膝を抱える",prompt:"missionary, man holding woman’s knees to her chest",desc:"膝を胸に押し付ける"}]},
-doggy:{title:"後背位",options:[{label:"基本の後背位",prompt:"doggy style, woman on all fours, man behind, arched back",desc:"四つん這い"},{label:"顔を伏せた後背位",prompt:"prone bone, woman lying flat on her stomach, man on top from behind",desc:"うつ伏せ"},{label:"膝立ち後背位",prompt:"kneeling doggy, both on knees, man thrusting from behind",desc:"両方が膝立ち"},{label:"立ちバック",prompt:"standing doggy, woman bent over a table or wall, man standing behind",desc:"立ったまま"}]},
-cowgirl:{title:"騎乗位",options:[{label:"基本の騎乗位",prompt:"cowgirl, woman on top facing man, riding, hands on his chest",desc:"対面で乗っている"},{label:"逆騎乗位",prompt:"reverse cowgirl, woman on top facing away, looking back over her shoulder",desc:"背を向けて乗っている"},{label:"前傾騎乗位",prompt:"cowgirl leaning forward, breasts close to man’s face",desc:"前かがみで胸が近い"},{label:"後ろに手をつく",prompt:"reverse cowgirl, woman leaning back with hands on the bed for support",desc:"体を反らせている"}]},
-mating_press:{title:"種付けプレス",options:[{label:"基本の種付けプレス",prompt:"mating press, legs pushed back, deep penetration, breeding",desc:"脚を大きく開いて押さえる"},{label:"強く押さえつける",prompt:"mating press, heavy pressing, legs over head",desc:"より強い圧"},{label:"中出し強調",prompt:"mating press, creampie, cum inside, breeding",desc:"中出しを意識した描写"}]},
-daisuki_hold:{title:"だいしゅきホールド",options:[{label:"基本のだいしゅきホールド",prompt:"daisuki hold, legs held up, deep penetration, intimate embrace",desc:"脚を抱えて深く結合"},{label:"強く抱きしめる",prompt:"daisuki hold, tight embrace, legs over shoulders",desc:"より密着した抱き方"},{label:"中出ししながら",prompt:"daisuki hold, creampie, cum inside while holding",desc:"出しながらホールド"}]},
-ekiben:{title:"駅弁",options:[{label:"基本の駅弁",prompt:"ekiben, standing carry, woman held up, legs wrapped around man, penetration while standing",desc:"立ったまま抱えて挿入"},{label:"壁に押し付けながら",prompt:"ekiben, against wall, standing carry sex",desc:"壁を使った駅弁"},{label:"激しく動かす",prompt:"ekiben, intense thrusting while carrying",desc:"抱えたまま激しく動く"}]},
-thrust:{title:"腰振り・ピストン",options:[{label:"激しく腰を振っている",prompt:"thrusting, intense thrusting, pistoning",desc:"激しいピストン"},{label:"ゆっくり腰を動かす",prompt:"slow thrusting, grinding",desc:"ゆっくりとした動き"},{label:"深く突き上げる",prompt:"deep thrust, deep penetration, bottoming out",desc:"奥まで突いている"},{label:"浅いピストン",prompt:"shallow thrusting, teasing thrusts",desc:"浅く動いている"}]},
-bounce:{title:"揺れ・バウンス",options:[{label:"おっぱいが揺れている",prompt:"bouncing breasts, jiggle",desc:"胸が揺れている"},{label:"尻が揺れている",prompt:"bouncing ass, jiggling butt",desc:"尻が揺れている"},{label:"体全体が揺れている",prompt:"body bounce, bouncing",desc:"体がバウンドしている"}]},
-body_reaction:{title:"身体の反応",options:[{label:"腰が浮かる",prompt:"hips rising, arching from pleasure",desc:"快感で腰が浮く"},{label:"足が震える",prompt:"trembling legs, shaking legs",desc:"足ががくがくする"},{label:"力が入る・踏ん張る",prompt:"clenching, tensing up, gripping",desc:"力を入れている"},{label:"体をくねらせる",prompt:"writhing, squirming from pleasure",desc:"くねくね動く"},{label:"背中を大きく反らす",prompt:"arching back strongly, extreme arch",desc:"大きく反る"}]},
-head_pat:{title:"頭を撫でる",options:[{label:"男性が女性の頭を撫でる",prompt:"man stroking woman's head, headpat, hand on head",desc:"男性→女性"},{label:"女性が男性の頭を撫でる",prompt:"woman stroking man's head, headpat, hand on head",desc:"女性→男性"},{label:"優しく撫でる",prompt:"gentle headpat, stroking hair",desc:"優しい触れ方"},{label:"抱きながら撫でる",prompt:"headpat while hugging, stroking head in embrace",desc:"抱擁しながら"}]},
-body_press:{title:"身体を密着させる",options:[{label:"密着している",prompt:"bodies pressed together, close contact, skin to skin",desc:"体同士がくっついている"},{label:"正面から密着",prompt:"chest to chest, bodies pressed face to face",desc:"正面で押し付ける"},{label:"後ろから密着",prompt:"body pressed from behind, back to chest",desc:"後ろから寄り添う"},{label:"抱きしめて密着",prompt:"tight embrace, bodies tightly pressed",desc:"強く抱きしめる"},{label:"壁に押し付けて密着",prompt:"pressed against wall, bodies flush",desc:"壁際で密着"}]},
-breasts:{title:"おっぱい",options:[{label:"大きいおっぱい",prompt:"large breasts, big breasts",desc:"サイズ強調"},{label:"垂れたおっぱい",prompt:"sagging breasts, soft breasts",desc:"柔らかい・垂れている"},{label:"ピンと張ったおっぱい",prompt:"perky breasts, firm breasts",desc:"ハリがある"},{label:"揺れおっぱい",prompt:"bouncing breasts, jiggle",desc:"動いている・揺れている"},{label:"強調・寄せている",prompt:"cleavage, squeezed breasts, pressed breasts",desc:"寄せて谷間を作っている"},{label:"乳首が見えている",prompt:"nipples visible, erect nipples",desc:"勃起した乳首が見える"},{label:"おっぱいを掴まれている",prompt:"groping breasts, hands on breasts",desc:"触られている"}]},
-ass:{title:"お尻・太もも",options:[{label:"大きなお尻",prompt:"large ass, big butt, thick thighs",desc:"ボリュームのある尻・太もも"},{label:"桃尻",prompt:"peach ass, round ass",desc:"丸くて形の良い尻"},{label:"尻を強調",prompt:"ass focus, presenting ass",desc:"尻を向けている・強調"},{label:"尻を掴まれている",prompt:"groping ass, hands on ass",desc:"触られている"},{label:"太ももに手",prompt:"hands on thighs, stroking thighs",desc:"太ももを触っている"}]},
-pussy:{title:"性器",options:[{label:"濡れている",prompt:"wet pussy, dripping pussy, soaked",desc:"愛液で濡れている"},{label:"開いている",prompt:"spread pussy, open pussy, gaping",desc:"開いている状態"},{label:"挿入されている",prompt:"penis in pussy, penetration, vaginal penetration",desc:"挿入中"},{label:"クリトリス強調",prompt:"visible clitoris, swollen clitoris",desc:"クリトリスが目立つ"},{label:"性器アップ",prompt:"pussy focus, close-up pussy",desc:"局部を強調した構図"}]},
-skin:{title:"肌の状態",options:[{label:"汗だく",prompt:"sweaty, covered in sweat, glistening skin",desc:"汗で光っている"},{label:"赤み・興奮で赤い",prompt:"flushed skin, red skin, aroused flush",desc:"興奮で赤くなっている"},{label:"オイル・光沢",prompt:"oiled skin, shiny skin, glossy skin",desc:"テカっている"},{label:"キス跡・吸い跡",prompt:"hickeys, love bites, kiss marks",desc:"痕がついている"}]},
-body_focus:{title:"身体の強調",options:[{label:"おっぱいフォーカス",prompt:"breast focus, chest focus",desc:"胸に焦点"},{label:"尻フォーカス",prompt:"ass focus, butt focus",desc:"尻に焦点"},{label:"局部フォーカス",prompt:"pussy focus, crotch focus",desc:"性器に焦点"},{label:"全身を見せる",prompt:"full body, entirely visible",desc:"全身が入っている"},{label:"上半身強調",prompt:"upper body focus",desc:"上半身中心"}]},
-love_juice:{title:"愛液",options:[{label:"愛液が流れている",prompt:"pussy juice, love juice, dripping, wet",desc:"流れ落ちている"},{label:"太ももを伝う",prompt:"pussy juice on thighs, trails of juice",desc:"太ももの内側を伝っている"},{label:"シーツに染み",prompt:"wet stain on sheets, soaked sheets",desc:"染みになっている"},{label:"糸を引いている",prompt:"string of pussy juice, sticky",desc:"粘ついて糸を引く"},{label:"我慢汁",prompt:"pre-cum, precum, precum dripping",desc:"先走り・我慢汁"},{label:"潮吹き",prompt:"squirting, female ejaculation",desc:"潮を吹いている"}]},
-semen:{title:"精液",options:[{label:"顔にかかっている",prompt:"facial, cum on face, cum on cheeks",desc:"顔射"},{label:"胸にかかっている",prompt:"cum on breasts, cum on chest",desc:"胸に出されている"},{label:"中出し",prompt:"cum in pussy, creampie, internal cumshot",desc:"中に出されている"},{label:"お腹・体にかかっている",prompt:"cum on stomach, cum on body",desc:"体に飛び散っている"},{label:"口に出されている",prompt:"cum in mouth, cum on tongue",desc:"口内"},{label:"大量の精液",prompt:"excessive cum, lots of cum, cum overflow",desc:"量が多め"}]},
-saliva:{title:"よだれ・唾液",options:[{label:"よだれが垂れている",prompt:"drool, drooling, saliva",desc:"口から垂れている"},{label:"舌に唾液",prompt:"saliva on tongue, wet tongue",desc:"舌が湿っている"},{label:"キスで唾液交換",prompt:"saliva trail, string of saliva, deep kiss",desc:"糸を引くキス"}]},
-sweat:{title:"汗",options:[{label:"汗だく",prompt:"sweat, sweaty body, covered in sweat",desc:"全身汗"},{label:"額の汗",prompt:"sweat on forehead, beads of sweat",desc:"額に汗"},{label:"汗で肌が光る",prompt:"glistening sweat, shiny with sweat",desc:"汗でテカっている"}]}
+role_position:{title:"上下関係・体位",page:"basePage",options:[{label:"男性が上",prompt:"man on top, male on top",desc:"男性が上にいる"},{label:"女性が上",prompt:"woman on top, female on top",desc:"女性が上にいる"},{label:"対面",prompt:"face to face, facing each other",desc:"お互いを見ている体勢"},{label:"後ろから",prompt:"from behind, rear entry",desc:"後ろから"}]},
+role_dominance:{title:"攻め・受け",page:"basePage",options:[{label:"男性が攻め",prompt:"dominant male, male dominant",desc:"男性が主導"},{label:"女性が攻め",prompt:"dominant female, female dominant",desc:"女性が主導"},{label:"互いに積極的",prompt:"mutual, equal participation",desc:"どちらも積極的"}]},
+role_gaze:{title:"視線の関係",page:"basePage",options:[{label:"お互いを見つめ合う",prompt:"looking at each other, eye contact",desc:"視線を合わせる"},{label:"男性が女性を見る",prompt:"man looking at woman",desc:"男性視点"},{label:"女性が男性を見る",prompt:"woman looking at man",desc:"女性視点"},{label:"どちらも上を向く",prompt:"both looking up",desc:"快感で上を向く"}]},
+bunny:{title:"バニー衣装",page:"clothingPage",options:[{label:"通常のバニー",prompt:"bunny suit, bunny ears, playboy bunny",desc:"定番のバニー"},{label:"逆バニー",prompt:"reverse bunny suit, reverse bunny",desc:"胸と股が開いた逆バニー"},{label:"黒バニー",prompt:"black bunny suit, bunny ears",desc:"黒"},{label:"白バニー",prompt:"white bunny suit, bunny ears",desc:"白"},{label:"ピンクバニー",prompt:"pink bunny suit, bunny ears",desc:"ピンク"}]},
+clothing_state:{title:"着衣の状態（汎用）",page:"clothingPage",options:[{label:"はだけている",prompt:"open clothes, unbuttoned, disheveled clothes",desc:"服が開いている"},{label:"ずらしている",prompt:"clothes aside, pulled aside",desc:"局部を出すようにずらす"},{label:"半分脱がされている",prompt:"half-undressed, clothes around waist or thighs",desc:"途中まで脱げている"},{label:"破れている",prompt:"torn clothes, ripped clothes",desc:"破れている"},{label:"濡れている",prompt:"wet clothes, see-through clothes",desc:"濡れて透けている"},{label:"全裸",prompt:"completely nude, naked",desc:"何も着ていない"},{label:"下着だけ",prompt:"underwear only, in underwear",desc:"下着姿"}]},
+condom:{title:"コンドーム",page:"propsPage",options:[{label:"付けている途中",prompt:"putting on condom, rolling condom onto penis",desc:"装着しようとしている"},{label:"装着済み",prompt:"wearing condom, condom on penis",desc:"すでに付いている"},{label:"使用済み・廃棄",prompt:"used condom, discarded condom",desc:"使い終わって捨ててある"},{label:"包装を開けている",prompt:"opening condom package, condom wrapper",desc:"袋を破っている"},{label:"精液が入っている",prompt:"used condom filled with semen",desc:"中に精液が溜まっている"}]},
+dildo:{title:"ディルド",page:"propsPage",options:[{label:"膣に挿入中",prompt:"dildo insertion, dildo in pussy",desc:"膣に入っている"},{label:"アナルに挿入",prompt:"anal dildo, dildo in ass",desc:"アナルに入っている"},{label:"持っている・見せている",prompt:"holding dildo, presenting dildo",desc:"手に持って見せている"},{label:"舐める・咥える",prompt:"sucking dildo, licking dildo",desc:"口で扱っている"},{label:"置いてある",prompt:"dildo on floor, dildo on table",desc:"置かれている"}]},
+vibrator:{title:"バイブ",page:"propsPage",options:[{label:"膣に挿入中",prompt:"vibrator in pussy, vibrating",desc:"中で振動している"},{label:"クリトリスに当てている",prompt:"vibrator on clitoris, clitoral stimulation",desc:"外側で刺激"},{label:"アナルに挿入",prompt:"anal vibrator, vibrator in ass",desc:"アナル使用"},{label:"遠隔操作中",prompt:"remote controlled vibrator, public vibrator",desc:"遠隔で動かされている"},{label:"持っている",prompt:"holding vibrator",desc:"手に持っている"}]},
+anal:{title:"アナル系道具",page:"propsPage",options:[{label:"アナルビーズ",prompt:"anal beads, pulling anal beads",desc:"ビーズを出し入れ"},{label:"アナルプラグ装着",prompt:"butt plug, wearing butt plug",desc:"プラグが刺さっている"},{label:"テールプラグ",prompt:"anal tail plug, fox tail plug",desc:"しっぽ付き"},{label:"拡張中",prompt:"anal stretching, anal gape",desc:"広げている"}]},
+restraint:{title:"拘束",page:"propsPage",options:[{label:"縄で縛られている",prompt:"bound, shibari, rope bondage",desc:"縄縛り"},{label:"手錠",prompt:"handcuffs, hands cuffed",desc:"手が拘束"},{label:"目隠し",prompt:"blindfold, blindfolded",desc:"目が見えない"},{label:"ボールギャグ",prompt:"ball gag, gagged",desc:"口を塞がれている"},{label:"首輪とリード",prompt:"collar and leash, being led",desc:"リードで引かれている"},{label:"手足を固定",prompt:"spread eagle, limbs restrained",desc:"大の字に固定"}]},
+other_toy:{title:"その他性具",page:"propsPage",options:[{label:"ローション",prompt:"lube, covered in lube",desc:"ローション塗れ"},{label:"鞭",prompt:"whip, being whipped",desc:"鞭打ち"},{label:"パドル",prompt:"paddle, spanking with paddle",desc:"叩かれている"},{label:"乳首クリップ",prompt:"nipple clamps",desc:"乳首を挟んでいる"},{label:"オナホール",prompt:"onahole, fleshlight",desc:"ホール使用"}]},
+kiss:{title:"キス",page:"sexPage",options:[{label:"ディープキス",prompt:"deep kiss, french kiss, tongue kiss",desc:"舌を絡めるキス"},{label:"軽いキス",prompt:"kiss, light kiss, peck",desc:"軽いキス"},{label:"首筋へのキス",prompt:"neck kiss, kissing neck",desc:"首にキスしている"},{label:"唾液が糸を引く",prompt:"saliva trail, string of saliva, messy kiss",desc:"よだれが繋がっている"},{label:"キスしながら抱きつく",prompt:"kissing while embracing, passionate kiss",desc:"抱擁しながらのキス"}]},
+fellatio:{title:"フェラチオ",page:"sexPage",options:[{label:"咥えている",prompt:"fellatio, oral, sucking penis, penis in mouth",desc:"口に含んでいる"},{label:"先端を舐めている",prompt:"licking penis, licking tip of penis",desc:"先を舐めている"},{label:"深喉",prompt:"deepthroat, throat bulge",desc:"奥まで咥えている"},{label:"顔に精液",prompt:"facial, cum on face",desc:"顔にかけられている"},{label:"口内射精",prompt:"cum in mouth, swallowing cum",desc:"口の中に出されている"}]},
+cunnilingus:{title:"クンニ",page:"sexPage",options:[{label:"舐めている",prompt:"cunnilingus, oral, licking pussy",desc:"普通に舐めている"},{label:"クリトリス集中",prompt:"licking clitoris, clitoral stimulation",desc:"クリトリスを重点的に"},{label:"顔を埋めている",prompt:"face in pussy, smothered",desc:"顔を押し付けている"},{label:"愛液を舐めている",prompt:"licking juices, wet pussy",desc:"愛液を舐め取っている"}]},
+handjob:{title:"手コキ",page:"sexPage",options:[{label:"しごいている",prompt:"handjob, stroking penis",desc:"手でしごいている"},{label:"両手で",prompt:"two-handed handjob",desc:"両手を使っている"},{label:"射精させている",prompt:"handjob, cumming, ejaculation",desc:"射精に導いている"},{label:"先端を刺激",prompt:"teasing tip of penis, rubbing glans",desc:"先を重点的に"}]},
+paizuri:{title:"パイズリ",page:"sexPage",options:[{label:"挟んでいる",prompt:"paizuri, titjob, breast sex, penis between breasts",desc:"胸で挟んでいる"},{label:"動かしながら",prompt:"paizuri, moving breasts, active titjob",desc:"上下に動かしている"},{label:"射精",prompt:"paizuri, cum on breasts, cum between breasts",desc:"胸に出されている"},{label:"顔も使っている",prompt:"paizuri, licking tip while titjob",desc:"パイズリしながら先端を舐め"}]},
+nipple:{title:"乳首責め",page:"sexPage",options:[{label:"女性の乳首を舐める",prompt:"licking nipple, nipple play, female nipples",desc:"女性の乳首"},{label:"女性の乳首を吸う",prompt:"sucking nipple, nursing, female nipples",desc:"女性の乳首を吸う"},{label:"女性の乳首を摘まむ",prompt:"pinching nipple, twisting nipple, female nipples",desc:"女性の乳首"},{label:"男性の乳首を舐める",prompt:"licking male nipple, male nipple play",desc:"男性の乳首"},{label:"男性の乳首を摘まむ",prompt:"pinching male nipple, male nipple play",desc:"男性の乳首"},{label:"男性の乳首を吸う",prompt:"sucking male nipple, male nipple play",desc:"男性の乳首を吸う"}]},
+analingus:{title:"アナル舐め",page:"sexPage",options:[{label:"アナルを舐めている",prompt:"analingus, rimming, licking anus",desc:"普通に舐めている"},{label:"深く舌を入れている",prompt:"tongue in ass, deep rimming",desc:"舌を挿入している"},{label:"顔を埋めている",prompt:"face in ass, smothered",desc:"顔を押し付けている"}]},
+balls:{title:"玉・睾丸",page:"sexPage",options:[{label:"玉を舐めている",prompt:"licking balls, sucking balls, testis",desc:"玉舐め"},{label:"玉を優しく触る",prompt:"fondling balls, cupping balls",desc:"手で触っている"},{label:"玉を吸い上げる",prompt:"sucking balls, balls in mouth",desc:"口に含んでいる"}]},
+fingering:{title:"指入れ",page:"sexPage",options:[{label:"指を入れている",prompt:"fingering, fingering pussy, fingers in pussy",desc:"指を挿入している"},{label:"複数本",prompt:"multiple fingers in pussy, fingering",desc:"何本も入れている"},{label:"Gスポット刺激",prompt:"fingering g-spot, curling fingers",desc:"内側を刺激"},{label:"アナルに指",prompt:"anal fingering, fingers in ass",desc:"アナルに指入れ"}]},
+missionary:{title:"正常位",page:"sexPage",options:[{label:"基本の正常位",prompt:"missionary position, man on top, woman on her back with legs spread, face to face, deep penetration",desc:"標準的な形"},{label:"脚を肩に",prompt:"missionary with woman’s legs over man’s shoulders, deep angle",desc:"深く入る角度"},{label:"片脚上げ",prompt:"missionary, one of woman’s legs raised high, other wrapped around man’s waist",desc:"片脚を上げている"},{label:"膝を抱える",prompt:"missionary, man holding woman’s knees to her chest",desc:"膝を胸に押し付ける"}]},
+doggy:{title:"後背位",page:"sexPage",options:[{label:"基本の後背位",prompt:"doggy style, woman on all fours, man behind, arched back",desc:"四つん這い"},{label:"顔を伏せた後背位",prompt:"prone bone, woman lying flat on her stomach, man on top from behind",desc:"うつ伏せ"},{label:"膝立ち後背位",prompt:"kneeling doggy, both on knees, man thrusting from behind",desc:"両方が膝立ち"},{label:"立ちバック",prompt:"standing doggy, woman bent over a table or wall, man standing behind",desc:"立ったまま"}]},
+cowgirl:{title:"騎乗位",page:"sexPage",options:[{label:"基本の騎乗位",prompt:"cowgirl, woman on top facing man, riding, hands on his chest",desc:"対面で乗っている"},{label:"逆騎乗位",prompt:"reverse cowgirl, woman on top facing away, looking back over her shoulder",desc:"背を向けて乗っている"},{label:"前傾騎乗位",prompt:"cowgirl leaning forward, breasts close to man’s face",desc:"前かがみで胸が近い"},{label:"後ろに手をつく",prompt:"reverse cowgirl, woman leaning back with hands on the bed for support",desc:"体を反らせている"}]},
+mating_press:{title:"種付けプレス",page:"sexPage",options:[{label:"基本の種付けプレス",prompt:"mating press, legs pushed back, deep penetration, breeding",desc:"脚を大きく開いて押さえる"},{label:"強く押さえつける",prompt:"mating press, heavy pressing, legs over head",desc:"より強い圧"},{label:"中出し強調",prompt:"mating press, creampie, cum inside, breeding",desc:"中出しを意識した描写"}]},
+daisuki_hold:{title:"だいしゅきホールド",page:"sexPage",options:[{label:"基本のだいしゅきホールド",prompt:"daisuki hold, legs held up, deep penetration, intimate embrace",desc:"脚を抱えて深く結合"},{label:"強く抱きしめる",prompt:"daisuki hold, tight embrace, legs over shoulders",desc:"より密着した抱き方"},{label:"中出ししながら",prompt:"daisuki hold, creampie, cum inside while holding",desc:"出しながらホールド"}]},
+ekiben:{title:"駅弁",page:"sexPage",options:[{label:"基本の駅弁",prompt:"ekiben, standing carry, woman held up, legs wrapped around man, penetration while standing",desc:"立ったまま抱えて挿入"},{label:"壁に押し付けながら",prompt:"ekiben, against wall, standing carry sex",desc:"壁を使った駅弁"},{label:"激しく動かす",prompt:"ekiben, intense thrusting while carrying",desc:"抱えたまま激しく動く"}]},
+thrust:{title:"腰振り・ピストン",page:"sexPage",options:[{label:"激しく腰を振っている",prompt:"thrusting, intense thrusting, pistoning",desc:"激しいピストン"},{label:"ゆっくり腰を動かす",prompt:"slow thrusting, grinding",desc:"ゆっくりとした動き"},{label:"深く突き上げる",prompt:"deep thrust, deep penetration, bottoming out",desc:"奥まで突いている"},{label:"浅いピストン",prompt:"shallow thrusting, teasing thrusts",desc:"浅く動いている"}]},
+bounce:{title:"揺れ・バウンス",page:"sexPage",options:[{label:"おっぱいが揺れている",prompt:"bouncing breasts, jiggle",desc:"胸が揺れている"},{label:"尻が揺れている",prompt:"bouncing ass, jiggling butt",desc:"尻が揺れている"},{label:"体全体が揺れている",prompt:"body bounce, bouncing",desc:"体がバウンドしている"}]},
+body_reaction:{title:"身体の反応",page:"sexPage",options:[{label:"腰が浮かる",prompt:"hips rising, arching from pleasure",desc:"快感で腰が浮く"},{label:"足が震える",prompt:"trembling legs, shaking legs",desc:"足ががくがくする"},{label:"力が入る・踏ん張る",prompt:"clenching, tensing up, gripping",desc:"力を入れている"},{label:"体をくねらせる",prompt:"writhing, squirming from pleasure",desc:"くねくね動く"},{label:"背中を大きく反らす",prompt:"arching back strongly, extreme arch",desc:"大きく反る"}]},
+head_pat:{title:"頭を撫でる",page:"bodyPage",options:[{label:"男性が女性の頭を撫でる",prompt:"man stroking woman's head, headpat, hand on head",desc:"男性→女性"},{label:"女性が男性の頭を撫でる",prompt:"woman stroking man's head, headpat, hand on head",desc:"女性→男性"},{label:"優しく撫でる",prompt:"gentle headpat, stroking hair",desc:"優しい触れ方"},{label:"抱きながら撫でる",prompt:"headpat while hugging, stroking head in embrace",desc:"抱擁しながら"}]},
+body_press:{title:"身体を密着させる",page:"bodyPage",options:[{label:"密着している",prompt:"bodies pressed together, close contact, skin to skin",desc:"体同士がくっついている"},{label:"正面から密着",prompt:"chest to chest, bodies pressed face to face",desc:"正面で押し付ける"},{label:"後ろから密着",prompt:"body pressed from behind, back to chest",desc:"後ろから寄り添う"},{label:"抱きしめて密着",prompt:"tight embrace, bodies tightly pressed",desc:"強く抱きしめる"},{label:"壁に押し付けて密着",prompt:"pressed against wall, bodies flush",desc:"壁際で密着"}]},
+breasts:{title:"おっぱい",page:"bodyPage",options:[{label:"大きいおっぱい",prompt:"large breasts, big breasts",desc:"サイズ強調"},{label:"垂れたおっぱい",prompt:"sagging breasts, soft breasts",desc:"柔らかい・垂れている"},{label:"ピンと張ったおっぱい",prompt:"perky breasts, firm breasts",desc:"ハリがある"},{label:"揺れおっぱい",prompt:"bouncing breasts, jiggle",desc:"動いている・揺れている"},{label:"強調・寄せている",prompt:"cleavage, squeezed breasts, pressed breasts",desc:"寄せて谷間を作っている"},{label:"乳首が見えている",prompt:"nipples visible, erect nipples",desc:"勃起した乳首が見える"},{label:"おっぱいを掴まれている",prompt:"groping breasts, hands on breasts",desc:"触られている"}]},
+ass:{title:"お尻・太もも",page:"bodyPage",options:[{label:"大きなお尻",prompt:"large ass, big butt, thick thighs",desc:"ボリュームのある尻・太もも"},{label:"桃尻",prompt:"peach ass, round ass",desc:"丸くて形の良い尻"},{label:"尻を強調",prompt:"ass focus, presenting ass",desc:"尻を向けている・強調"},{label:"尻を掴まれている",prompt:"groping ass, hands on ass",desc:"触られている"},{label:"太ももに手",prompt:"hands on thighs, stroking thighs",desc:"太ももを触っている"}]},
+pussy:{title:"性器",page:"bodyPage",options:[{label:"濡れている",prompt:"wet pussy, dripping pussy, soaked",desc:"愛液で濡れている"},{label:"開いている",prompt:"spread pussy, open pussy, gaping",desc:"開いている状態"},{label:"挿入されている",prompt:"penis in pussy, penetration, vaginal penetration",desc:"挿入中"},{label:"クリトリス強調",prompt:"visible clitoris, swollen clitoris",desc:"クリトリスが目立つ"},{label:"性器アップ",prompt:"pussy focus, close-up pussy",desc:"局部を強調した構図"}]},
+skin:{title:"肌の状態",page:"bodyPage",options:[{label:"汗だく",prompt:"sweaty, covered in sweat, glistening skin",desc:"汗で光っている"},{label:"赤み・興奮で赤い",prompt:"flushed skin, red skin, aroused flush",desc:"興奮で赤くなっている"},{label:"オイル・光沢",prompt:"oiled skin, shiny skin, glossy skin",desc:"テカっている"},{label:"キス跡・吸い跡",prompt:"hickeys, love bites, kiss marks",desc:"痕がついている"}]},
+body_focus:{title:"身体の強調",page:"bodyPage",options:[{label:"おっぱいフォーカス",prompt:"breast focus, chest focus",desc:"胸に焦点"},{label:"尻フォーカス",prompt:"ass focus, butt focus",desc:"尻に焦点"},{label:"局部フォーカス",prompt:"pussy focus, crotch focus",desc:"性器に焦点"},{label:"全身を見せる",prompt:"full body, entirely visible",desc:"全身が入っている"},{label:"上半身強調",prompt:"upper body focus",desc:"上半身中心"}]},
+love_juice:{title:"愛液",page:"bodyPage",options:[{label:"愛液が流れている",prompt:"pussy juice, love juice, dripping, wet",desc:"流れ落ちている"},{label:"太ももを伝う",prompt:"pussy juice on thighs, trails of juice",desc:"太ももの内側を伝っている"},{label:"シーツに染み",prompt:"wet stain on sheets, soaked sheets",desc:"染みになっている"},{label:"糸を引いている",prompt:"string of pussy juice, sticky",desc:"粘ついて糸を引く"},{label:"我慢汁",prompt:"pre-cum, precum, precum dripping",desc:"先走り・我慢汁"},{label:"潮吹き",prompt:"squirting, female ejaculation",desc:"潮を吹いている"}]},
+semen:{title:"精液",page:"bodyPage",options:[{label:"顔にかかっている",prompt:"facial, cum on face, cum on cheeks",desc:"顔射"},{label:"胸にかかっている",prompt:"cum on breasts, cum on chest",desc:"胸に出されている"},{label:"中出し",prompt:"cum in pussy, creampie, internal cumshot",desc:"中に出されている"},{label:"お腹・体にかかっている",prompt:"cum on stomach, cum on body",desc:"体に飛び散っている"},{label:"口に出されている",prompt:"cum in mouth, cum on tongue",desc:"口内"},{label:"大量の精液",prompt:"excessive cum, lots of cum, cum overflow",desc:"量が多め"}]},
+saliva:{title:"よだれ・唾液",page:"bodyPage",options:[{label:"よだれが垂れている",prompt:"drool, drooling, saliva",desc:"口から垂れている"},{label:"舌に唾液",prompt:"saliva on tongue, wet tongue",desc:"舌が湿っている"},{label:"キスで唾液交換",prompt:"saliva trail, string of saliva, deep kiss",desc:"糸を引くキス"}]},
+sweat:{title:"汗",page:"bodyPage",options:[{label:"汗だく",prompt:"sweat, sweaty body, covered in sweat",desc:"全身汗"},{label:"額の汗",prompt:"sweat on forehead, beads of sweat",desc:"額に汗"},{label:"汗で肌が光る",prompt:"glistening sweat, shiny with sweat",desc:"汗でテカっている"}]}
 };
 
 const CONFLICT_PAIRS=[["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],["solo","2girls"],["solo","1boy"],["solo","multiple girls"],["1girl","2girls"],["1girl","3girls"],["day","night"],["morning","night"],["indoors","outdoors"],["white background","black background"],["simple background","detailed background"]];
 
-try{const s=localStorage.getItem("novelai_prompts_v2");if(s)prompts=JSON.parse(s)}catch(e){}
+try{const s=localStorage.getItem("novelai_prompts_v3");if(s)prompts=JSON.parse(s)}catch(e){}
 try{if(localStorage.getItem("novelai_theme")==="dark")document.body.classList.add("dark")}catch(e){}
-function savePrompts(){try{localStorage.setItem("novelai_prompts_v2",JSON.stringify(prompts))}catch(e){}}
-function toggleTheme(){document.body.classList.toggle("dark");const isDark=document.body.classList.contains("dark");document.getElementById("themeButton").textContent=isDark?"☀️":"🌙";try{localStorage.setItem("novelai_theme",isDark?"dark":"light")}catch(e){}}
-if(document.body.classList.contains("dark"))document.getElementById("themeButton").textContent="☀️";
-function addPrompt(t){if(prompts.some(p=>p.text===t))return;prompts.push({text:t,weight:1.0});updatePrompt();savePrompts()}
-function removePrompt(i){prompts.splice(i,1);updatePrompt();savePrompts()}
+function savePrompts(){try{localStorage.setItem("novelai_prompts_v3",JSON.stringify(prompts))}catch(e){}}
+function toggleTheme(){document.body.classList.toggle("dark");const isDark=document.body.classList.contains("dark");document.getElementById("themeButton").textContent=isDark?"☀️ ライトモード切替":"🌙 ダークモード切替";try{localStorage.setItem("novelai_theme",isDark?"dark":"light")}catch(e){}}
+if(document.body.classList.contains("dark"))document.getElementById("themeButton").textContent="☀️ ライトモード切替";
+
+function hideCopyMsg(){document.getElementById("copyMsg").classList.remove("show")}
+function addP(text,label,page,skipConflict){
+  if(prompts.some(p=>p.text===text))return;
+  if(!skipConflict){
+    const conf=findConflictWith(text);
+    if(conf){pendingConflict={text,label,page,confLabel:conf};document.getElementById("conflictMsg").textContent=conf+"と矛盾しています、追加しますか？";document.getElementById("conflictOverlay").classList.add("active");return}
+  }
+  prompts.push({text,label:label||text,weight:1.0,page:page||null});
+  hideCopyMsg();updatePrompt();savePrompts();
+}
+function findConflictWith(text){
+  const tl=text.toLowerCase();
+  for(const [a,b] of CONFLICT_PAIRS){
+    const al=a.toLowerCase(),bl=b.toLowerCase();
+    const hitA=tl.includes(al),hitB=tl.includes(bl);
+    if(hitA){const p=prompts.find(x=>x.text.toLowerCase().includes(bl));if(p)return p.label||p.text}
+    if(hitB){const p=prompts.find(x=>x.text.toLowerCase().includes(al));if(p)return p.label||p.text}
+  }
+  return null;
+}
+function confirmConflictAdd(){if(pendingConflict){addP(pendingConflict.text,pendingConflict.label,pendingConflict.page,true);pendingConflict=null}closeConflict()}
+function closeConflict(){document.getElementById("conflictOverlay").classList.remove("active");pendingConflict=null}
+function removePrompt(i){prompts.splice(i,1);hideCopyMsg();updatePrompt();savePrompts()}
 function movePrompt(i,dir){const j=i+dir;if(j<0||j>=prompts.length)return;const t=prompts[i];prompts[i]=prompts[j];prompts[j]=t;updatePrompt();savePrompts()}
 function formatPrompt(p){return p.weight===1.0?p.text:`(${p.text}:${p.weight})`}
-function checkConflicts(){const texts=prompts.map(p=>p.text.toLowerCase()),found=[];CONFLICT_PAIRS.forEach(([a,b])=>{if(texts.some(t=>t.includes(a.toLowerCase()))&&texts.some(t=>t.includes(b.toLowerCase())))found.push(a+" と "+b)});const w=document.getElementById("conflictWarning");if(found.length){w.textContent="⚠ 矛盾の可能性: "+found.join(" / ");w.classList.add("active")}else{w.classList.remove("active");w.textContent=""}}
 function getConflictKeywords(){const texts=prompts.map(p=>p.text.toLowerCase()),keys=new Set();CONFLICT_PAIRS.forEach(([a,b])=>{const hasA=texts.some(t=>t.includes(a.toLowerCase())),hasB=texts.some(t=>t.includes(b.toLowerCase()));if(hasA&&!hasB)keys.add(b.toLowerCase());if(hasB&&!hasA)keys.add(a.toLowerCase())});return keys}
 function updateSelectedButtons(){
   const conflictKeys=getConflictKeywords();
-  document.querySelectorAll("button[onclick*='addPrompt']").forEach(btn=>{
-    const m=btn.getAttribute("onclick").match(/addPrompt\('([^']+)'\)|addPrompt\("([^"]+)"\)|addPrompt\(&quot;([^&]+)&quot;\)/);
-    let text=null;if(m)text=m[1]||m[2]||m[3];
-    if(!text)return;
+  document.querySelectorAll("button[onclick*='addP']").forEach(btn=>{
+    const m=btn.getAttribute("onclick").match(/addP\('([^']+)'/);
+    if(!m)return;
+    const text=m[1];
     const exists=prompts.some(p=>p.text===text);
     btn.classList.toggle("selected",exists);
     const isConflict=!exists&&[...conflictKeys].some(k=>text.toLowerCase().includes(k));
@@ -842,21 +855,88 @@ function updateSelectedButtons(){
   });
 }
 function togglePromptExpand(){promptExpanded=!promptExpanded;const el=document.getElementById("prompt"),btn=document.getElementById("promptExpand");el.classList.toggle("expanded",promptExpanded);btn.textContent=promptExpanded?"▲ 閉じる":"… タップで展開"}
-function updatePrompt(){const el=document.getElementById("prompt"),c=document.getElementById("promptCount"),exp=document.getElementById("promptExpand");if(!prompts.length){el.innerHTML='<span class="placeholder">ここに選択したプロンプトが表示されます</span>';el.classList.remove("expanded");exp.classList.remove("show");promptExpanded=false}else{el.innerHTML=prompts.map((p,i)=>{const b=p.weight!==1.0?`<span class="weight">${p.weight}</span>`:"";return `<span class="prompt-chip" data-index="${i}"><button class="move-btn" onclick="event.stopPropagation();movePrompt(${i},-1)">↑</button><button class="move-btn" onclick="event.stopPropagation();movePrompt(${i},1)">↓</button>${escapeHtml(p.text)}${b}<span class="remove" onclick="event.stopPropagation();removePrompt(${i})">×</span></span>`}).join("");if(prompts.length>COLLAPSE_THRESHOLD){exp.classList.add("show");if(!promptExpanded)el.classList.remove("expanded");else el.classList.add("expanded");exp.textContent=promptExpanded?"▲ 閉じる":"… タップで展開（"+prompts.length+"個）"}else{exp.classList.remove("show");el.classList.add("expanded");promptExpanded=true}}c.textContent=prompts.length+" 個選択中";checkConflicts();attachChipEvents();updateSelectedButtons()}
+function updatePrompt(){
+  const el=document.getElementById("prompt"),c=document.getElementById("promptCount"),exp=document.getElementById("promptExpand");
+  if(!prompts.length){el.innerHTML='<span class="placeholder">ここに選択したプロンプトが表示されます</span>';el.classList.remove("expanded");exp.classList.remove("show");promptExpanded=false}
+  else{
+    el.innerHTML=prompts.map((p,i)=>{const b=p.weight!==1.0?`<span class="weight">${p.weight}</span>`:"";return `<span class="prompt-chip" data-index="${i}"><span class="chip-label">${escapeHtml(p.label||p.text)}</span>${b}<span class="remove" data-remove="${i}">×</span></span>`}).join("");
+    if(prompts.length>COLLAPSE_THRESHOLD){exp.classList.add("show");if(!promptExpanded)el.classList.remove("expanded");else el.classList.add("expanded");exp.textContent=promptExpanded?"▲ 閉じる":"… タップで展開（"+prompts.length+"個）"}
+    else{exp.classList.remove("show");el.classList.add("expanded");promptExpanded=true}
+  }
+  c.textContent=prompts.length+" 個選択中";
+  attachChipEvents();updateSelectedButtons();
+}
 function escapeHtml(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML}
-function openVariation(k){const d=VARIATIONS[k];if(!d)return;document.getElementById("variationTitle").textContent=d.title;document.getElementById("variationList").innerHTML=d.options.map(o=>`<button onclick="selectVariation(\`${o.prompt.replace(/`/g,"\\`")}\`)">${o.label}${o.desc?`<span class="desc">${o.desc}</span>`:""}</button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
-function selectVariation(t){addPrompt(t);closeVariationPanel()}
+
+function openChipMenu(i){
+  chipMenuIndex=i;const p=prompts[i];
+  document.getElementById("chipMenuTitle").textContent=p.label||p.text;
+  document.getElementById("chipMenuList").innerHTML=`
+    <button onclick="movePrompt(${i},-1);closeChipMenu()">↑ 上へ移動</button>
+    <button onclick="movePrompt(${i},1);closeChipMenu()">↓ 下へ移動</button>
+    <button onclick="closeChipMenu();openWeightPanel(${i})">重みを変更</button>
+    ${p.page?`<button onclick="closeChipMenu();showPage('${p.page}')">このタグのページへ</button>`:""}
+  `;
+  document.getElementById("chipMenuOverlay").classList.add("active");
+}
+function closeChipMenu(){document.getElementById("chipMenuOverlay").classList.remove("active");chipMenuIndex=-1}
+
+function openVariation(k){const d=VARIATIONS[k];if(!d)return;document.getElementById("variationTitle").textContent=d.title;document.getElementById("variationList").innerHTML=d.options.map(o=>`<button onclick="selectVariation(\`${o.prompt.replace(/`/g,"\\`")}\`,'${o.label.replace(/'/g,"\\'")}','${d.page||""}')">${o.label}${o.desc?`<span class="desc">${o.desc}</span>`:""}</button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
+function selectVariation(t,label,page){addP(t,label,page);closeVariationPanel()}
 function closeVariationPanel(){document.getElementById("variationOverlay").classList.remove("active");pendingClothing=null}
 function openClothingColor(type){pendingClothing={type,color:null};const colors=CLOTHING_COLORS[type]||[];document.getElementById("variationTitle").textContent="色を選択";document.getElementById("variationList").innerHTML=colors.map(c=>`<button onclick="selectClothingColor('${c.value}')">${c.label}</button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
-function selectClothingColor(colorValue){pendingClothing.color=colorValue;const states=CLOTHING_STATES[pendingClothing.type]||[];document.getElementById("variationTitle").textContent="状態を選択";document.getElementById("variationList").innerHTML=states.map(s=>{const base=CLOTHING_BASE[pendingClothing.type];const colorPart=pendingClothing.color?pendingClothing.color+" ":"";let prompt="";if(pendingClothing.type==="nurse_maid"){const isMaid=pendingClothing.color==="black";prompt=(isMaid?"black maid outfit":(pendingClothing.color?pendingClothing.color+" nurse outfit":"nurse outfit"))+s.suffix}else if(pendingClothing.type==="office"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"office lady, suit"+s.suffix}else if(pendingClothing.type==="uniform"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"school uniform"+s.suffix}else if(pendingClothing.type==="china"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"china dress"+s.suffix}else{prompt=colorPart+base+s.suffix}return `<button onclick="selectVariation(\`${prompt.replace(/`/g,"\\`")}\`)">${s.label}</button>`}).join("")}
-function buildSearchIndex(){SEARCH_INDEX.length=0;document.querySelectorAll("button[onclick*='addPrompt']").forEach(btn=>{const label=btn.textContent.trim();const m=btn.getAttribute("onclick").match(/addPrompt\('([^']+)'\)|addPrompt\("([^"]+)"\)|addPrompt\(&quot;([^&]+)&quot;\)/);const text=m?(m[1]||m[2]||m[3]):null;if(label&&text)SEARCH_INDEX.push({label,text,type:"direct"})});Object.keys(VARIATIONS).forEach(k=>{const v=VARIATIONS[k];SEARCH_INDEX.push({label:v.title,text:null,type:"variation",key:k});(v.options||[]).forEach(o=>{SEARCH_INDEX.push({label:o.label+"（"+v.title+"）",text:o.prompt,type:"direct"})})});["lingerie","bikini","school_swimsuit","uniform","nurse_maid","office","china"].forEach(k=>{SEARCH_INDEX.push({label:({lingerie:"ランジェリー",bikini:"ビキニ系",school_swimsuit:"スクール水着",uniform:"制服",nurse_maid:"ナース・メイド",office:"OL・スーツ",china:"チャイナドレス"})[k],text:null,type:"clothing",key:k})})}
-function runSearch(q){const box=document.getElementById("searchResults");q=(q||"").trim();if(!q){box.innerHTML="";return}const hits=SEARCH_INDEX.filter(i=>matchSearch(q,i.label)||(i.text&&matchSearch(q,i.text))).slice(0,40);if(!hits.length){box.innerHTML='<div class="empty">該当なし</div>';return}box.innerHTML=hits.map(h=>{if(h.type==="direct")return `<button onclick="addPrompt(\`${h.text.replace(/`/g,"\\`")}\`);document.getElementById('searchBox').value='';runSearch('')">${escapeHtml(h.label)}</button>`;if(h.type==="variation")return `<button onclick="openVariation('${h.key}')">${escapeHtml(h.label)} →</button>`;if(h.type==="clothing")return `<button onclick="openClothingColor('${h.key}')">${escapeHtml(h.label)} →</button>`;return""}).join("")}
-function attachChipEvents(){document.querySelectorAll(".prompt-chip").forEach(chip=>{let timer=null;const start=e=>{if(e.target.classList.contains("remove")||e.target.classList.contains("move-btn"))return;timer=setTimeout(()=>openWeightPanel(+chip.dataset.index),500)};const cancel=()=>clearTimeout(timer);chip.addEventListener("touchstart",start,{passive:true});chip.addEventListener("touchend",cancel);chip.addEventListener("touchcancel",cancel);chip.addEventListener("mousedown",start);chip.addEventListener("mouseup",cancel);chip.addEventListener("mouseleave",cancel)})}
+function selectClothingColor(colorValue){pendingClothing.color=colorValue;const states=CLOTHING_STATES[pendingClothing.type]||[];const colorLabel=({black:"黒",white:"白",pink:"ピンク",red:"赤",purple:"紫",navy:"ネイビー",blue:"青",yellow:"黄",gray:"グレー","":"指定なし"})[pendingClothing.color]||pendingClothing.color;document.getElementById("variationTitle").textContent="状態を選択";document.getElementById("variationList").innerHTML=states.map(s=>{const base=CLOTHING_BASE[pendingClothing.type];const colorPart=pendingClothing.color?pendingClothing.color+" ":"";let prompt="",jlabel=colorLabel+(colorLabel?"の":"")+(({lingerie:"ランジェリー",bikini:"ビキニ",school_swimsuit:"スクール水着",uniform:"制服",nurse_maid:"ナース・メイド",office:"OL・スーツ",china:"チャイナドレス"})[pendingClothing.type]||"")+ (s.label==="普通に着ている"?"":"・"+s.label);if(pendingClothing.type==="nurse_maid"){const isMaid=pendingClothing.color==="black";prompt=(isMaid?"black maid outfit":(pendingClothing.color?pendingClothing.color+" nurse outfit":"nurse outfit"))+s.suffix;jlabel=(isMaid?"黒メイド":colorLabel+"ナース")+(s.label==="普通に着ている"?"":"・"+s.label)}else if(pendingClothing.type==="office"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"office lady, suit"+s.suffix}else if(pendingClothing.type==="uniform"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"school uniform"+s.suffix}else if(pendingClothing.type==="china"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"china dress"+s.suffix}else{prompt=colorPart+base+s.suffix}return `<button onclick="selectVariation(\`${prompt.replace(/`/g,"\\`")}\`,'${jlabel.replace(/'/g,"\\'")}','clothingPage')">${s.label}</button>`}).join("")}
+
+function buildSearchIndex(){SEARCH_INDEX.length=0;document.querySelectorAll("button[onclick*='addP']").forEach(btn=>{const label=btn.textContent.trim();const m=btn.getAttribute("onclick").match(/addP\('([^']+)','([^']*)','([^']*)'/);if(m)SEARCH_INDEX.push({label,text:m[1],jlabel:m[2],page:m[3],type:"direct"})});Object.keys(VARIATIONS).forEach(k=>{const v=VARIATIONS[k];SEARCH_INDEX.push({label:v.title,text:null,type:"variation",key:k});(v.options||[]).forEach(o=>{SEARCH_INDEX.push({label:o.label+"（"+v.title+"）",text:o.prompt,jlabel:o.label,page:v.page,type:"direct"})})});["lingerie","bikini","school_swimsuit","uniform","nurse_maid","office","china"].forEach(k=>{SEARCH_INDEX.push({label:({lingerie:"ランジェリー",bikini:"ビキニ系",school_swimsuit:"スクール水着",uniform:"制服",nurse_maid:"ナース・メイド",office:"OL・スーツ",china:"チャイナドレス"})[k],text:null,type:"clothing",key:k})})}
+function runSearch(q){const box=document.getElementById("searchResults");q=(q||"").trim();if(!q){box.innerHTML="";return}const hits=SEARCH_INDEX.filter(i=>matchSearch(q,i.label)||(i.text&&matchSearch(q,i.text))||(i.jlabel&&matchSearch(q,i.jlabel))).slice(0,40);if(!hits.length){box.innerHTML='<div class="empty">該当なし</div>';return}box.innerHTML=hits.map(h=>{if(h.type==="direct")return `<button onclick="addP(\`${h.text.replace(/`/g,"\\`")}\`,'${(h.jlabel||h.label).replace(/'/g,"\\'")}','${h.page||""}');document.getElementById('searchBox').value='';runSearch('')">${escapeHtml(h.label)}</button>`;if(h.type==="variation")return `<button onclick="openVariation('${h.key}')">${escapeHtml(h.label)} →</button>`;if(h.type==="clothing")return `<button onclick="openClothingColor('${h.key}')">${escapeHtml(h.label)} →</button>`;return""}).join("")}
+
+function attachChipEvents(){
+  document.querySelectorAll(".prompt-chip").forEach(chip=>{
+    const rm=chip.querySelector(".remove");
+    if(rm){rm.addEventListener("click",e=>{e.stopPropagation();removePrompt(+rm.dataset.remove)})}
+    let timer=null,moved=false;
+    const start=e=>{if(e.target.classList.contains("remove"))return;moved=false;timer=setTimeout(()=>{openChipMenu(+chip.dataset.index)},500)};
+    const cancel=()=>clearTimeout(timer);
+    const tap=()=>{if(!moved&&!timer){}} ;
+    chip.addEventListener("touchstart",start,{passive:true});
+    chip.addEventListener("touchend",e=>{clearTimeout(timer);if(e.target.classList.contains("remove"))return;if(Date.now()-(chip._ts||0)<500){const p=prompts[+chip.dataset.index];if(p&&p.page)showPage(p.page)}});
+    chip.addEventListener("touchstart",()=>{chip._ts=Date.now()},{passive:true});
+    chip.addEventListener("mousedown",e=>{if(e.target.classList.contains("remove"))return;chip._ts=Date.now();start(e)});
+    chip.addEventListener("mouseup",e=>{clearTimeout(timer);if(e.target.classList.contains("remove"))return;if(Date.now()-(chip._ts||0)<500){const p=prompts[+chip.dataset.index];if(p&&p.page)showPage(p.page)}});
+    chip.addEventListener("mouseleave",cancel);
+  });
+}
+
+/* 通常ボタン長押しで説明 */
+document.addEventListener("DOMContentLoaded",()=>{});
+(function setupButtonHints(){
+  let hintTimer=null;
+  document.body.addEventListener("touchstart",e=>{
+    const btn=e.target.closest("button");
+    if(!btn||btn.classList.contains("var-btn")||btn.classList.contains("menuButton")||btn.classList.contains("backButton")||btn.classList.contains("move-btn")||btn.id==="copyButton"||btn.id==="clearButton"||btn.id==="themeButton")return;
+    const desc=btn.getAttribute("data-desc");
+    if(!desc)return;
+    hintTimer=setTimeout(()=>{showHint(desc)},500);
+  },{passive:true});
+  document.body.addEventListener("touchend",()=>clearTimeout(hintTimer));
+  document.body.addEventListener("touchcancel",()=>clearTimeout(hintTimer));
+  document.body.addEventListener("mousedown",e=>{
+    const btn=e.target.closest("button");
+    if(!btn||btn.classList.contains("var-btn")||btn.classList.contains("menuButton")||btn.classList.contains("backButton")||btn.id==="copyButton"||btn.id==="clearButton"||btn.id==="themeButton")return;
+    const desc=btn.getAttribute("data-desc");
+    if(!desc)return;
+    hintTimer=setTimeout(()=>{showHint(desc)},500);
+  });
+  document.body.addEventListener("mouseup",()=>clearTimeout(hintTimer));
+  document.body.addEventListener("mouseleave",()=>clearTimeout(hintTimer));
+})();
+function showHint(t){const el=document.getElementById("hintToast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2000)}
+
 function openWeightPanel(i){currentWeightIndex=i;const cur=prompts[i].weight;document.getElementById("weightButtons").innerHTML=WEIGHTS.map(w=>`<button class="${w===cur?"active":""}" onclick="setWeight(${w})">${w}</button>`).join("");document.getElementById("weightOverlay").classList.add("active")}
 function setWeight(w){if(currentWeightIndex>=0){prompts[currentWeightIndex].weight=w;updatePrompt();savePrompts()}closeWeightPanel()}
 function closeWeightPanel(){document.getElementById("weightOverlay").classList.remove("active");currentWeightIndex=-1}
-function copyPrompt(){const t=prompts.map(formatPrompt).join(", ");if(!t)return alert("プロンプトがありません");const out=t.endsWith(",")?t:t+",";navigator.clipboard.writeText(out).then(()=>alert("コピーしました！")).catch(()=>{const ta=document.createElement("textarea");ta.value=out;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);alert("コピーしました！")})}
-function clearPrompt(){if(!prompts.length)return;if(confirm("すべて消去しますか？")){prompts=[];updatePrompt();savePrompts()}}
+function copyPrompt(){const t=prompts.map(formatPrompt).join(", ");if(!t)return;const out=t.endsWith(",")?t:t+",";navigator.clipboard.writeText(out).then(()=>{document.getElementById("copyMsg").classList.add("show")}).catch(()=>{const ta=document.createElement("textarea");ta.value=out;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);document.getElementById("copyMsg").classList.add("show")})}
+function clearPrompt(){prompts=[];hideCopyMsg();updatePrompt();savePrompts()}
 function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0);updateSelectedButtons()}
 updatePrompt();buildSearchIndex();
 </script>
