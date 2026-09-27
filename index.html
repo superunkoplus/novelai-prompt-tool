@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>NovelAI Prompt Tool</title>
 <style>
-:root{--bg:#f0f2f5;--text:#222;--card:#fff;--border:#e0e0e0;--accent:#1a73e8;--accent-soft:#e8f0fe;--var-bg:#fef9c3;--var-border:#fde68a;--danger:#d93025;--danger-soft:#fce8e6;--muted:#666;--shadow:0 1px 4px rgba(0,0,0,.08)}
-body.dark{--bg:#1a1a1a;--text:#e8e8e8;--card:#2d2d2d;--border:#404040;--accent:#8ab4f8;--accent-soft:#1e3a5f;--var-bg:#4a3f1a;--var-border:#6b5a1e;--danger:#f28b82;--danger-soft:#5c2b2b;--muted:#aaa;--shadow:0 1px 4px rgba(0,0,0,.4)}
+:root{--bg:#f0f2f5;--text:#222;--card:#fff;--border:#e0e0e0;--accent:#1a73e8;--accent-soft:#e8f0fe;--var-bg:#fef9c3;--var-border:#fde68a;--hint-bg:#d1fae5;--hint-border:#6ee7b7;--danger:#d93025;--danger-soft:#fce8e6;--muted:#666;--shadow:0 1px 4px rgba(0,0,0,.08)}
+body.dark{--bg:#1a1a1a;--text:#e8e8e8;--card:#2d2d2d;--border:#404040;--accent:#8ab4f8;--accent-soft:#1e3a5f;--var-bg:#4a3f1a;--var-border:#6b5a1e;--hint-bg:#064e3b;--hint-border:#059669;--danger:#f28b82;--danger-soft:#5c2b2b;--muted:#aaa;--shadow:0 1px 4px rgba(0,0,0,.4)}
 *{box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;margin:0;padding:16px;background:var(--bg);color:var(--text);line-height:1.5}
 h1{font-size:22px;margin:0 0 20px;font-weight:700}
@@ -16,6 +16,7 @@ h3{font-size:15px;margin:20px 0 10px;color:var(--muted)}
 button{border:none;border-radius:10px;padding:11px 16px;font-size:15px;background:var(--card);box-shadow:var(--shadow);cursor:pointer;color:var(--text);-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
 button:active{transform:scale(.96)}
 button.var-btn{background:var(--var-bg);border:1px solid var(--var-border)}
+button[data-title],button[data-body]{background:var(--hint-bg);border:1px solid var(--hint-border)}
 button.selected{opacity:.45;pointer-events:none;text-decoration:line-through}
 button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!important;border:1px solid var(--danger)!important;opacity:1;pointer-events:auto;text-decoration:none}
 .menuButton{width:100%;margin-bottom:10px;padding:15px 18px;font-size:16px;text-align:left;font-weight:500}
@@ -52,7 +53,6 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 #weightButtons{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 #weightButtons button{min-width:56px;padding:12px 10px;font-size:15px;font-weight:600}
 #weightButtons button.active{background:var(--accent);color:#fff}
-/* 説明モーダル */
 #descOverlay .panel{text-align:left;max-width:340px}
 #descOverlay .desc-title{font-size:18px;font-weight:700;margin:0 0 12px;text-align:center}
 #descOverlay .desc-body{font-size:15px;line-height:1.7;color:var(--text);margin-bottom:12px}
@@ -114,7 +114,7 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   </div>
   <h2>基本</h2>
   <div class="buttons">
-    <button data-title="ベース" data-body="画質・アニメ塗り・高解像度など、品質を底上げする定番タグのセット。" data-note="毎回入れておくと安定しやすい。不要な要素があれば個別に外す。" onclick="addP('anime coloring, {{official art}}, highres, promotional art, 4K, highly detailed, Curated, masterpiece, simple background, depth of field','ベース','basePage')">ベース</button>
+    <button data-title="ベース" data-body="アーティスト指定と画質・詳細度を底上げする定番セット。" data-note="毎回入れておくと安定しやすい。不要な要素があれば個別に外す。" onclick="addP('1.5::artist:5saiji::,artist:yoneyama mai,artist:koyomania,artist:fukudahda,artist:tamifull,artist:sakuraprin,highres,4K, highly detailed, Curated, masterpiece, simple background, depth of field,ultra complexity,','ベース','basePage')">ベース</button>
     <button data-title="ネガティブ" data-body="低品質・手足欠け・ロゴ・リアル寄りなどを抑える除外用タグ。" data-note="NovelAIのネガティブ欄に入れる想定。ポジティブ欄には通常入れない。" onclick="addP('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated','ネガティブ','basePage')">ネガティブ</button>
     <button data-title="モザイク" data-body="NSFWにモザイク検閲を入れる指定。" data-note="無修正にしたい場合は付けない。" onclick="addP('nsfw, mosaic censoring','モザイク','basePage')">モザイク</button>
     <button data-title="陰毛" data-body="黒い陰毛を描画する指定。" onclick="addP('black pubic hair','陰毛','basePage')">陰毛</button>
@@ -754,20 +754,11 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 <script>
 let prompts=[],currentWeightIndex=-1,pendingClothing=null,promptExpanded=false,pendingConflict=null;
 const WEIGHTS=[0.8,1.0,1.1,1.2,1.3,1.5],COLLAPSE_THRESHOLD=5,HINT_MS=350;
-
 const CLOTHING_COLORS={lingerie:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"紫",value:"purple"}],bikini:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"ネイビー",value:"navy"},{label:"青",value:"blue"}],school_swimsuit:[{label:"ネイビー",value:"navy"},{label:"黒",value:"black"},{label:"白",value:"white"}],uniform:[{label:"紺",value:"navy"},{label:"黒",value:"black"},{label:"指定なし",value:""}],nurse_maid:[{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"黒",value:"black"}],office:[{label:"黒",value:"black"},{label:"グレー",value:"gray"},{label:"ネイビー",value:"navy"}],china:[{label:"赤",value:"red"},{label:"青",value:"blue"},{label:"黄",value:"yellow"},{label:"紫",value:"purple"},{label:"白",value:"white"}]};
 const CLOTHING_STATES={lingerie:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", lingerie aside, panties aside, pulled aside"},{label:"はだけている",suffix:", open lingerie, disheveled lingerie"},{label:"半分脱がされている",suffix:", half-removed lingerie, lingerie around thighs"},{label:"破れている",suffix:", torn lingerie, ripped lingerie"}],bikini:[{label:"普通に着ている",suffix:""},{label:"マイクロビキニ",suffix:", micro bikini"},{label:"紐ビキニ",suffix:", string bikini"},{label:"紐を解いている",suffix:", untied bikini, bikini strings undone"},{label:"ずらしている",suffix:", bikini aside, pulled aside bikini"},{label:"濡れている",suffix:", wet bikini, see-through bikini"},{label:"半分脱げている",suffix:", half-removed bikini, bikini around ankles"}],school_swimsuit:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", school swimsuit aside, pulled aside"},{label:"ずり下げ",suffix:", school swimsuit pulled down, around thighs"},{label:"濡れている",suffix:", wet school swimsuit, see-through school swimsuit"},{label:"破れている",suffix:", torn school swimsuit"}],uniform:[{label:"普通に着ている",suffix:", short skirt"},{label:"シャツはだけ",suffix:", open shirt, unbuttoned blouse, short skirt"},{label:"スカートめくれ",suffix:", skirt lift, lifted skirt, upskirt"},{label:"乱れている",suffix:", disheveled uniform, messy clothes"},{label:"半脱ぎ",suffix:", half-undressed, clothes around waist"}],nurse_maid:[{label:"普通に着ている",suffix:""},{label:"はだけている",suffix:", open, unbuttoned, cleavage"},{label:"スカートめくれ",suffix:", skirt lift, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],office:[{label:"普通に着ている",suffix:", tight skirt"},{label:"ブラウスはだけ",suffix:", unbuttoned blouse, open shirt, tight skirt"},{label:"スカートめくれ",suffix:", skirt lift, tight skirt, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],china:[{label:"普通に着ている",suffix:""},{label:"スリット高め",suffix:", high slit"},{label:"はだけている",suffix:", open china dress"},{label:"乱れている",suffix:", disheveled china dress"}]};
 const CLOTHING_BASE={lingerie:"lingerie",bikini:"bikini",school_swimsuit:"school swimsuit",uniform:"school uniform",nurse_maid:"nurse outfit",office:"office lady, suit",china:"china dress"};
-
 const VARIATIONS={
-closeup:{title:"クローズアップ",page:"viewPage",options:[
-  {label:"顔のアップ",prompt:"close-up, face focus",desc:"顔を大きく写す"},
-  {label:"上半身のアップ",prompt:"close-up, upper body",desc:"胸から上"},
-  {label:"局部のアップ",prompt:"extreme close-up, pussy focus, crotch focus",desc:"性器など局所"},
-  {label:"目のアップ",prompt:"extreme close-up, eye focus",desc:"目だけ大きく"},
-  {label:"口元のアップ",prompt:"extreme close-up, lips focus, mouth focus",desc:"唇・口"},
-  {label:"かなり寄る（全体）",prompt:"extreme close-up",desc:"極端に寄った構図"}
-]},
+closeup:{title:"クローズアップ",page:"viewPage",options:[{label:"顔のアップ",prompt:"close-up, face focus",desc:"顔を大きく写す"},{label:"上半身のアップ",prompt:"close-up, upper body",desc:"胸から上"},{label:"局部のアップ",prompt:"extreme close-up, pussy focus, crotch focus",desc:"性器など局所"},{label:"目のアップ",prompt:"extreme close-up, eye focus",desc:"目だけ大きく"},{label:"口元のアップ",prompt:"extreme close-up, lips focus, mouth focus",desc:"唇・口"},{label:"かなり寄る（全体）",prompt:"extreme close-up",desc:"極端に寄った構図"}]},
 role_position:{title:"上下関係・体位",page:"basePage",options:[{label:"男性が上",prompt:"man on top, male on top",desc:"男性が上にいる"},{label:"女性が上",prompt:"woman on top, female on top",desc:"女性が上にいる"},{label:"対面",prompt:"face to face, facing each other",desc:"お互いを見ている体勢"},{label:"後ろから",prompt:"from behind, rear entry",desc:"後ろから"}]},
 role_dominance:{title:"攻め・受け",page:"basePage",options:[{label:"男性が攻め",prompt:"dominant male, male dominant",desc:"男性が主導"},{label:"女性が攻め",prompt:"dominant female, female dominant",desc:"女性が主導"},{label:"互いに積極的",prompt:"mutual, equal participation",desc:"どちらも積極的"}]},
 role_gaze:{title:"視線の関係",page:"basePage",options:[{label:"お互いを見つめ合う",prompt:"looking at each other, eye contact",desc:"視線を合わせる"},{label:"男性が女性を見る",prompt:"man looking at woman",desc:"男性視点"},{label:"女性が男性を見る",prompt:"woman looking at man",desc:"女性視点"},{label:"どちらも上を向く",prompt:"both looking up",desc:"快感で上を向く"}]},
@@ -809,7 +800,6 @@ semen:{title:"精液",page:"bodyPage",options:[{label:"顔にかかっている"
 saliva:{title:"よだれ・唾液",page:"bodyPage",options:[{label:"よだれが垂れている",prompt:"drool, drooling, saliva",desc:"口から垂れている"},{label:"舌に唾液",prompt:"saliva on tongue, wet tongue",desc:"舌が湿っている"},{label:"キスで唾液交換",prompt:"saliva trail, string of saliva, deep kiss",desc:"糸を引くキス"}]},
 sweat:{title:"汗",page:"bodyPage",options:[{label:"汗だく",prompt:"sweat, sweaty body, covered in sweat",desc:"全身汗"},{label:"額の汗",prompt:"sweat on forehead, beads of sweat",desc:"額に汗"},{label:"汗で肌が光る",prompt:"glistening sweat, shiny with sweat",desc:"汗でテカっている"}]}
 };
-
 const CONFLICT_PAIRS=[["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],["solo","2girls"],["solo","1boy"],["solo","multiple girls"],["1girl","2girls"],["1girl","3girls"],["day","night"],["morning","night"],["indoors","outdoors"],["white background","black background"],["simple background","detailed background"]];
 
 try{const s=localStorage.getItem("novelai_prompts_v3");if(s)prompts=JSON.parse(s)}catch(e){}
@@ -817,126 +807,30 @@ try{if(localStorage.getItem("novelai_theme")==="dark")document.body.classList.ad
 function savePrompts(){try{localStorage.setItem("novelai_prompts_v3",JSON.stringify(prompts))}catch(e){}}
 function toggleTheme(){document.body.classList.toggle("dark");const isDark=document.body.classList.contains("dark");document.getElementById("themeButton").textContent=isDark?"☀️ ライトモード切替":"🌙 ダークモード切替";try{localStorage.setItem("novelai_theme",isDark?"dark":"light")}catch(e){}}
 if(document.body.classList.contains("dark"))document.getElementById("themeButton").textContent="☀️ ライトモード切替";
-
 function hideCopyMsg(){document.getElementById("copyMsg").classList.remove("show")}
-function addP(text,label,page,skipConflict){
-  if(prompts.some(p=>p.text===text))return;
-  if(!skipConflict){
-    const conf=findConflictWith(text);
-    if(conf){pendingConflict={text,label,page,confLabel:conf};document.getElementById("conflictMsg").textContent=conf+"と矛盾しています、追加しますか？";document.getElementById("conflictOverlay").classList.add("active");return}
-  }
-  prompts.push({text,label:label||text,weight:1.0,page:page||null});
-  hideCopyMsg();updatePrompt();savePrompts();
-}
-function findConflictWith(text){
-  const tl=text.toLowerCase();
-  for(const [a,b] of CONFLICT_PAIRS){
-    const al=a.toLowerCase(),bl=b.toLowerCase();
-    const hitA=tl.includes(al),hitB=tl.includes(bl);
-    if(hitA){const p=prompts.find(x=>x.text.toLowerCase().includes(bl));if(p)return p.label||p.text}
-    if(hitB){const p=prompts.find(x=>x.text.toLowerCase().includes(al));if(p)return p.label||p.text}
-  }
-  return null;
-}
+function addP(text,label,page,skipConflict){if(prompts.some(p=>p.text===text))return;if(!skipConflict){const conf=findConflictWith(text);if(conf){pendingConflict={text,label,page};document.getElementById("conflictMsg").textContent=conf+"と矛盾しています、追加しますか？";document.getElementById("conflictOverlay").classList.add("active");return}}prompts.push({text,label:label||text,weight:1.0,page:page||null});hideCopyMsg();updatePrompt();savePrompts()}
+function findConflictWith(text){const tl=text.toLowerCase();for(const [a,b] of CONFLICT_PAIRS){const al=a.toLowerCase(),bl=b.toLowerCase();if(tl.includes(al)){const p=prompts.find(x=>x.text.toLowerCase().includes(bl));if(p)return p.label||p.text}if(tl.includes(bl)){const p=prompts.find(x=>x.text.toLowerCase().includes(al));if(p)return p.label||p.text}}return null}
 function confirmConflictAdd(){if(pendingConflict){addP(pendingConflict.text,pendingConflict.label,pendingConflict.page,true);pendingConflict=null}closeConflict()}
 function closeConflict(){document.getElementById("conflictOverlay").classList.remove("active");pendingConflict=null}
 function removePrompt(i){prompts.splice(i,1);hideCopyMsg();updatePrompt();savePrompts()}
 function movePrompt(i,dir){const j=i+dir;if(j<0||j>=prompts.length)return;const t=prompts[i];prompts[i]=prompts[j];prompts[j]=t;updatePrompt();savePrompts()}
 function formatPrompt(p){return p.weight===1.0?p.text:`(${p.text}:${p.weight})`}
 function getConflictKeywords(){const texts=prompts.map(p=>p.text.toLowerCase()),keys=new Set();CONFLICT_PAIRS.forEach(([a,b])=>{const hasA=texts.some(t=>t.includes(a.toLowerCase())),hasB=texts.some(t=>t.includes(b.toLowerCase()));if(hasA&&!hasB)keys.add(b.toLowerCase());if(hasB&&!hasA)keys.add(a.toLowerCase())});return keys}
-function updateSelectedButtons(){
-  const conflictKeys=getConflictKeywords();
-  document.querySelectorAll("button[onclick*='addP']").forEach(btn=>{
-    const m=btn.getAttribute("onclick").match(/addP\('([^']+)'/);
-    if(!m)return;
-    const text=m[1];
-    const exists=prompts.some(p=>p.text===text);
-    btn.classList.toggle("selected",exists);
-    const isConflict=!exists&&[...conflictKeys].some(k=>text.toLowerCase().includes(k));
-    btn.classList.toggle("conflict-btn",isConflict);
-  });
-}
+function updateSelectedButtons(){const conflictKeys=getConflictKeywords();document.querySelectorAll("button[onclick*='addP']").forEach(btn=>{const m=btn.getAttribute("onclick").match(/addP\('([^']+)'/);if(!m)return;const text=m[1];const exists=prompts.some(p=>p.text===text);btn.classList.toggle("selected",exists);btn.classList.toggle("conflict-btn",!exists&&[...conflictKeys].some(k=>text.toLowerCase().includes(k)))})}
 function togglePromptExpand(){promptExpanded=!promptExpanded;const el=document.getElementById("prompt"),btn=document.getElementById("promptExpand");el.classList.toggle("expanded",promptExpanded);btn.textContent=promptExpanded?"▲ 閉じる":"… タップで展開"}
-function updatePrompt(){
-  const el=document.getElementById("prompt"),c=document.getElementById("promptCount"),exp=document.getElementById("promptExpand");
-  if(!prompts.length){el.innerHTML='<span class="placeholder">ここに選択したプロンプトが表示されます</span>';el.classList.remove("expanded");exp.classList.remove("show");promptExpanded=false}
-  else{
-    el.innerHTML=prompts.map((p,i)=>{const b=p.weight!==1.0?`<span class="weight">${p.weight}</span>`:"";return `<span class="prompt-chip" data-index="${i}"><span class="chip-label">${escapeHtml(p.label||p.text)}</span>${b}<span class="remove" data-remove="${i}">×</span></span>`}).join("");
-    if(prompts.length>COLLAPSE_THRESHOLD){exp.classList.add("show");if(!promptExpanded)el.classList.remove("expanded");else el.classList.add("expanded");exp.textContent=promptExpanded?"▲ 閉じる":"… タップで展開（"+prompts.length+"個）"}
-    else{exp.classList.remove("show");el.classList.add("expanded");promptExpanded=true}
-  }
-  c.textContent=prompts.length+" 個選択中";
-  attachChipEvents();updateSelectedButtons();
-}
+function updatePrompt(){const el=document.getElementById("prompt"),c=document.getElementById("promptCount"),exp=document.getElementById("promptExpand");if(!prompts.length){el.innerHTML='<span class="placeholder">ここに選択したプロンプトが表示されます</span>';el.classList.remove("expanded");exp.classList.remove("show");promptExpanded=false}else{el.innerHTML=prompts.map((p,i)=>{const b=p.weight!==1.0?`<span class="weight">${p.weight}</span>`:"";return `<span class="prompt-chip" data-index="${i}"><span class="chip-label">${escapeHtml(p.label||p.text)}</span>${b}<span class="remove" data-remove="${i}">×</span></span>`}).join("");if(prompts.length>COLLAPSE_THRESHOLD){exp.classList.add("show");if(!promptExpanded)el.classList.remove("expanded");else el.classList.add("expanded");exp.textContent=promptExpanded?"▲ 閉じる":"… タップで展開（"+prompts.length+"個）"}else{exp.classList.remove("show");el.classList.add("expanded");promptExpanded=true}}c.textContent=prompts.length+" 個選択中";attachChipEvents();updateSelectedButtons()}
 function escapeHtml(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML}
-
-function openChipMenu(i){
-  const p=prompts[i];
-  document.getElementById("chipMenuTitle").textContent=p.label||p.text;
-  document.getElementById("chipMenuList").innerHTML=`
-    <button onclick="movePrompt(${i},-1);closeChipMenu()">↑ 上へ移動</button>
-    <button onclick="movePrompt(${i},1);closeChipMenu()">↓ 下へ移動</button>
-    <button onclick="closeChipMenu();openWeightPanel(${i})">重みを変更</button>
-  `;
-  document.getElementById("chipMenuOverlay").classList.add("active");
-}
+function openChipMenu(i){const p=prompts[i];document.getElementById("chipMenuTitle").textContent=p.label||p.text;document.getElementById("chipMenuList").innerHTML=`<button onclick="movePrompt(${i},-1);closeChipMenu()">↑ 上へ移動</button><button onclick="movePrompt(${i},1);closeChipMenu()">↓ 下へ移動</button><button onclick="closeChipMenu();openWeightPanel(${i})">重みを変更</button>`;document.getElementById("chipMenuOverlay").classList.add("active")}
 function closeChipMenu(){document.getElementById("chipMenuOverlay").classList.remove("active")}
-
 function openVariation(k){const d=VARIATIONS[k];if(!d)return;document.getElementById("variationTitle").textContent=d.title;document.getElementById("variationList").innerHTML=d.options.map(o=>`<button onclick="selectVariation(\`${o.prompt.replace(/`/g,"\\`")}\`,'${o.label.replace(/'/g,"\\'")}','${d.page||""}')">${o.label}${o.desc?`<span class="desc">${o.desc}</span>`:""}</button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
 function selectVariation(t,label,page){addP(t,label,page);closeVariationPanel()}
 function closeVariationPanel(){document.getElementById("variationOverlay").classList.remove("active");pendingClothing=null}
 function openClothingColor(type){pendingClothing={type,color:null};const colors=CLOTHING_COLORS[type]||[];document.getElementById("variationTitle").textContent="色を選択";document.getElementById("variationList").innerHTML=colors.map(c=>`<button onclick="selectClothingColor('${c.value}')">${c.label}</button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
-function selectClothingColor(colorValue){pendingClothing.color=colorValue;const states=CLOTHING_STATES[pendingClothing.type]||[];const colorLabel=({black:"黒",white:"白",pink:"ピンク",red:"赤",purple:"紫",navy:"ネイビー",blue:"青",yellow:"黄",gray:"グレー","":"指定なし"})[pendingClothing.color]||pendingClothing.color;document.getElementById("variationTitle").textContent="状態を選択";document.getElementById("variationList").innerHTML=states.map(s=>{const base=CLOTHING_BASE[pendingClothing.type];const colorPart=pendingClothing.color?pendingClothing.color+" ":"";let prompt="",jlabel=colorLabel+(colorLabel?"の":"")+(({lingerie:"ランジェリー",bikini:"ビキニ",school_swimsuit:"スクール水着",uniform:"制服",nurse_maid:"ナース・メイド",office:"OL・スーツ",china:"チャイナドレス"})[pendingClothing.type]||"")+ (s.label==="普通に着ている"?"":"・"+s.label);if(pendingClothing.type==="nurse_maid"){const isMaid=pendingClothing.color==="black";prompt=(isMaid?"black maid outfit":(pendingClothing.color?pendingClothing.color+" nurse outfit":"nurse outfit"))+s.suffix;jlabel=(isMaid?"黒メイド":colorLabel+"ナース")+(s.label==="普通に着ている"?"":"・"+s.label)}else if(pendingClothing.type==="office"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"office lady, suit"+s.suffix}else if(pendingClothing.type==="uniform"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"school uniform"+s.suffix}else if(pendingClothing.type==="china"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"china dress"+s.suffix}else{prompt=colorPart+base+s.suffix}return `<button onclick="selectVariation(\`${prompt.replace(/`/g,"\\`")}\`,'${jlabel.replace(/'/g,"\\'")}','clothingPage')">${s.label}</button>`}).join("")}
-
-function attachChipEvents(){
-  document.querySelectorAll(".prompt-chip").forEach(chip=>{
-    const rm=chip.querySelector(".remove");
-    if(rm){rm.addEventListener("click",e=>{e.stopPropagation();removePrompt(+rm.dataset.remove)})}
-    let timer=null;
-    const start=e=>{if(e.target.classList.contains("remove"))return;chip._ts=Date.now();timer=setTimeout(()=>{openChipMenu(+chip.dataset.index)},500)};
-    const end=e=>{clearTimeout(timer);if(e.target.classList.contains("remove"))return;if(Date.now()-(chip._ts||0)<500){const p=prompts[+chip.dataset.index];if(p&&p.page)showPage(p.page)}};
-    chip.addEventListener("touchstart",start,{passive:true});
-    chip.addEventListener("touchend",end);
-    chip.addEventListener("touchcancel",()=>clearTimeout(timer));
-    chip.addEventListener("mousedown",start);
-    chip.addEventListener("mouseup",end);
-    chip.addEventListener("mouseleave",()=>clearTimeout(timer));
-  });
-}
-
-/* 説明モーダル（長押し 350ms） */
-(function setupButtonHints(){
-  let hintTimer=null,hintFired=false;
-  function isHintTarget(btn){
-    if(!btn||btn.classList.contains("var-btn")||btn.classList.contains("menuButton")||btn.classList.contains("backButton")||btn.classList.contains("cancel")||btn.classList.contains("yes")||btn.classList.contains("no")||btn.id==="copyButton"||btn.id==="clearButton"||btn.id==="themeButton"||btn.id==="promptExpand")return false;
-    return !!(btn.getAttribute("data-title")||btn.getAttribute("data-body"));
-  }
-  function startHint(e){
-    const btn=e.target.closest("button");
-    if(!isHintTarget(btn))return;
-    hintFired=false;
-    hintTimer=setTimeout(()=>{
-      hintFired=true;
-      openDesc(btn.getAttribute("data-title")||btn.textContent.trim(),btn.getAttribute("data-body")||"",btn.getAttribute("data-note")||"");
-    },HINT_MS);
-  }
-  function endHint(){clearTimeout(hintTimer)}
-  document.body.addEventListener("touchstart",startHint,{passive:true});
-  document.body.addEventListener("touchend",endHint);
-  document.body.addEventListener("touchcancel",endHint);
-  document.body.addEventListener("mousedown",startHint);
-  document.body.addEventListener("mouseup",endHint);
-  document.body.addEventListener("mouseleave",endHint);
-})();
-function openDesc(title,body,note){
-  document.getElementById("descTitle").textContent=title;
-  document.getElementById("descBody").textContent=body;
-  const n=document.getElementById("descNote");
-  if(note){n.style.display="block";n.innerHTML="<strong>注意</strong>"+escapeHtml(note)}else{n.style.display="none";n.innerHTML=""}
-  document.getElementById("descOverlay").classList.add("active");
-}
+function selectClothingColor(colorValue){pendingClothing.color=colorValue;const states=CLOTHING_STATES[pendingClothing.type]||[];const colorLabel=({black:"黒",white:"白",pink:"ピンク",red:"赤",purple:"紫",navy:"ネイビー",blue:"青",yellow:"黄",gray:"グレー","":"指定なし"})[pendingClothing.color]||pendingClothing.color;document.getElementById("variationTitle").textContent="状態を選択";document.getElementById("variationList").innerHTML=states.map(s=>{const base=CLOTHING_BASE[pendingClothing.type];const colorPart=pendingClothing.color?pendingClothing.color+" ":"";let prompt="",jlabel=colorLabel+(colorLabel?"の":"")+(({lingerie:"ランジェリー",bikini:"ビキニ",school_swimsuit:"スクール水着",uniform:"制服",nurse_maid:"ナース・メイド",office:"OL・スーツ",china:"チャイナドレス"})[pendingClothing.type]||"")+(s.label==="普通に着ている"?"":"・"+s.label);if(pendingClothing.type==="nurse_maid"){const isMaid=pendingClothing.color==="black";prompt=(isMaid?"black maid outfit":(pendingClothing.color?pendingClothing.color+" nurse outfit":"nurse outfit"))+s.suffix;jlabel=(isMaid?"黒メイド":colorLabel+"ナース")+(s.label==="普通に着ている"?"":"・"+s.label)}else if(pendingClothing.type==="office"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"office lady, suit"+s.suffix}else if(pendingClothing.type==="uniform"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"school uniform"+s.suffix}else if(pendingClothing.type==="china"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"china dress"+s.suffix}else{prompt=colorPart+base+s.suffix}return `<button onclick="selectVariation(\`${prompt.replace(/`/g,"\\`")}\`,'${jlabel.replace(/'/g,"\\'")}','clothingPage')">${s.label}</button>`}).join("")}
+function attachChipEvents(){document.querySelectorAll(".prompt-chip").forEach(chip=>{const rm=chip.querySelector(".remove");if(rm){rm.addEventListener("click",e=>{e.stopPropagation();removePrompt(+rm.dataset.remove)})}let timer=null;const start=e=>{if(e.target.classList.contains("remove"))return;chip._ts=Date.now();timer=setTimeout(()=>{openChipMenu(+chip.dataset.index)},500)};const end=e=>{clearTimeout(timer);if(e.target.classList.contains("remove"))return;if(Date.now()-(chip._ts||0)<500){const p=prompts[+chip.dataset.index];if(p&&p.page)showPage(p.page)}};chip.addEventListener("touchstart",start,{passive:true});chip.addEventListener("touchend",end);chip.addEventListener("touchcancel",()=>clearTimeout(timer));chip.addEventListener("mousedown",start);chip.addEventListener("mouseup",end);chip.addEventListener("mouseleave",()=>clearTimeout(timer))})}
+(function setupButtonHints(){let hintTimer=null;function isHintTarget(btn){if(!btn||btn.classList.contains("var-btn")||btn.classList.contains("menuButton")||btn.classList.contains("backButton")||btn.classList.contains("cancel")||btn.classList.contains("yes")||btn.classList.contains("no")||btn.id==="copyButton"||btn.id==="clearButton"||btn.id==="themeButton"||btn.id==="promptExpand")return false;return !!(btn.getAttribute("data-title")||btn.getAttribute("data-body"))}function startHint(e){const btn=e.target.closest("button");if(!isHintTarget(btn))return;hintTimer=setTimeout(()=>{openDesc(btn.getAttribute("data-title")||btn.textContent.trim(),btn.getAttribute("data-body")||"",btn.getAttribute("data-note")||"")},HINT_MS)}function endHint(){clearTimeout(hintTimer)}document.body.addEventListener("touchstart",startHint,{passive:true});document.body.addEventListener("touchend",endHint);document.body.addEventListener("touchcancel",endHint);document.body.addEventListener("mousedown",startHint);document.body.addEventListener("mouseup",endHint);document.body.addEventListener("mouseleave",endHint)})();
+function openDesc(title,body,note){document.getElementById("descTitle").textContent=title;document.getElementById("descBody").textContent=body;const n=document.getElementById("descNote");if(note){n.style.display="block";n.innerHTML="<strong>注意</strong>"+escapeHtml(note)}else{n.style.display="none";n.innerHTML=""}document.getElementById("descOverlay").classList.add("active")}
 function closeDesc(){document.getElementById("descOverlay").classList.remove("active")}
-
 function openWeightPanel(i){currentWeightIndex=i;const cur=prompts[i].weight;document.getElementById("weightButtons").innerHTML=WEIGHTS.map(w=>`<button class="${w===cur?"active":""}" onclick="setWeight(${w})">${w}</button>`).join("");document.getElementById("weightOverlay").classList.add("active")}
 function setWeight(w){if(currentWeightIndex>=0){prompts[currentWeightIndex].weight=w;updatePrompt();savePrompts()}closeWeightPanel()}
 function closeWeightPanel(){document.getElementById("weightOverlay").classList.remove("active");currentWeightIndex=-1}
