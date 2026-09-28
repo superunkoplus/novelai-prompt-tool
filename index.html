@@ -56,13 +56,17 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 #weightButtons button.active{background:var(--accent);color:#fff}
 #descOverlay .panel{text-align:left;max-width:340px}
 #descOverlay .desc-title{font-size:18px;font-weight:700;margin:0 0 12px;text-align:center}
-#descOverlay .desc-body{font-size:15px;line-height:1.7;color:var(--text);margin-bottom:12px}
+#descOverlay .desc-body{font-size:15px;line-height:1.7;color:var(--text);margin-bottom:12px;white-space:pre-line}
 #descOverlay .desc-note{font-size:13px;line-height:1.6;color:var(--muted);background:var(--bg);border-radius:10px;padding:12px;margin-bottom:4px}
 #descOverlay .desc-note strong{display:block;color:var(--danger);margin-bottom:4px;font-size:13px}
-/* ホームボタン（右下固定） */
 #homeFab{position:fixed;bottom:20px;right:16px;z-index:1500;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;font-size:22px;box-shadow:0 4px 14px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;padding:0;border:none}
 #homeFab:active{transform:scale(.9)}
-#homePage.active ~ #homeFab,body:has(#homePage.active) #homeFab{display:none}
+/* 順番変更パネル */
+#reorderOverlay .reorder-label{font-size:15px;font-weight:600;margin-bottom:8px;word-break:break-all}
+#reorderOverlay .reorder-pos{font-size:13px;color:var(--muted);margin-bottom:16px}
+#reorderOverlay .reorder-btns{display:flex;flex-direction:column;gap:10px}
+#reorderOverlay .reorder-btns button{width:100%;padding:16px;font-size:18px;font-weight:600;background:var(--accent-soft);color:var(--accent)}
+#reorderOverlay .reorder-btns button:disabled{opacity:.35}
 </style>
 </head>
 <body>
@@ -80,6 +84,7 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 <button id="homeFab" onclick="showPage('homePage')" title="ホーム" aria-label="ホーム">🏠</button>
 
 <div id="chipMenuOverlay" class="overlay"><div class="panel"><h3 id="chipMenuTitle">操作</h3><div class="list" id="chipMenuList"></div><button class="cancel" onclick="closeChipMenu()">キャンセル</button></div></div>
+<div id="reorderOverlay" class="overlay"><div class="panel"><h3>順番を変える</h3><div class="reorder-label" id="reorderLabel"></div><div class="reorder-pos" id="reorderPos"></div><div class="reorder-btns"><button id="reorderUp" onclick="reorderMove(-1)">↑ 上へ</button><button id="reorderDown" onclick="reorderMove(1)">↓ 下へ</button></div><button class="cancel" onclick="closeReorder()">完了</button></div></div>
 <div id="weightOverlay" class="overlay"><div class="panel"><h3>重みを変更</h3><div id="weightButtons"></div><button class="cancel" onclick="closeWeightPanel()">キャンセル</button></div></div>
 <div id="variationOverlay" class="overlay"><div class="panel"><h3 id="variationTitle">詳細を選択</h3><div class="list" id="variationList"></div><button class="cancel" onclick="closeVariationPanel()">キャンセル</button></div></div>
 <div id="conflictOverlay" class="overlay"><div class="panel"><h3 id="conflictMsg"></h3><div class="row"><button class="yes" onclick="confirmConflictAdd()">はい</button><button class="no" onclick="closeConflict()">いいえ</button></div></div></div>
@@ -95,6 +100,7 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="menuButton" onclick="showPage('expressionPage')">表情</button>
   <button class="menuButton" onclick="showPage('appearancePage')">外見</button>
   <button class="menuButton" onclick="showPage('characterPage')">キャラクター</button>
+  <button class="menuButton" onclick="showPage('artistPage')">アーティスト</button>
   <h2 style="margin-top:28px">設定</h2>
   <button class="menuButton" onclick="toggleTheme()" id="themeButton">🌙 ダークモード切替</button>
 </div>
@@ -107,10 +113,10 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button data-title="1girl" data-body="女性キャラクターが1人の構図。" data-note="2girls・3girls・solo など人数系と同時に使うと矛盾しやすい。" onclick="addP('1girl','1girl','basePage')">1girl</button>
     <button data-title="2girls" data-body="女性キャラクターが2人の構図。" data-note="1girl や solo と同時指定すると人数が衝突する。" onclick="addP('2girls','2girls','basePage')">2girls</button>
     <button data-title="3girls" data-body="女性キャラクターが3人の構図。" data-note="1girl・2girls と同時に使うと矛盾する。" onclick="addP('3girls','3girls','basePage')">3girls</button>
-    <button data-title="1boy" data-body="男性キャラクターが1人の構図。" data-note="竿役や男性描写と組み合わせやすい。" onclick="addP('1boy','1boy','basePage')">1boy</button>
-    <button data-title="1boy 1girl" data-body="男性1人・女性1人の二人構図。コピー時は「1boy, 1girl」になる。" data-note="エロシーンの基本人数指定としてよく使う。" onclick="addP('1boy, 1girl','1boy 1girl','basePage')">1boy 1girl</button>
+    <button data-title="1boy" data-body="男性キャラクターが1人の構図。" onclick="addP('1boy','1boy','basePage')">1boy</button>
+    <button data-title="1boy 1girl" data-body="男性1人・女性1人の二人構図。コピー時は「1boy, 1girl」になる。" onclick="addP('1boy, 1girl','1boy 1girl','basePage')">1boy 1girl</button>
     <button data-title="2boys" data-body="男性が2人の構図。" onclick="addP('2boys','2boys','basePage')">2boys</button>
-    <button data-title="multiple girls" data-body="複数の女性がいる構図（人数を厳密に固定しない）。" data-note="人数をはっきりさせたいときは 2girls / 3girls の方が安定しやすい。" onclick="addP('multiple girls','multiple girls','basePage')">multiple girls</button>
+    <button data-title="multiple girls" data-body="複数の女性がいる構図。" onclick="addP('multiple girls','multiple girls','basePage')">multiple girls</button>
     <button data-title="solo" data-body="画面内に人物が1人だけの構図。" data-note="1boy 1girl や 2girls と同時に使うと矛盾する。" onclick="addP('solo','solo','basePage')">solo</button>
   </div>
   <h2>役割分担</h2>
@@ -121,9 +127,9 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   </div>
   <h2>基本</h2>
   <div class="buttons">
-    <button data-title="ベース" data-body="画質・アーティスト指定を底上げする定番セット。" data-note="毎回入れておくと安定しやすい。" onclick="addP('best quality, amazing quality,1.5::artist:5saiji::,1.3:: artist:ishigaki takashi::,1.3::artist: fukudahda::,1.2::artist:kotoyama::,1.2::tamifull::,1.2::artist:yoneyama mai::,highres,4K, highly detailed, Curated, masterpiece, simple background, depth of field,ultra complexity,','ベース','basePage')">ベース</button>
-    <button data-title="ネガティブ" data-body="低品質・手足欠け・ロゴ・リアル寄りなどを抑える除外用タグ。" data-note="NovelAIのネガティブ欄に入れる想定。" onclick="addP('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated','ネガティブ','basePage')">ネガティブ</button>
-    <button data-title="モザイク" data-body="NSFWにモザイク検閲を入れる指定。" data-note="無修正にしたい場合は付けない。" onclick="addP('nsfw, mosaic censoring','モザイク','basePage')">モザイク</button>
+    <button data-title="ベース" data-body="画質・アーティスト指定を底上げする定番セット。" onclick="addP('best quality, amazing quality,1.5::artist:5saiji::,1.3:: artist:ishigaki takashi::,1.3::artist: fukudahda::,1.2::artist:kotoyama::,1.2::tamifull::,1.2::artist:yoneyama mai::,highres,4K, highly detailed, Curated, masterpiece, simple background, depth of field,ultra complexity,','ベース','basePage')">ベース</button>
+    <button data-title="ネガティブ" data-body="低品質・手足欠け・ロゴ・リアル寄りなどを抑える除外用タグ。" onclick="addP('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated','ネガティブ','basePage')">ネガティブ</button>
+    <button data-title="モザイク" data-body="NSFWにモザイク検閲を入れる指定。" onclick="addP('nsfw, mosaic censoring','モザイク','basePage')">モザイク</button>
     <button data-title="陰毛" data-body="黒い陰毛を描画する指定。" onclick="addP('black pubic hair','陰毛','basePage')">陰毛</button>
   </div>
 </div>
@@ -133,11 +139,11 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <h1>視点</h1>
   <h2>基本の視点</h2>
   <div class="buttons">
-    <button data-title="目線の高さ" data-body="人物の目線と同じ高さから見る、自然な正面寄りの構図。" onclick="addP('eye-level view','目線の高さ','viewPage')">目線の高さ</button>
-    <button data-title="下から見上げる" data-body="低い位置から見上げるアングル。威圧感や脚・体のラインを強調しやすい。" data-note="強くしすぎると顔が小さく歪みやすい。" onclick="addP('low-angle view','下から見上げる','viewPage')">下から見上げる</button>
+    <button data-title="目線の高さ" data-body="人物の目線と同じ高さから見る構図。" onclick="addP('eye-level view','目線の高さ','viewPage')">目線の高さ</button>
+    <button data-title="下から見上げる" data-body="低い位置から見上げるアングル。" data-note="強くしすぎると顔が小さく歪みやすい。" onclick="addP('low-angle view','下から見上げる','viewPage')">下から見上げる</button>
     <button data-title="上から見下ろす" data-body="高い位置から見下ろす構図。" data-note="頭が大きく、足元が画面外に出やすい。" onclick="addP('high-angle view','上から見下ろす','viewPage')">上から見下ろす</button>
     <button data-title="真上から" data-body="真上（鳥瞰）から見下ろす構図。" onclick="addP(&quot;bird's-eye view&quot;,'真上から','viewPage')">真上から</button>
-    <button data-title="かなり低い位置から" data-body="地面すれすれの極端なあおり構図。" data-note="パースが強く歪みやすい。" onclick="addP(&quot;worm's-eye view&quot;,'かなり低い位置から','viewPage')">かなり低い位置から</button>
+    <button data-title="かなり低い位置から" data-body="地面すれすれの極端なあおり構図。" onclick="addP(&quot;worm's-eye view&quot;,'かなり低い位置から','viewPage')">かなり低い位置から</button>
   </div>
   <h2>カメラの位置</h2>
   <div class="buttons">
@@ -147,16 +153,16 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button data-title="真横" data-body="完全に横顔・真横のシルエット。" onclick="addP('profile view','真横','viewPage')">真横</button>
     <button data-title="後ろ" data-body="背面からの構図。" data-note="looking at viewer と矛盾しやすい。" onclick="addP('rear view','後ろ','viewPage')">後ろ</button>
     <button data-title="斜め" data-body="斜め約45度から捉える定番構図。" onclick="addP('three-quarter view','斜め','viewPage')">斜め</button>
-    <button data-title="後方" data-body="やや後ろ寄りから見る構図。" data-note="looking at viewer と衝突しやすい。" onclick="addP('from behind','後方','viewPage')">後方</button>
+    <button data-title="後方" data-body="やや後ろ寄りから見る構図。" onclick="addP('from behind','後方','viewPage')">後方</button>
     <button data-title="上方" data-body="上方向から見下ろすカメラ位置。" onclick="addP('from above','上方','viewPage')">上方</button>
     <button data-title="下方" data-body="下方向から見上げるカメラ位置。" onclick="addP('from below','下方','viewPage')">下方</button>
     <button data-title="引いた構図" data-body="被写体を小さく、周囲の空間を多く入れる。" onclick="addP('wide shot','引いた構図','viewPage')">引いた構図</button>
     <button data-title="中距離" data-body="腰から上〜膝上程度の中距離ショット。" onclick="addP('medium shot','中距離','viewPage')">中距離</button>
     <button data-title="全身+周囲" data-body="全身が入る距離で背景もある程度写る。" onclick="addP('long shot','全身+周囲','viewPage')">全身+周囲</button>
     <button class="var-btn" onclick="openVariation('closeup')">クローズアップ</button>
-    <button data-title="ダッチアングル" data-body="カメラを斜めに傾ける構図。" data-note="強くしすぎると歪みやすい。" onclick="addP('dutch angle','ダッチアングル','viewPage')">ダッチアングル</button>
+    <button data-title="ダッチアングル" data-body="カメラを斜めに傾ける構図。" onclick="addP('dutch angle','ダッチアングル','viewPage')">ダッチアングル</button>
     <button data-title="肩越し" data-body="手前の人物の肩越しに奥を見る構図。" onclick="addP('over the shoulder','肩越し','viewPage')">肩越し</button>
-    <button data-title="魚眼" data-body="魚眼レンズのような強い歪み。" data-note="端が大きく歪む。" onclick="addP('fisheye','魚眼','viewPage')">魚眼</button>
+    <button data-title="魚眼" data-body="魚眼レンズのような強い歪み。" onclick="addP('fisheye','魚眼','viewPage')">魚眼</button>
     <button data-title="シネマティック" data-body="映画的な画角・ライティングを意識した構図。" onclick="addP('cinematic angle','シネマティック','viewPage')">シネマティック</button>
   </div>
 </div>
@@ -197,7 +203,7 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button data-title="夜" data-body="夜間の時間帯。" data-note="day / morning と矛盾する。" onclick="addP('night','夜','placePage')">夜</button>
     <button data-title="昼" data-body="昼間の時間帯。" data-note="night と矛盾する。" onclick="addP('day','昼','placePage')">昼</button>
     <button data-title="夕方" data-body="夕方・黄昏時。" onclick="addP('evening','夕方','placePage')">夕方</button>
-    <button data-title="朝" data-body="朝の時間帯。" data-note="night と矛盾しやすい。" onclick="addP('morning','朝','placePage')">朝</button>
+    <button data-title="朝" data-body="朝の時間帯。" onclick="addP('morning','朝','placePage')">朝</button>
     <button data-title="室内" data-body="屋内の空間。" data-note="outdoors と矛盾する。" onclick="addP('indoors','室内','placePage')">室内</button>
     <button data-title="屋外" data-body="屋外の空間。" data-note="indoors と矛盾する。" onclick="addP('outdoors','屋外','placePage')">屋外</button>
     <button onclick="addP('bedroom','寝室','placePage')">寝室</button>
@@ -659,6 +665,30 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="menuButton" onclick="showPage('euphoniumPage')">響け！ユーフォニアム</button>
 </div>
 
+<div id="artistPage" class="page">
+  <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
+  <h1>アーティスト</h1>
+  <div class="buttons">
+    <button data-title="愛上陸" data-body="作品&#10;イジラレ&#10;催眠性指導" onclick="addP('artist:aiue oka','愛上陸','artistPage')">愛上陸</button>
+    <button data-title="あるぷ" data-body="作品&#10;オタク友達とのセックスは最高に気持ちいい&#10;アンモラルアイランド" onclick="addP('artist:alp','あるぷ','artistPage')">あるぷ</button>
+    <button data-title="イシガキタカシ" data-body="イラストレーター・作家タグ。" onclick="addP('artist:ishigaki takashi','イシガキタカシ','artistPage')">イシガキタカシ</button>
+    <button data-title="INAZUMA." data-body="作品&#10;イナズマプリティウオーリア" onclick="addP('artist:satou syouji','INAZUMA.','artistPage')">INAZUMA.</button>
+    <button data-title="小畑健" data-body="作品&#10;DEATH NOTE&#10;ヒカルの碁" onclick="addP('artist:obata takeru','小畑健','artistPage')">小畑健</button>
+    <button data-title="おるとろ" data-body="作品&#10;溺愛観察日記" onclick="addP('artist:orushibu','おるとろ','artistPage')">おるとろ</button>
+    <button data-title="きい" data-body="作品&#10;群青ノイズ&#10;不完全マーブル" onclick="addP('artist:key(kagibgngou)','きい','artistPage')">きい</button>
+    <button data-title="コトヤマ" data-body="作品&#10;だがしかし&#10;よふかしのうた" onclick="addP('artist:kotoyama','コトヤマ','artistPage')">コトヤマ</button>
+    <button data-title="彩画堂" data-body="作品&#10;めしべの咲き誇る島で" onclick="addP('artist:saigadou','彩画堂','artistPage')">彩画堂</button>
+    <button data-title="サインこす" data-body="イラストレーター・作家タグ。" onclick="addP('artist:sincos','サインこす','artistPage')">サインこす</button>
+    <button data-title="さくらぷりん" data-body="作品&#10;腐界に眠る王女のアバドーン" onclick="addP('artist:sakuraprin','さくらぷりん','artistPage')">さくらぷりん</button>
+    <button data-title="ジャイロウ" data-body="作品&#10;乱交で分かろう！&#10;少年が大人になった夏" onclick="addP('artist:jairou','ジャイロウ','artistPage')">ジャイロウ</button>
+    <button data-title="ぞんだ" data-body="作品&#10;フェラチオ研究部" onclick="addP('artist:zonda(solid_air)','ぞんだ','artistPage')">ぞんだ</button>
+    <button data-title="フクダーダ" data-body="作品&#10;ぱぷぱふの書" onclick="addP('artist:fukudahda','フクダーダ','artistPage')">フクダーダ</button>
+    <button data-title="水龍敬" data-body="作品&#10;おいでよ！水龍敬ランド" onclick="addP('mizuryu kei','水龍敬','artistPage')">水龍敬</button>
+    <button data-title="ミモネル" data-body="作品&#10;仲間と一線超えちゃう本" onclick="addP('artist:mimonel','ミモネル','artistPage')">ミモネル</button>
+    <button data-title="メメ屋" data-body="作品&#10;オカネダイスキ&#10;性癖マッチングアプリ ズボプリ" onclick="addP('artist:meme50','メメ屋','artistPage')">メメ屋</button>
+  </div>
+</div>
+
 <div id="malePage" class="page">
   <button class="backButton" onclick="showPage('characterPage')">← 戻る</button>
   <h1>竿役</h1>
@@ -755,23 +785,12 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 </div>
 
 <script>
-let prompts=[],currentWeightIndex=-1,pendingClothing=null,pendingLick=null,promptExpanded=false,pendingConflict=null;
+let prompts=[],currentWeightIndex=-1,reorderIndex=-1,pendingClothing=null,pendingLick=null,promptExpanded=false,pendingConflict=null;
 const WEIGHTS=[0.8,1.0,1.1,1.2,1.3,1.5],COLLAPSE_THRESHOLD=5,HINT_MS=350;
 const CLOTHING_COLORS={lingerie:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"紫",value:"purple"}],bikini:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"ネイビー",value:"navy"},{label:"青",value:"blue"}],school_swimsuit:[{label:"ネイビー",value:"navy"},{label:"黒",value:"black"},{label:"白",value:"white"}],uniform:[{label:"紺",value:"navy"},{label:"黒",value:"black"},{label:"指定なし",value:""}],nurse_maid:[{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"黒",value:"black"}],office:[{label:"黒",value:"black"},{label:"グレー",value:"gray"},{label:"ネイビー",value:"navy"}],china:[{label:"赤",value:"red"},{label:"青",value:"blue"},{label:"黄",value:"yellow"},{label:"紫",value:"purple"},{label:"白",value:"white"}]};
 const CLOTHING_STATES={lingerie:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", lingerie aside, panties aside, pulled aside"},{label:"はだけている",suffix:", open lingerie, disheveled lingerie"},{label:"半分脱がされている",suffix:", half-removed lingerie, lingerie around thighs"},{label:"破れている",suffix:", torn lingerie, ripped lingerie"}],bikini:[{label:"普通に着ている",suffix:""},{label:"マイクロビキニ",suffix:", micro bikini"},{label:"紐ビキニ",suffix:", string bikini"},{label:"紐を解いている",suffix:", untied bikini, bikini strings undone"},{label:"ずらしている",suffix:", bikini aside, pulled aside bikini"},{label:"濡れている",suffix:", wet bikini, see-through bikini"},{label:"半分脱げている",suffix:", half-removed bikini, bikini around ankles"}],school_swimsuit:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", school swimsuit aside, pulled aside"},{label:"ずり下げ",suffix:", school swimsuit pulled down, around thighs"},{label:"濡れている",suffix:", wet school swimsuit, see-through school swimsuit"},{label:"破れている",suffix:", torn school swimsuit"}],uniform:[{label:"普通に着ている",suffix:", short skirt"},{label:"シャツはだけ",suffix:", open shirt, unbuttoned blouse, short skirt"},{label:"スカートめくれ",suffix:", skirt lift, lifted skirt, upskirt"},{label:"乱れている",suffix:", disheveled uniform, messy clothes"},{label:"半脱ぎ",suffix:", half-undressed, clothes around waist"}],nurse_maid:[{label:"普通に着ている",suffix:""},{label:"はだけている",suffix:", open, unbuttoned, cleavage"},{label:"スカートめくれ",suffix:", skirt lift, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],office:[{label:"普通に着ている",suffix:", tight skirt"},{label:"ブラウスはだけ",suffix:", unbuttoned blouse, open shirt, tight skirt"},{label:"スカートめくれ",suffix:", skirt lift, tight skirt, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],china:[{label:"普通に着ている",suffix:""},{label:"スリット高め",suffix:", high slit"},{label:"はだけている",suffix:", open china dress"},{label:"乱れている",suffix:", disheveled china dress"}]};
 const CLOTHING_BASE={lingerie:"lingerie",bikini:"bikini",school_swimsuit:"school swimsuit",uniform:"school uniform",nurse_maid:"nurse outfit",office:"office lady, suit",china:"china dress"};
-
-const LICK_PARTS=[
-  {label:"首筋",m2f:"neck kissing, licking neck, man licking woman's neck",f2m:"neck kissing, licking neck, woman licking man's neck",j:"首筋"},
-  {label:"耳",m2f:"ear licking, man licking woman's ear, whispering",f2m:"ear licking, woman licking man's ear, whispering",j:"耳"},
-  {label:"脇",m2f:"armpit licking, man licking woman's armpit",f2m:"armpit licking, woman licking man's armpit",j:"脇"},
-  {label:"へそ",m2f:"navel licking, man licking woman's navel",f2m:"navel licking, woman licking man's navel",j:"へそ"},
-  {label:"体・胸元",m2f:"body licking, licking body, man licking woman's body",f2m:"body licking, licking body, woman licking man's body",j:"体"},
-  {label:"太もも",m2f:"licking thighs, man licking woman's thighs",f2m:"licking thighs, woman licking man's thighs",j:"太もも"},
-  {label:"足・足指",m2f:"foot licking, toe sucking, man licking woman's feet",f2m:"foot licking, toe sucking, woman licking man's feet",j:"足"},
-  {label:"背中",m2f:"licking back, man licking woman's back",f2m:"licking back, woman licking man's back",j:"背中"},
-  {label:"お腹",m2f:"licking stomach, man licking woman's stomach",f2m:"licking stomach, woman licking man's stomach",j:"お腹"}
-];
+const LICK_PARTS=[{label:"首筋",m2f:"neck kissing, licking neck, man licking woman's neck",f2m:"neck kissing, licking neck, woman licking man's neck",j:"首筋"},{label:"耳",m2f:"ear licking, man licking woman's ear, whispering",f2m:"ear licking, woman licking man's ear, whispering",j:"耳"},{label:"脇",m2f:"armpit licking, man licking woman's armpit",f2m:"armpit licking, woman licking man's armpit",j:"脇"},{label:"へそ",m2f:"navel licking, man licking woman's navel",f2m:"navel licking, woman licking man's navel",j:"へそ"},{label:"体・胸元",m2f:"body licking, licking body, man licking woman's body",f2m:"body licking, licking body, woman licking man's body",j:"体"},{label:"太もも",m2f:"licking thighs, man licking woman's thighs",f2m:"licking thighs, woman licking man's thighs",j:"太もも"},{label:"足・足指",m2f:"foot licking, toe sucking, man licking woman's feet",f2m:"foot licking, toe sucking, woman licking man's feet",j:"足"},{label:"背中",m2f:"licking back, man licking woman's back",f2m:"licking back, woman licking man's back",j:"背中"},{label:"お腹",m2f:"licking stomach, man licking woman's stomach",f2m:"licking stomach, woman licking man's stomach",j:"お腹"}];
 
 const VARIATIONS={
 closeup:{title:"クローズアップ",page:"viewPage",options:[{label:"顔のアップ",prompt:"close-up, face focus",desc:"顔を大きく写す"},{label:"上半身のアップ",prompt:"close-up, upper body",desc:"胸から上"},{label:"局部のアップ",prompt:"extreme close-up, pussy focus, crotch focus",desc:"性器など局所"},{label:"目のアップ",prompt:"extreme close-up, eye focus",desc:"目だけ大きく"},{label:"口元のアップ",prompt:"extreme close-up, lips focus, mouth focus",desc:"唇・口"},{label:"かなり寄る（全体）",prompt:"extreme close-up",desc:"極端に寄った構図"}]},
@@ -802,36 +821,9 @@ cowgirl:{title:"騎乗位",page:"sexPage",options:[{label:"基本の騎乗位",p
 mating_press:{title:"種付けプレス",page:"sexPage",options:[{label:"基本の種付けプレス",prompt:"mating press, legs pushed back, deep penetration, breeding",desc:"脚を大きく開いて押さえる"},{label:"強く押さえつける",prompt:"mating press, heavy pressing, legs over head",desc:"より強い圧"},{label:"中出し強調",prompt:"mating press, creampie, cum inside, breeding",desc:"中出しを意識した描写"}]},
 daisuki_hold:{title:"だいしゅきホールド",page:"sexPage",options:[{label:"基本のだいしゅきホールド",prompt:"daisuki hold, legs held up, deep penetration, intimate embrace",desc:"脚を抱えて深く結合"},{label:"強く抱きしめる",prompt:"daisuki hold, tight embrace, legs over shoulders",desc:"より密着した抱き方"},{label:"中出ししながら",prompt:"daisuki hold, creampie, cum inside while holding",desc:"出しながらホールド"}]},
 ekiben:{title:"駅弁",page:"sexPage",options:[{label:"基本の駅弁",prompt:"ekiben, standing carry, woman held up, legs wrapped around man, penetration while standing",desc:"立ったまま抱えて挿入"},{label:"壁に押し付けながら",prompt:"ekiben, against wall, standing carry sex",desc:"壁を使った駅弁"},{label:"激しく動かす",prompt:"ekiben, intense thrusting while carrying",desc:"抱えたまま激しく動く"}]},
-/* 強弱を各エフェクトに統合 */
-thrust:{title:"腰振り・ピストン",page:"sexPage",options:[
-  {label:"ごく弱い・控えめ",prompt:"gentle thrusting, soft, light movement, subtle",desc:"ほとんど動かない・ごく弱い"},
-  {label:"弱い・ゆっくり",prompt:"slow thrusting, grinding, gentle",desc:"ゆっくり・弱い"},
-  {label:"普通",prompt:"thrusting, moderate, steady rhythm",desc:"標準的な強さ"},
-  {label:"強い・激しい",prompt:"intense thrusting, pistoning, hard, rough",desc:"強く激しい"},
-  {label:"非常に強い・限界",prompt:"extremely intense thrusting, brutal, relentless, overwhelming",desc:"限界に近い激しさ"},
-  {label:"深く突き上げる",prompt:"deep thrust, deep penetration, bottoming out",desc:"奥まで突いている"},
-  {label:"浅いピストン",prompt:"shallow thrusting, teasing thrusts",desc:"浅く動いている"}
-]},
-bounce:{title:"揺れ・バウンス",page:"sexPage",options:[
-  {label:"ごく弱い揺れ",prompt:"subtle bounce, slight jiggle",desc:"わずかに揺れる"},
-  {label:"弱い揺れ",prompt:"soft bounce, gentle jiggle",desc:"弱めに揺れる"},
-  {label:"普通の揺れ",prompt:"bouncing breasts, bouncing ass, jiggle",desc:"標準的な揺れ"},
-  {label:"強い揺れ",prompt:"intense bouncing, heavy jiggle, vigorous bounce",desc:"大きく激しく揺れる"},
-  {label:"おっぱいが揺れている",prompt:"bouncing breasts, jiggle",desc:"胸が揺れている"},
-  {label:"尻が揺れている",prompt:"bouncing ass, jiggling butt",desc:"尻が揺れている"},
-  {label:"体全体が揺れている",prompt:"body bounce, bouncing",desc:"体がバウンドしている"}
-]},
-body_reaction:{title:"身体の反応",page:"sexPage",options:[
-  {label:"ごく弱い反応",prompt:"subtle reaction, slight twitch",desc:"わずかな反応"},
-  {label:"弱い反応",prompt:"mild trembling, soft arch",desc:"弱めの反応"},
-  {label:"普通の反応",prompt:"trembling, arching from pleasure",desc:"標準的な反応"},
-  {label:"強い反応",prompt:"intense trembling, strong arch, convulsing",desc:"激しい反応"},
-  {label:"腰が浮かる",prompt:"hips rising, arching from pleasure",desc:"快感で腰が浮く"},
-  {label:"足が震える",prompt:"trembling legs, shaking legs",desc:"足ががくがくする"},
-  {label:"力が入る・踏ん張る",prompt:"clenching, tensing up, gripping",desc:"力を入れている"},
-  {label:"体をくねらせる",prompt:"writhing, squirming from pleasure",desc:"くねくね動く"},
-  {label:"背中を大きく反らす",prompt:"arching back strongly, extreme arch",desc:"大きく反る"}
-]},
+thrust:{title:"腰振り・ピストン",page:"sexPage",options:[{label:"ごく弱い・控えめ",prompt:"gentle thrusting, soft, light movement, subtle",desc:"ほとんど動かない・ごく弱い"},{label:"弱い・ゆっくり",prompt:"slow thrusting, grinding, gentle",desc:"ゆっくり・弱い"},{label:"普通",prompt:"thrusting, moderate, steady rhythm",desc:"標準的な強さ"},{label:"強い・激しい",prompt:"intense thrusting, pistoning, hard, rough",desc:"強く激しい"},{label:"非常に強い・限界",prompt:"extremely intense thrusting, brutal, relentless, overwhelming",desc:"限界に近い激しさ"},{label:"深く突き上げる",prompt:"deep thrust, deep penetration, bottoming out",desc:"奥まで突いている"},{label:"浅いピストン",prompt:"shallow thrusting, teasing thrusts",desc:"浅く動いている"}]},
+bounce:{title:"揺れ・バウンス",page:"sexPage",options:[{label:"ごく弱い揺れ",prompt:"subtle bounce, slight jiggle",desc:"わずかに揺れる"},{label:"弱い揺れ",prompt:"soft bounce, gentle jiggle",desc:"弱めに揺れる"},{label:"普通の揺れ",prompt:"bouncing breasts, bouncing ass, jiggle",desc:"標準的な揺れ"},{label:"強い揺れ",prompt:"intense bouncing, heavy jiggle, vigorous bounce",desc:"大きく激しく揺れる"},{label:"おっぱいが揺れている",prompt:"bouncing breasts, jiggle",desc:"胸が揺れている"},{label:"尻が揺れている",prompt:"bouncing ass, jiggling butt",desc:"尻が揺れている"},{label:"体全体が揺れている",prompt:"body bounce, bouncing",desc:"体がバウンドしている"}]},
+body_reaction:{title:"身体の反応",page:"sexPage",options:[{label:"ごく弱い反応",prompt:"subtle reaction, slight twitch",desc:"わずかな反応"},{label:"弱い反応",prompt:"mild trembling, soft arch",desc:"弱めの反応"},{label:"普通の反応",prompt:"trembling, arching from pleasure",desc:"標準的な反応"},{label:"強い反応",prompt:"intense trembling, strong arch, convulsing",desc:"激しい反応"},{label:"腰が浮かる",prompt:"hips rising, arching from pleasure",desc:"快感で腰が浮く"},{label:"足が震える",prompt:"trembling legs, shaking legs",desc:"足ががくがくする"},{label:"力が入る・踏ん張る",prompt:"clenching, tensing up, gripping",desc:"力を入れている"},{label:"体をくねらせる",prompt:"writhing, squirming from pleasure",desc:"くねくね動く"},{label:"背中を大きく反らす",prompt:"arching back strongly, extreme arch",desc:"大きく反る"}]},
 head_pat:{title:"頭を撫でる",page:"bodyPage",options:[{label:"男性が女性の頭を撫でる",prompt:"man stroking woman's head, headpat, hand on head",desc:"男性→女性"},{label:"女性が男性の頭を撫でる",prompt:"woman stroking man's head, headpat, hand on head",desc:"女性→男性"},{label:"優しく撫でる",prompt:"gentle headpat, stroking hair",desc:"優しい触れ方"},{label:"抱きながら撫でる",prompt:"headpat while hugging, stroking head in embrace",desc:"抱擁しながら"}]},
 body_press:{title:"身体を密着させる",page:"bodyPage",options:[{label:"密着している",prompt:"bodies pressed together, close contact, skin to skin",desc:"体同士がくっついている"},{label:"正面から密着",prompt:"chest to chest, bodies pressed face to face",desc:"正面で押し付ける"},{label:"後ろから密着",prompt:"body pressed from behind, back to chest",desc:"後ろから寄り添う"},{label:"抱きしめて密着",prompt:"tight embrace, bodies tightly pressed",desc:"強く抱きしめる"},{label:"壁に押し付けて密着",prompt:"pressed against wall, bodies flush",desc:"壁際で密着"}]},
 breasts:{title:"おっぱい",page:"bodyPage",options:[{label:"大きいおっぱい",prompt:"large breasts, big breasts",desc:"サイズ強調"},{label:"垂れたおっぱい",prompt:"sagging breasts, soft breasts",desc:"柔らかい・垂れている"},{label:"ピンと張ったおっぱい",prompt:"perky breasts, firm breasts",desc:"ハリがある"},{label:"揺れおっぱい",prompt:"bouncing breasts, jiggle",desc:"動いている・揺れている"},{label:"強調・寄せている",prompt:"cleavage, squeezed breasts, pressed breasts",desc:"寄せて谷間を作っている"},{label:"乳首が見えている",prompt:"nipples visible, erect nipples",desc:"勃起した乳首が見える"},{label:"おっぱいを掴まれている",prompt:"groping breasts, hands on breasts",desc:"触られている"}]},
@@ -864,57 +856,54 @@ function updateSelectedButtons(){const conflictKeys=getConflictKeywords();docume
 function togglePromptExpand(){promptExpanded=!promptExpanded;const el=document.getElementById("prompt"),btn=document.getElementById("promptExpand");el.classList.toggle("expanded",promptExpanded);btn.textContent=promptExpanded?"▲ 閉じる":"… タップで展開"}
 function updatePrompt(){const el=document.getElementById("prompt"),c=document.getElementById("promptCount"),exp=document.getElementById("promptExpand");if(!prompts.length){el.innerHTML='<span class="placeholder">ここに選択したプロンプトが表示されます</span>';el.classList.remove("expanded");exp.classList.remove("show");promptExpanded=false}else{el.innerHTML=prompts.map((p,i)=>{const b=p.weight!==1.0?`<span class="weight">${p.weight}</span>`:"";return `<span class="prompt-chip" data-index="${i}"><span class="chip-label">${escapeHtml(p.label||p.text)}</span>${b}<span class="remove" data-remove="${i}">×</span></span>`}).join("");if(prompts.length>COLLAPSE_THRESHOLD){exp.classList.add("show");if(!promptExpanded)el.classList.remove("expanded");else el.classList.add("expanded");exp.textContent=promptExpanded?"▲ 閉じる":"… タップで展開（"+prompts.length+"個）"}else{exp.classList.remove("show");el.classList.add("expanded");promptExpanded=true}}c.textContent=prompts.length+" 個選択中";attachChipEvents();updateSelectedButtons();updateHomeFab()}
 function escapeHtml(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML}
-function openChipMenu(i){const p=prompts[i];document.getElementById("chipMenuTitle").textContent=p.label||p.text;document.getElementById("chipMenuList").innerHTML=`<button onclick="movePrompt(${i},-1);closeChipMenu()">↑ 上へ移動</button><button onclick="movePrompt(${i},1);closeChipMenu()">↓ 下へ移動</button><button onclick="closeChipMenu();openWeightPanel(${i})">重みを変更</button>`;document.getElementById("chipMenuOverlay").classList.add("active")}
+function openChipMenu(i){
+  const p=prompts[i];
+  document.getElementById("chipMenuTitle").textContent=p.label||p.text;
+  document.getElementById("chipMenuList").innerHTML=`
+    <button onclick="closeChipMenu();openReorder(${i})">順番を変える</button>
+    <button onclick="closeChipMenu();openWeightPanel(${i})">重みを変更</button>
+  `;
+  document.getElementById("chipMenuOverlay").classList.add("active");
+}
 function closeChipMenu(){document.getElementById("chipMenuOverlay").classList.remove("active")}
+function openReorder(i){
+  reorderIndex=i;
+  refreshReorderUI();
+  document.getElementById("reorderOverlay").classList.add("active");
+}
+function refreshReorderUI(){
+  if(reorderIndex<0||reorderIndex>=prompts.length){closeReorder();return}
+  const p=prompts[reorderIndex];
+  document.getElementById("reorderLabel").textContent=p.label||p.text;
+  document.getElementById("reorderPos").textContent=(reorderIndex+1)+" / "+prompts.length;
+  document.getElementById("reorderUp").disabled=reorderIndex<=0;
+  document.getElementById("reorderDown").disabled=reorderIndex>=prompts.length-1;
+}
+function reorderMove(dir){
+  if(reorderIndex<0)return;
+  const j=reorderIndex+dir;
+  if(j<0||j>=prompts.length)return;
+  const t=prompts[reorderIndex];prompts[reorderIndex]=prompts[j];prompts[j]=t;
+  reorderIndex=j;
+  updatePrompt();savePrompts();
+  refreshReorderUI();
+}
+function closeReorder(){document.getElementById("reorderOverlay").classList.remove("active");reorderIndex=-1}
 function openVariation(k){const d=VARIATIONS[k];if(!d)return;document.getElementById("variationTitle").textContent=d.title;document.getElementById("variationList").innerHTML=d.options.map(o=>`<button onclick="selectVariation(\`${o.prompt.replace(/`/g,"\\`")}\`,'${o.label.replace(/'/g,"\\'")}','${d.page||""}')">${o.label}${o.desc?`<span class="desc">${o.desc}</span>`:""}</button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
 function selectVariation(t,label,page){addP(t,label,page);closeVariationPanel()}
 function closeVariationPanel(){document.getElementById("variationOverlay").classList.remove("active");pendingClothing=null;pendingLick=null}
 function openClothingColor(type){pendingClothing={type,color:null};const colors=CLOTHING_COLORS[type]||[];document.getElementById("variationTitle").textContent="色を選択";document.getElementById("variationList").innerHTML=colors.map(c=>`<button onclick="selectClothingColor('${c.value}')">${c.label}</button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
 function selectClothingColor(colorValue){pendingClothing.color=colorValue;const states=CLOTHING_STATES[pendingClothing.type]||[];const colorLabel=({black:"黒",white:"白",pink:"ピンク",red:"赤",purple:"紫",navy:"ネイビー",blue:"青",yellow:"黄",gray:"グレー","":"指定なし"})[pendingClothing.color]||pendingClothing.color;document.getElementById("variationTitle").textContent="状態を選択";document.getElementById("variationList").innerHTML=states.map(s=>{const base=CLOTHING_BASE[pendingClothing.type];const colorPart=pendingClothing.color?pendingClothing.color+" ":"";let prompt="",jlabel=colorLabel+(colorLabel?"の":"")+(({lingerie:"ランジェリー",bikini:"ビキニ",school_swimsuit:"スクール水着",uniform:"制服",nurse_maid:"ナース・メイド",office:"OL・スーツ",china:"チャイナドレス"})[pendingClothing.type]||"")+(s.label==="普通に着ている"?"":"・"+s.label);if(pendingClothing.type==="nurse_maid"){const isMaid=pendingClothing.color==="black";prompt=(isMaid?"black maid outfit":(pendingClothing.color?pendingClothing.color+" nurse outfit":"nurse outfit"))+s.suffix;jlabel=(isMaid?"黒メイド":colorLabel+"ナース")+(s.label==="普通に着ている"?"":"・"+s.label)}else if(pendingClothing.type==="office"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"office lady, suit"+s.suffix}else if(pendingClothing.type==="uniform"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"school uniform"+s.suffix}else if(pendingClothing.type==="china"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"china dress"+s.suffix}else{prompt=colorPart+base+s.suffix}return `<button onclick="selectVariation(\`${prompt.replace(/`/g,"\\`")}\`,'${jlabel.replace(/'/g,"\\'")}','clothingPage')">${s.label}</button>`}).join("")}
-
-/* 体を舐める：誰が誰を → どこを */
-function openBodyLick(){
-  pendingLick={dir:null};
-  document.getElementById("variationTitle").textContent="誰が舐める？";
-  document.getElementById("variationList").innerHTML=`
-    <button onclick="selectLickDir('m2f')">男性が女性を舐める<span class="desc">男性→女性</span></button>
-    <button onclick="selectLickDir('f2m')">女性が男性を舐める<span class="desc">女性→男性</span></button>
-  `;
-  document.getElementById("variationOverlay").classList.add("active");
-}
-function selectLickDir(dir){
-  pendingLick.dir=dir;
-  document.getElementById("variationTitle").textContent="どこを舐める？";
-  document.getElementById("variationList").innerHTML=LICK_PARTS.map(p=>{
-    const prompt=dir==="m2f"?p.m2f:p.f2m;
-    const who=dir==="m2f"?"男性が女性の":"女性が男性の";
-    const jlabel=who+p.j+"を舐める";
-    return `<button onclick="selectVariation(\`${prompt.replace(/`/g,"\\`")}\`,'${jlabel.replace(/'/g,"\\'")}','sexPage')">${p.label}<span class="desc">${jlabel}</span></button>`;
-  }).join("");
-}
-
+function openBodyLick(){pendingLick={dir:null};document.getElementById("variationTitle").textContent="誰が舐める？";document.getElementById("variationList").innerHTML=`<button onclick="selectLickDir('m2f')">男性が女性を舐める<span class="desc">男性→女性</span></button><button onclick="selectLickDir('f2m')">女性が男性を舐める<span class="desc">女性→男性</span></button>`;document.getElementById("variationOverlay").classList.add("active")}
+function selectLickDir(dir){pendingLick.dir=dir;document.getElementById("variationTitle").textContent="どこを舐める？";document.getElementById("variationList").innerHTML=LICK_PARTS.map(p=>{const prompt=dir==="m2f"?p.m2f:p.f2m;const who=dir==="m2f"?"男性が女性の":"女性が男性の";const jlabel=who+p.j+"を舐める";return `<button onclick="selectVariation(\`${prompt.replace(/`/g,"\\`")}\`,'${jlabel.replace(/'/g,"\\'")}','sexPage')">${p.label}<span class="desc">${jlabel}</span></button>`}).join("")}
 function attachChipEvents(){document.querySelectorAll(".prompt-chip").forEach(chip=>{const rm=chip.querySelector(".remove");if(rm){rm.addEventListener("click",e=>{e.stopPropagation();removePrompt(+rm.dataset.remove)})}let timer=null;const start=e=>{if(e.target.classList.contains("remove"))return;chip._ts=Date.now();timer=setTimeout(()=>{openChipMenu(+chip.dataset.index)},500)};const end=e=>{clearTimeout(timer);if(e.target.classList.contains("remove"))return;if(Date.now()-(chip._ts||0)<500){const p=prompts[+chip.dataset.index];if(p&&p.page)showPage(p.page)}};chip.addEventListener("touchstart",start,{passive:true});chip.addEventListener("touchend",end);chip.addEventListener("touchcancel",()=>clearTimeout(timer));chip.addEventListener("mousedown",start);chip.addEventListener("mouseup",end);chip.addEventListener("mouseleave",()=>clearTimeout(timer))})}
-(function setupButtonHints(){let hintTimer=null;function isHintTarget(btn){if(!btn||btn.classList.contains("var-btn")||btn.classList.contains("menuButton")||btn.classList.contains("backButton")||btn.classList.contains("cancel")||btn.classList.contains("yes")||btn.classList.contains("no")||btn.id==="copyButton"||btn.id==="clearButton"||btn.id==="themeButton"||btn.id==="promptExpand"||btn.id==="homeFab")return false;return !!(btn.getAttribute("data-title")||btn.getAttribute("data-body"))}function startHint(e){const btn=e.target.closest("button");if(!isHintTarget(btn))return;hintTimer=setTimeout(()=>{openDesc(btn.getAttribute("data-title")||btn.textContent.trim(),btn.getAttribute("data-body")||"",btn.getAttribute("data-note")||"")},HINT_MS)}function endHint(){clearTimeout(hintTimer)}document.body.addEventListener("touchstart",startHint,{passive:true});document.body.addEventListener("touchend",endHint);document.body.addEventListener("touchcancel",endHint);document.body.addEventListener("mousedown",startHint);document.body.addEventListener("mouseup",endHint);document.body.addEventListener("mouseleave",endHint)})();
+(function setupButtonHints(){let hintTimer=null;function isHintTarget(btn){if(!btn||btn.classList.contains("var-btn")||btn.classList.contains("menuButton")||btn.classList.contains("backButton")||btn.classList.contains("cancel")||btn.classList.contains("yes")||btn.classList.contains("no")||btn.id==="copyButton"||btn.id==="clearButton"||btn.id==="themeButton"||btn.id==="promptExpand"||btn.id==="homeFab"||btn.id==="reorderUp"||btn.id==="reorderDown")return false;return !!(btn.getAttribute("data-title")||btn.getAttribute("data-body"))}function startHint(e){const btn=e.target.closest("button");if(!isHintTarget(btn))return;hintTimer=setTimeout(()=>{openDesc(btn.getAttribute("data-title")||btn.textContent.trim(),btn.getAttribute("data-body")||"",btn.getAttribute("data-note")||"")},HINT_MS)}function endHint(){clearTimeout(hintTimer)}document.body.addEventListener("touchstart",startHint,{passive:true});document.body.addEventListener("touchend",endHint);document.body.addEventListener("touchcancel",endHint);document.body.addEventListener("mousedown",startHint);document.body.addEventListener("mouseup",endHint);document.body.addEventListener("mouseleave",endHint)})();
 function openDesc(title,body,note){document.getElementById("descTitle").textContent=title;document.getElementById("descBody").textContent=body;const n=document.getElementById("descNote");if(note){n.style.display="block";n.innerHTML="<strong>注意</strong>"+escapeHtml(note)}else{n.style.display="none";n.innerHTML=""}document.getElementById("descOverlay").classList.add("active")}
 function closeDesc(){document.getElementById("descOverlay").classList.remove("active")}
 function openWeightPanel(i){currentWeightIndex=i;const cur=prompts[i].weight;document.getElementById("weightButtons").innerHTML=WEIGHTS.map(w=>`<button class="${w===cur?"active":""}" onclick="setWeight(${w})">${w}</button>`).join("");document.getElementById("weightOverlay").classList.add("active")}
 function setWeight(w){if(currentWeightIndex>=0){prompts[currentWeightIndex].weight=w;updatePrompt();savePrompts()}closeWeightPanel()}
 function closeWeightPanel(){document.getElementById("weightOverlay").classList.remove("active");currentWeightIndex=-1}
-function copyPrompt(){
-  const t=prompts.map(formatPrompt).join(", ");
-  if(!t)return;
-  const out=t.endsWith(",")?t:t+",";
-  const btn=document.getElementById("copyButton");
-  const msg=document.getElementById("copyMsg");
-  const done=()=>{btn.classList.add("copied");msg.classList.add("show");setTimeout(()=>{btn.classList.remove("copied")},1200)};
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(out).then(done).catch(()=>{
-      const ta=document.createElement("textarea");ta.value=out;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done();
-    });
-  }else{
-    const ta=document.createElement("textarea");ta.value=out;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done();
-  }
-}
+function copyPrompt(){const t=prompts.map(formatPrompt).join(", ");if(!t)return;const out=t.endsWith(",")?t:t+",";const btn=document.getElementById("copyButton");const msg=document.getElementById("copyMsg");const done=()=>{btn.classList.add("copied");msg.classList.add("show");setTimeout(()=>{btn.classList.remove("copied")},1200)};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(out).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=out;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done()})}else{const ta=document.createElement("textarea");ta.value=out;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done()}}
 function clearPrompt(){prompts=[];hideCopyMsg();updatePrompt();savePrompts()}
 function updateHomeFab(){const fab=document.getElementById("homeFab");const onHome=document.getElementById("homePage").classList.contains("active");fab.style.display=onHome?"none":"flex"}
 function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0);updateSelectedButtons();updateHomeFab()}
