@@ -114,8 +114,8 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   </div>
   <h2>基本</h2>
   <div class="buttons">
-    <button data-title="ベース" data-body="アーティスト指定と画質・詳細度を底上げする定番セット。" data-note="毎回入れておくと安定しやすい。不要な要素があれば個別に外す。" onclick="addP('1.5::artist:5saiji::,artist:yoneyama mai,artist:koyomania,artist:fukudahda,artist:tamifull,artist:sakuraprin,highres,4K, highly detailed, Curated, masterpiece, simple background, depth of field,ultra complexity,','ベース','basePage')">ベース</button>
-    <button data-title="ネガティブ" data-body="低品質・手足欠け・ロゴ・リアル寄りなどを抑える除外用タグ。" data-note="NovelAIのネガティブ欄に入れる想定。ポジティブ欄には通常入れない。" onclick="addP('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated','ネガティブ','basePage')">ネガティブ</button>
+    <button data-title="ベース" data-body="画質・アーティスト指定を底上げする定番セット。" data-note="毎回入れておくと安定しやすい。" onclick="addP('best quality, amazing quality,1.5::artist:5saiji::,1.3:: artist:ishigaki takashi::,1.3::artist: fukudahda::,1.2::artist:kotoyama::,1.2::tamifull::,1.2::artist:yoneyama mai::,highres,4K, highly detailed, Curated, masterpiece, simple background, depth of field,ultra complexity,','ベース','basePage')">ベース</button>
+    <button data-title="ネガティブ" data-body="低品質・手足欠け・ロゴ・リアル寄りなどを抑える除外用タグ。" data-note="NovelAIのネガティブ欄に入れる想定。" onclick="addP('lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated','ネガティブ','basePage')">ネガティブ</button>
     <button data-title="モザイク" data-body="NSFWにモザイク検閲を入れる指定。" data-note="無修正にしたい場合は付けない。" onclick="addP('nsfw, mosaic censoring','モザイク','basePage')">モザイク</button>
     <button data-title="陰毛" data-body="黒い陰毛を描画する指定。" onclick="addP('black pubic hair','陰毛','basePage')">陰毛</button>
   </div>
@@ -126,31 +126,31 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <h1>視点</h1>
   <h2>基本の視点</h2>
   <div class="buttons">
-    <button data-title="目線の高さ" data-body="人物の目線と同じ高さから見る、自然な正面寄りの構図。" data-note="日常的・安定した見え方になる。劇的な印象は薄い。" onclick="addP('eye-level view','目線の高さ','viewPage')">目線の高さ</button>
+    <button data-title="目線の高さ" data-body="人物の目線と同じ高さから見る、自然な正面寄りの構図。" data-note="日常的・安定した見え方になる。" onclick="addP('eye-level view','目線の高さ','viewPage')">目線の高さ</button>
     <button data-title="下から見上げる" data-body="低い位置から見上げるアングル。威圧感や脚・体のラインを強調しやすい。" data-note="強くしすぎると顔が小さく、体が長く歪みやすい。" onclick="addP('low-angle view','下から見上げる','viewPage')">下から見上げる</button>
     <button data-title="上から見下ろす" data-body="高い位置から見下ろす構図。小さく見える・守られ感・俯瞰感が出る。" data-note="頭が大きく、足元が画面外に出やすい。" onclick="addP('high-angle view','上から見下ろす','viewPage')">上から見下ろす</button>
-    <button data-title="真上から" data-body="真上（鳥瞰）から見下ろす構図。床に寝ているポーズと相性が良い。" data-note="顔の立体感が弱くなりやすい。横顔や表情の詳細は出にくい。" onclick="addP(&quot;bird's-eye view&quot;,'真上から','viewPage')">真上から</button>
-    <button data-title="かなり低い位置から" data-body="地面すれすれの極端なあおり構図。迫力や脚の長さを強調する。" data-note="パースが強く歪みやすい。顔が小さくなりがち。" onclick="addP(&quot;worm's-eye view&quot;,'かなり低い位置から','viewPage')">かなり低い位置から</button>
+    <button data-title="真上から" data-body="真上（鳥瞰）から見下ろす構図。床に寝ているポーズと相性が良い。" data-note="顔の立体感が弱くなりやすい。" onclick="addP(&quot;bird's-eye view&quot;,'真上から','viewPage')">真上から</button>
+    <button data-title="かなり低い位置から" data-body="地面すれすれの極端なあおり構図。迫力や脚の長さを強調する。" data-note="パースが強く歪みやすい。" onclick="addP(&quot;worm's-eye view&quot;,'かなり低い位置から','viewPage')">かなり低い位置から</button>
   </div>
   <h2>カメラの位置</h2>
   <div class="buttons">
-    <button data-title="主観（POV）" data-body="見る側＝行為者側の視点。手や体の一部が手前に入ることが多い。" data-note="エロの主観描写でよく使う。顔より体・接触部分が主役になりやすい。" onclick="addP('pov','主観','viewPage')">主観</button>
-    <button data-title="正面" data-body="被写体を真正面から捉える構図。" data-note="表情や胸元を見せたいときに向く。" onclick="addP('front view','正面','viewPage')">正面</button>
+    <button data-title="主観（POV）" data-body="見る側＝行為者側の視点。手や体の一部が手前に入ることが多い。" data-note="エロの主観描写でよく使う。" onclick="addP('pov','主観','viewPage')">主観</button>
+    <button data-title="正面" data-body="被写体を真正面から捉える構図。" onclick="addP('front view','正面','viewPage')">正面</button>
     <button data-title="横" data-body="横方向から見た構図。体の厚みやラインが出やすい。" onclick="addP('side view','横','viewPage')">横</button>
-    <button data-title="真横" data-body="完全に横顔・真横のシルエットになる構図。" data-note="表情の情報は減る。輪郭や体のライン重視向き。" onclick="addP('profile view','真横','viewPage')">真横</button>
+    <button data-title="真横" data-body="完全に横顔・真横のシルエットになる構図。" data-note="表情の情報は減る。" onclick="addP('profile view','真横','viewPage')">真横</button>
     <button data-title="後ろ" data-body="背面からの構図。背中・尻・後頭部が主役になる。" data-note="looking at viewer と同時に使うと矛盾しやすい。" onclick="addP('rear view','後ろ','viewPage')">後ろ</button>
     <button data-title="斜め" data-body="斜め約45度から捉える、立体感のある定番構図。" onclick="addP('three-quarter view','斜め','viewPage')">斜め</button>
-    <button data-title="後方" data-body="やや後ろ寄りから見る構図。後ろ姿＋肩や横顔が見えることもある。" data-note="front view や looking at viewer と衝突しやすい。" onclick="addP('from behind','後方','viewPage')">後方</button>
-    <button data-title="上方" data-body="上方向から見下ろすカメラ位置。" data-note="high-angle と近い。頭が大きく見えやすい。" onclick="addP('from above','上方','viewPage')">上方</button>
-    <button data-title="下方" data-body="下方向から見上げるカメラ位置。" data-note="low-angle と近い。脚や顎下が強調されやすい。" onclick="addP('from below','下方','viewPage')">下方</button>
-    <button data-title="引いた構図" data-body="被写体を小さく、周囲の空間を多く入れる引きのショット。" data-note="表情の細部は出にくい。場所・状況を見せたいとき向け。" onclick="addP('wide shot','引いた構図','viewPage')">引いた構図</button>
-    <button data-title="中距離" data-body="腰から上〜膝上程度の中距離ショット。表情と体のバランスが取りやすい。" onclick="addP('medium shot','中距離','viewPage')">中距離</button>
+    <button data-title="後方" data-body="やや後ろ寄りから見る構図。" data-note="front view や looking at viewer と衝突しやすい。" onclick="addP('from behind','後方','viewPage')">後方</button>
+    <button data-title="上方" data-body="上方向から見下ろすカメラ位置。" data-note="頭が大きく見えやすい。" onclick="addP('from above','上方','viewPage')">上方</button>
+    <button data-title="下方" data-body="下方向から見上げるカメラ位置。" onclick="addP('from below','下方','viewPage')">下方</button>
+    <button data-title="引いた構図" data-body="被写体を小さく、周囲の空間を多く入れる引きのショット。" onclick="addP('wide shot','引いた構図','viewPage')">引いた構図</button>
+    <button data-title="中距離" data-body="腰から上〜膝上程度の中距離ショット。" onclick="addP('medium shot','中距離','viewPage')">中距離</button>
     <button data-title="全身+周囲" data-body="全身が入る距離で、背景もある程度写るショット。" onclick="addP('long shot','全身+周囲','viewPage')">全身+周囲</button>
     <button class="var-btn" onclick="openVariation('closeup')">クローズアップ</button>
-    <button data-title="ダッチアングル" data-body="カメラを斜めに傾ける構図。不安・動感・非日常感が出る。" data-note="強くしすぎると見づらく、顔や体が歪んで見えることがある。" onclick="addP('dutch angle','ダッチアングル','viewPage')">ダッチアングル</button>
-    <button data-title="肩越し" data-body="手前の人物の肩越しに、奥の人物や空間を見る構図。" data-note="二人以上のシーン向き。手前の人物はぼやけやすい。" onclick="addP('over the shoulder','肩越し','viewPage')">肩越し</button>
-    <button data-title="魚眼" data-body="魚眼レンズのような強い歪みの広角表現。" data-note="端の人物が大きく歪む。クセが強いので常用向きではない。" onclick="addP('fisheye','魚眼','viewPage')">魚眼</button>
-    <button data-title="シネマティック" data-body="映画的な画角・ライティングを意識した構図指定。" data-note="雰囲気寄りのタグ。具体的なアングル指定と併用すると安定しやすい。" onclick="addP('cinematic angle','シネマティック','viewPage')">シネマティック</button>
+    <button data-title="ダッチアングル" data-body="カメラを斜めに傾ける構図。不安・動感・非日常感が出る。" data-note="強くしすぎると見づらく歪みやすい。" onclick="addP('dutch angle','ダッチアングル','viewPage')">ダッチアングル</button>
+    <button data-title="肩越し" data-body="手前の人物の肩越しに、奥の人物や空間を見る構図。" onclick="addP('over the shoulder','肩越し','viewPage')">肩越し</button>
+    <button data-title="魚眼" data-body="魚眼レンズのような強い歪みの広角表現。" data-note="端が大きく歪む。クセが強い。" onclick="addP('fisheye','魚眼','viewPage')">魚眼</button>
+    <button data-title="シネマティック" data-body="映画的な画角・ライティングを意識した構図指定。" onclick="addP('cinematic angle','シネマティック','viewPage')">シネマティック</button>
   </div>
 </div>
 
@@ -187,11 +187,11 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('situationPage')">← 戻る</button>
   <h1>場所</h1>
   <div class="buttons">
-    <button data-title="夜" data-body="夜間の時間帯。暗めの照明や月明かりになりやすい。" data-note="day / morning と同時指定すると矛盾する。" onclick="addP('night','夜','placePage')">夜</button>
-    <button data-title="昼" data-body="昼間の時間帯。明るい自然光になりやすい。" data-note="night と矛盾する。" onclick="addP('day','昼','placePage')">昼</button>
-    <button data-title="夕方" data-body="夕方・黄昏時。オレンジがかった光になりやすい。" onclick="addP('evening','夕方','placePage')">夕方</button>
+    <button data-title="夜" data-body="夜間の時間帯。" data-note="day / morning と同時指定すると矛盾する。" onclick="addP('night','夜','placePage')">夜</button>
+    <button data-title="昼" data-body="昼間の時間帯。" data-note="night と矛盾する。" onclick="addP('day','昼','placePage')">昼</button>
+    <button data-title="夕方" data-body="夕方・黄昏時。" onclick="addP('evening','夕方','placePage')">夕方</button>
     <button data-title="朝" data-body="朝の時間帯。" data-note="night と矛盾しやすい。" onclick="addP('morning','朝','placePage')">朝</button>
-    <button data-title="室内" data-body="屋内の空間。" data-note="outdoors と同時に使うと矛盾する。" onclick="addP('indoors','室内','placePage')">室内</button>
+    <button data-title="室内" data-body="屋内の空間。" data-note="outdoors と矛盾する。" onclick="addP('indoors','室内','placePage')">室内</button>
     <button data-title="屋外" data-body="屋外の空間。" data-note="indoors と矛盾する。" onclick="addP('outdoors','屋外','placePage')">屋外</button>
     <button onclick="addP('bedroom','寝室','placePage')">寝室</button>
     <button onclick="addP('classroom','教室','placePage')">教室</button>
@@ -232,9 +232,9 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('situationPage')">← 戻る</button>
   <h1>背景</h1>
   <div class="buttons">
-    <button data-title="ぼかされた背景" data-body="背景をぼかして被写体を目立たせる。" data-note="背景の細部は出にくくなる。" onclick="addP('blurred background','ぼかされた背景','backgroundPage')">ぼかされた背景</button>
+    <button data-title="ぼかされた背景" data-body="背景をぼかして被写体を目立たせる。" onclick="addP('blurred background','ぼかされた背景','backgroundPage')">ぼかされた背景</button>
     <button data-title="情報を減らす" data-body="背景の要素を少なくし、情報量を抑える。" onclick="addP('minimal background','情報を減らす','backgroundPage')">情報を減らす</button>
-    <button data-title="シンプル背景" data-body="簡素で邪魔にならない背景。" data-note="detailed background と同時に使うと矛盾しやすい。" onclick="addP('simple background','シンプル背景','backgroundPage')">シンプル背景</button>
+    <button data-title="シンプル背景" data-body="簡素で邪魔にならない背景。" data-note="detailed background と矛盾しやすい。" onclick="addP('simple background','シンプル背景','backgroundPage')">シンプル背景</button>
     <button data-title="白背景" data-body="真っ白に近い背景。" data-note="黒背景と矛盾する。" onclick="addP('white background','白背景','backgroundPage')">白背景</button>
     <button data-title="黒背景" data-body="真っ黒に近い背景。" data-note="白背景と矛盾する。" onclick="addP('black background','黒背景','backgroundPage')">黒背景</button>
     <button onclick="addP('gradient background','グラデーション背景','backgroundPage')">グラデーション背景</button>
@@ -279,6 +279,7 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <div class="buttons">
     <button class="var-btn" onclick="openVariation('kiss')">キス</button>
     <button class="var-btn" onclick="openVariation('fellatio')">フェラチオ</button>
+    <button class="var-btn" onclick="openVariation('irrumatio')">イラマチオ</button>
     <button class="var-btn" onclick="openVariation('cunnilingus')">クンニ</button>
     <button class="var-btn" onclick="openVariation('handjob')">手コキ</button>
     <button class="var-btn" onclick="openVariation('paizuri')">パイズリ</button>
@@ -327,6 +328,7 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button class="var-btn" onclick="openVariation('thrust')">腰振り・ピストン</button>
     <button class="var-btn" onclick="openVariation('bounce')">揺れ・バウンス</button>
     <button class="var-btn" onclick="openVariation('body_reaction')">身体の反応</button>
+    <button class="var-btn" onclick="openVariation('effect_intensity')">強弱</button>
     <button data-title="モーションライン" data-body="動きを線で強調する表現。速さや勢いが出る。" onclick="addP('motion lines, speed lines','モーションライン','sexPage')">モーションライン</button>
     <button data-title="残像" data-body="動きの残像・多重露光っぽい表現。" onclick="addP('afterimage, multiple exposure','残像','sexPage')">残像</button>
     <button onclick="addP('intense movement, dynamic pose','激しい動き','sexPage')">激しい動き</button>
@@ -359,7 +361,7 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   </div>
   <h2>ポーズ</h2>
   <div class="buttons">
-    <button data-title="立つ" data-body="立っているポーズ。" data-note="sitting / lying など他の基本姿勢と矛盾しやすい。" onclick="addP('standing','立つ','bodyPage')">立つ</button>
+    <button data-title="立つ" data-body="立っているポーズ。" data-note="sitting / lying と矛盾しやすい。" onclick="addP('standing','立つ','bodyPage')">立つ</button>
     <button data-title="座る" data-body="座っているポーズ。" data-note="standing / lying と矛盾しやすい。" onclick="addP('sitting','座る','bodyPage')">座る</button>
     <button data-title="横になる" data-body="横たわっているポーズ。" data-note="standing / sitting と矛盾しやすい。" onclick="addP('lying','横になる','bodyPage')">横になる</button>
     <button onclick="addP('kneeling','膝立ち','bodyPage')">膝立ち</button>
@@ -406,10 +408,10 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
   <h1>セクシー</h1>
   <div class="buttons">
-    <button data-title="アヘ顔" data-body="快感で目が宙を泳ぎ、舌が出たりよだれが垂れたりする極端なトロけ顔。" data-note="強く出すと顔が崩れやすい。重みを下げると抑えめになる。" onclick="addP('ahegao','アヘ顔','sexyExpressionPage')">アヘ顔</button>
+    <button data-title="アヘ顔" data-body="快感で目が宙を泳ぎ、舌が出たりよだれが垂れたりする極端なトロけ顔。" data-note="強く出すと顔が崩れやすい。" onclick="addP('ahegao','アヘ顔','sexyExpressionPage')">アヘ顔</button>
     <button data-title="トロ顔" data-body="とろけた、理性が薄れたようなぼんやりした表情。" onclick="addP('torogao','トロ顔','sexyExpressionPage')">トロ顔</button>
     <button onclick="addP('seductive gaze','誘惑する視線','sexyExpressionPage')">誘惑する視線</button>
-    <button data-title="色気のある半目" data-body="色気を帯びた半開きの目。ベッドルーム的な雰囲気。" onclick="addP('bedroom eyes','色気のある半目','sexyExpressionPage')">色気のある半目</button>
+    <button data-title="色気のある半目" data-body="色気を帯びた半開きの目。" onclick="addP('bedroom eyes','色気のある半目','sexyExpressionPage')">色気のある半目</button>
     <button onclick="addP('licking lips','唇を舐める','sexyExpressionPage')">唇を舐める</button>
     <button onclick="addP('parted lips','唇が少し開いている','sexyExpressionPage')">唇が少し開いている</button>
     <button onclick="addP('slightly open mouth','口がわずかに開いている','sexyExpressionPage')">口がわずかに開いている</button>
@@ -433,7 +435,7 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button onclick="addP('crying from pleasure','快感で泣く','sexyExpressionPage')">快感で泣く</button>
     <button onclick="addP('confused arousal','戸惑いながらの興奮','sexyExpressionPage')">戸惑いながらの興奮</button>
     <button onclick="addP('pleasure face','快感の表情','sexyExpressionPage')">快感の表情</button>
-    <button data-title="理性が飛ぶ" data-body="快感で頭が真っ白になったような、ぼんやり・とろけた表情。" onclick="addP('fucked silly','理性が飛ぶ','sexyExpressionPage')">理性が飛ぶ</button>
+    <button data-title="理性が飛ぶ" data-body="快感で頭が真っ白になったような表情。" onclick="addP('fucked silly','理性が飛ぶ','sexyExpressionPage')">理性が飛ぶ</button>
   </div>
 </div>
 
@@ -772,6 +774,13 @@ restraint:{title:"拘束",page:"propsPage",options:[{label:"縄で縛られて�
 other_toy:{title:"その他性具",page:"propsPage",options:[{label:"ローション",prompt:"lube, covered in lube",desc:"ローション塗れ"},{label:"鞭",prompt:"whip, being whipped",desc:"鞭打ち"},{label:"パドル",prompt:"paddle, spanking with paddle",desc:"叩かれている"},{label:"乳首クリップ",prompt:"nipple clamps",desc:"乳首を挟んでいる"},{label:"オナホール",prompt:"onahole, fleshlight",desc:"ホール使用"}]},
 kiss:{title:"キス",page:"sexPage",options:[{label:"ディープキス",prompt:"deep kiss, french kiss, tongue kiss",desc:"舌を絡めるキス"},{label:"軽いキス",prompt:"kiss, light kiss, peck",desc:"軽いキス"},{label:"首筋へのキス",prompt:"neck kiss, kissing neck",desc:"首にキスしている"},{label:"唾液が糸を引く",prompt:"saliva trail, string of saliva, messy kiss",desc:"よだれが繋がっている"},{label:"キスしながら抱きつく",prompt:"kissing while embracing, passionate kiss",desc:"抱擁しながらのキス"}]},
 fellatio:{title:"フェラチオ",page:"sexPage",options:[{label:"咥えている",prompt:"fellatio, oral, sucking penis, penis in mouth",desc:"口に含んでいる"},{label:"先端を舐めている",prompt:"licking penis, licking tip of penis",desc:"先を舐めている"},{label:"深喉",prompt:"deepthroat, throat bulge",desc:"奥まで咥えている"},{label:"顔に精液",prompt:"facial, cum on face",desc:"顔にかけられている"},{label:"口内射精",prompt:"cum in mouth, swallowing cum",desc:"口の中に出されている"}]},
+irrumatio:{title:"イラマチオ",page:"sexPage",options:[
+  {label:"基本のイラマチオ",prompt:"irrumatio, face fucking, forced oral, penis in mouth",desc:"相手が主導で口を使わせる"},
+  {label:"奥まで突き入れる",prompt:"irrumatio, deepthroat, throat bulge, face fucking",desc:"喉の奥まで"},
+  {label:"頭を掴んで動かす",prompt:"irrumatio, holding head, face fucking, gripping hair",desc:"頭を押さえて動かす"},
+  {label:"涙目・よだれ",prompt:"irrumatio, teary eyes, drooling, messy oral",desc:"涙とよだれが出ている"},
+  {label:"激しいイラマ",prompt:"irrumatio, rough face fucking, intense, gagging",desc:"激しく突いている"}
+]},
 cunnilingus:{title:"クンニ",page:"sexPage",options:[{label:"舐めている",prompt:"cunnilingus, oral, licking pussy",desc:"普通に舐めている"},{label:"クリトリス集中",prompt:"licking clitoris, clitoral stimulation",desc:"クリトリスを重点的に"},{label:"顔を埋めている",prompt:"face in pussy, smothered",desc:"顔を押し付けている"},{label:"愛液を舐めている",prompt:"licking juices, wet pussy",desc:"愛液を舐め取っている"}]},
 handjob:{title:"手コキ",page:"sexPage",options:[{label:"しごいている",prompt:"handjob, stroking penis",desc:"手でしごいている"},{label:"両手で",prompt:"two-handed handjob",desc:"両手を使っている"},{label:"射精させている",prompt:"handjob, cumming, ejaculation",desc:"射精に導いている"},{label:"先端を刺激",prompt:"teasing tip of penis, rubbing glans",desc:"先を重点的に"}]},
 paizuri:{title:"パイズリ",page:"sexPage",options:[{label:"挟んでいる",prompt:"paizuri, titjob, breast sex, penis between breasts",desc:"胸で挟んでいる"},{label:"動かしながら",prompt:"paizuri, moving breasts, active titjob",desc:"上下に動かしている"},{label:"射精",prompt:"paizuri, cum on breasts, cum between breasts",desc:"胸に出されている"},{label:"顔も使っている",prompt:"paizuri, licking tip while titjob",desc:"パイズリしながら先端を舐め"}]},
@@ -788,6 +797,13 @@ ekiben:{title:"駅弁",page:"sexPage",options:[{label:"基本の駅弁",prompt:"
 thrust:{title:"腰振り・ピストン",page:"sexPage",options:[{label:"激しく腰を振っている",prompt:"thrusting, intense thrusting, pistoning",desc:"激しいピストン"},{label:"ゆっくり腰を動かす",prompt:"slow thrusting, grinding",desc:"ゆっくりとした動き"},{label:"深く突き上げる",prompt:"deep thrust, deep penetration, bottoming out",desc:"奥まで突いている"},{label:"浅いピストン",prompt:"shallow thrusting, teasing thrusts",desc:"浅く動いている"}]},
 bounce:{title:"揺れ・バウンス",page:"sexPage",options:[{label:"おっぱいが揺れている",prompt:"bouncing breasts, jiggle",desc:"胸が揺れている"},{label:"尻が揺れている",prompt:"bouncing ass, jiggling butt",desc:"尻が揺れている"},{label:"体全体が揺れている",prompt:"body bounce, bouncing",desc:"体がバウンドしている"}]},
 body_reaction:{title:"身体の反応",page:"sexPage",options:[{label:"腰が浮かる",prompt:"hips rising, arching from pleasure",desc:"快感で腰が浮く"},{label:"足が震える",prompt:"trembling legs, shaking legs",desc:"足ががくがくする"},{label:"力が入る・踏ん張る",prompt:"clenching, tensing up, gripping",desc:"力を入れている"},{label:"体をくねらせる",prompt:"writhing, squirming from pleasure",desc:"くねくね動く"},{label:"背中を大きく反らす",prompt:"arching back strongly, extreme arch",desc:"大きく反る"}]},
+effect_intensity:{title:"強弱",page:"sexPage",options:[
+  {label:"ごく弱い・控えめ",prompt:"gentle, soft, light movement, subtle",desc:"ほとんど動かない・ごく弱い"},
+  {label:"弱い",prompt:"slow, gentle thrusting, soft, mild",desc:"ゆっくり・弱い"},
+  {label:"普通",prompt:"moderate, steady rhythm",desc:"標準的な強さ"},
+  {label:"強い",prompt:"intense, hard, rough, forceful",desc:"強く激しい"},
+  {label:"非常に強い・限界",prompt:"extremely intense, brutal, relentless, overwhelming",desc:"限界に近い激しさ"}
+]},
 head_pat:{title:"頭を撫でる",page:"bodyPage",options:[{label:"男性が女性の頭を撫でる",prompt:"man stroking woman's head, headpat, hand on head",desc:"男性→女性"},{label:"女性が男性の頭を撫でる",prompt:"woman stroking man's head, headpat, hand on head",desc:"女性→男性"},{label:"優しく撫でる",prompt:"gentle headpat, stroking hair",desc:"優しい触れ方"},{label:"抱きながら撫でる",prompt:"headpat while hugging, stroking head in embrace",desc:"抱擁しながら"}]},
 body_press:{title:"身体を密着させる",page:"bodyPage",options:[{label:"密着している",prompt:"bodies pressed together, close contact, skin to skin",desc:"体同士がくっついている"},{label:"正面から密着",prompt:"chest to chest, bodies pressed face to face",desc:"正面で押し付ける"},{label:"後ろから密着",prompt:"body pressed from behind, back to chest",desc:"後ろから寄り添う"},{label:"抱きしめて密着",prompt:"tight embrace, bodies tightly pressed",desc:"強く抱きしめる"},{label:"壁に押し付けて密着",prompt:"pressed against wall, bodies flush",desc:"壁際で密着"}]},
 breasts:{title:"おっぱい",page:"bodyPage",options:[{label:"大きいおっぱい",prompt:"large breasts, big breasts",desc:"サイズ強調"},{label:"垂れたおっぱい",prompt:"sagging breasts, soft breasts",desc:"柔らかい・垂れている"},{label:"ピンと張ったおっぱい",prompt:"perky breasts, firm breasts",desc:"ハリがある"},{label:"揺れおっぱい",prompt:"bouncing breasts, jiggle",desc:"動いている・揺れている"},{label:"強調・寄せている",prompt:"cleavage, squeezed breasts, pressed breasts",desc:"寄せて谷間を作っている"},{label:"乳首が見えている",prompt:"nipples visible, erect nipples",desc:"勃起した乳首が見える"},{label:"おっぱいを掴まれている",prompt:"groping breasts, hands on breasts",desc:"触られている"}]},
