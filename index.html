@@ -68,6 +68,16 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 #reorderOverlay .reorder-btns{display:flex;flex-direction:column;gap:10px}
 #reorderOverlay .reorder-btns button{width:100%;padding:16px;font-size:18px;font-weight:600;background:var(--accent-soft);color:var(--accent)}
 #reorderOverlay .reorder-btns button:disabled{opacity:.35}
+.random-section{margin:20px 0;padding:16px;background:var(--card);border-radius:12px;box-shadow:var(--shadow)}
+.random-section h3{margin:0 0 12px;font-size:16px}
+.random-options{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.random-options button{flex:1;min-width:110px;padding:12px;font-size:14px}
+.random-options button.active{background:var(--accent);color:#fff}
+.candidate-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.candidate-list button{text-align:left;padding:12px 14px;font-size:14px;background:var(--bg);border:1px solid var(--border)}
+.candidate-list button .desc{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.conflict-warning{background:var(--danger-soft);color:var(--danger);border-radius:10px;padding:10px 12px;margin:10px 0;font-size:13px;display:none}
+.conflict-warning.show{display:block}
 </style>
 </head>
 <body>
@@ -102,6 +112,19 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="menuButton" onclick="showPage('appearancePage')">外見</button>
   <button class="menuButton" onclick="showPage('characterPage')">キャラクター</button>
   <button class="menuButton" onclick="showPage('artistPage')">アーティスト</button>
+    <div class="random-section">
+    <h3>制約付きランダム</h3>
+    <div class="random-options">
+      <button id="randForeplay" onclick="setRandMode('foreplay')">前戯のみ</button>
+      <button id="randPosition" onclick="setRandMode('position')">体位のみ</button>
+      <button id="randSexBoth" onclick="setRandMode('sex')">性行（両方）</button>
+      <button id="randBody" onclick="setRandMode('body')">身体詳細</button>
+      <button id="randFluid" onclick="setRandMode('fluid')">体液</button>
+    </div>
+    <button class="menuButton" style="margin-top:8px" onclick="runRandom()">候補を出す</button>
+    <div id="conflictWarning" class="conflict-warning"></div>
+    <div id="candidateArea" class="candidate-list" style="display:none"></div>
+  </div>
   <h2 style="margin-top:28px">設定</h2>
   <button class="menuButton" onclick="toggleTheme()" id="themeButton">🌙 ダークモード切替</button>
 </div>
@@ -885,7 +908,18 @@ semen:{title:"精液",page:"bodyPage",options:[{label:"顔にかかっている"
 saliva:{title:"よだれ・唾液",page:"bodyPage",options:[{label:"よだれが垂れている",prompt:"drool, drooling, saliva",desc:"口から垂れている"},{label:"舌に唾液",prompt:"saliva on tongue, wet tongue",desc:"舌が湿っている"},{label:"キスで唾液交換",prompt:"saliva trail, string of saliva, deep kiss",desc:"糸を引くキス"}]},
 sweat:{title:"汗",page:"bodyPage",options:[{label:"汗だく",prompt:"sweat, sweaty body, covered in sweat",desc:"全身汗"},{label:"額の汗",prompt:"sweat on forehead, beads of sweat",desc:"額に汗"},{label:"汗で肌が光る",prompt:"glistening sweat, shiny with sweat",desc:"汗でテカっている"}]}
 };
-const CONFLICT_PAIRS=[["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],["solo","2girls"],["solo","1boy"],["solo","multiple girls"],["1girl","2girls"],["1girl","3girls"],["day","night"],["morning","night"],["indoors","outdoors"],["white background","black background"],["simple background","detailed background"]];
+const CONFLICT_PAIRS=[
+  ["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],
+  ["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],
+  ["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],
+  ["solo","2girls"],["solo","1boy"],["solo","multiple girls"],
+  ["1girl","2girls"],["1girl","3girls"],
+  ["day","night"],["morning","night"],["indoors","outdoors"],
+  ["white background","black background"],["simple background","detailed background"],
+  ["completely nude","school uniform"],["completely nude","lingerie"],["completely nude","bikini"],
+  ["eyes closed","looking at viewer"],["from behind","looking at viewer"],
+  ["1boy","2boys"],["faceless","looking at viewer"]
+];
 
 try{const s=localStorage.getItem("novelai_prompts_v3");if(s)prompts=JSON.parse(s)}catch(e){}
 try{if(localStorage.getItem("novelai_theme")==="dark")document.body.classList.add("dark")}catch(e){}
@@ -929,6 +963,101 @@ function copyPrompt(){const t=prompts.map(formatPrompt).join(", ");if(!t)return;
 function clearPrompt(){prompts=[];hideCopyMsg();updatePrompt();savePrompts()}
 function updateHomeFab(){const fab=document.getElementById("homeFab");const onHome=document.getElementById("homePage").classList.contains("active");fab.style.display=onHome?"none":"flex"}
 function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0);updateSelectedButtons();updateHomeFab()}
+let currentRandMode = null;
+
+const RAND_GROUPS = {
+  foreplay: ["kiss","fellatio","irrumatio","cunnilingus","handjob","paizuri","nipple","analingus","balls","fingering","footjob","grinding","teasing","kiss_finger","mutual_mast","spanking","hair_pull","choking"],
+  position: ["missionary","doggy","cowgirl","mating_press","daisuki_hold","ekiben","sitting_sex","standing_face","spooning","side_facing","sixtynine","full_nelson","amazon","lotus","wall_sex","table_sex","suspended","reverse_missionary"],
+  sex: ["kiss","fellatio","irrumatio","cunnilingus","handjob","paizuri","nipple","analingus","balls","fingering","footjob","grinding","teasing","kiss_finger","mutual_mast","spanking","hair_pull","choking","missionary","doggy","cowgirl","mating_press","daisuki_hold","ekiben","sitting_sex","standing_face","spooning","side_facing","sixtynine","full_nelson","amazon","lotus","wall_sex","table_sex","suspended","reverse_missionary"],
+  body: ["breasts","ass","pussy","skin","body_focus"],
+  fluid: ["love_juice","semen","saliva","sweat"]
+};
+
+function setRandMode(mode) {
+  currentRandMode = mode;
+  document.querySelectorAll(".random-options button").forEach(b => b.classList.remove("active"));
+  const idMap = {foreplay:"randForeplay", position:"randPosition", sex:"randSexBoth", body:"randBody", fluid:"randFluid"};
+  if (idMap[mode]) document.getElementById(idMap[mode]).classList.add("active");
+  document.getElementById("candidateArea").style.display = "none";
+}
+
+function getRandomCandidates(keys, count = 6) {
+  const pool = [];
+  keys.forEach(k => {
+    const v = VARIATIONS[k];
+    if (v && v.options) {
+      v.options.forEach(o => {
+        pool.push({
+          prompt: o.prompt,
+          label: o.label,
+          desc: o.desc || "",
+          page: v.page || "sexPage"
+        });
+      });
+    }
+  });
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, count);
+}
+
+function runRandom() {
+  if (!currentRandMode) {
+    alert("先にランダムしたい種類を選んでください");
+    return;
+  }
+  const keys = RAND_GROUPS[currentRandMode] || [];
+  const candidates = getRandomCandidates(keys, 6);
+  const area = document.getElementById("candidateArea");
+  if (!candidates.length) {
+    area.innerHTML = "<p style='color:var(--muted)'>候補がありません</p>";
+    area.style.display = "block";
+    return;
+  }
+  area.innerHTML = candidates.map(c => {
+    const safePrompt = c.prompt.replace(/`/g, "\\`").replace(/'/g, "\\'");
+    const safeLabel = c.label.replace(/'/g, "\\'");
+    return `<button onclick="selectCandidate(\`${safePrompt}\`,'${safeLabel}','${c.page}')">${c.label}${c.desc ? `<span class="desc">${c.desc}</span>` : ""}</button>`;
+  }).join("");
+  area.style.display = "block";
+  checkCurrentConflicts();
+}
+
+function selectCandidate(prompt, label, page) {
+  addP(prompt, label, page);
+}
+
+function checkCurrentConflicts() {
+  const warn = document.getElementById("conflictWarning");
+  if (!warn) return;
+  const conflicts = [];
+  const texts = prompts.map(p => p.text.toLowerCase());
+
+  CONFLICT_PAIRS.forEach(([a, b]) => {
+    const hasA = texts.some(t => t.includes(a.toLowerCase()));
+    const hasB = texts.some(t => t.includes(b.toLowerCase()));
+    if (hasA && hasB) {
+      conflicts.push(`「${a}」と「${b}」が同時に入っています`);
+    }
+  });
+
+  if (conflicts.length) {
+    warn.innerHTML = "<strong>注意：</strong><br>" + conflicts.slice(0, 4).join("<br>");
+    warn.classList.add("show");
+  } else {
+    warn.classList.remove("show");
+    warn.innerHTML = "";
+  }
+}
+
+// updatePrompt の後にチェックを走らせる
+const _origUpdatePrompt = updatePrompt;
+updatePrompt = function() {
+  _origUpdatePrompt();
+  checkCurrentConflicts();
+};
 updatePrompt();
 </script>
 </body>
