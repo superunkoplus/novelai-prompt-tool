@@ -2,41 +2,43 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>NovelAI Prompt Tool</title>
 <style>
 :root{
-  --bg:#f4f5f7;--text:#1a1a1a;--card:#ffffff;--border:#e8eaed;
+  --bg:#f0f2f5;--text:#1a1a1a;--card:#ffffff;--border:#e2e5ea;
   --accent:#2563eb;--accent-soft:#eff6ff;
   --var-bg:#fef9c3;--var-border:#fde68a;
   --hint-bg:#d1fae5;--hint-border:#6ee7b7;
   --danger:#dc2626;--danger-soft:#fef2f2;
-  --muted:#6b7280;--shadow:0 1px 3px rgba(0,0,0,.06);
+  --muted:#64748b;--shadow:0 1px 3px rgba(0,0,0,.07);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.1);
   --radius:14px;--radius-sm:10px;
 }
 body.dark{
-  --bg:#1c1c1e;--text:#f5f5f7;--card:#2c2c2e;--border:#3a3a3c;
-  --accent:#64b5f6;--accent-soft:#1e3a5f;
-  --var-bg:#3d3420;--var-border:#6b5a2e;
-  --hint-bg:#0d4a3a;--hint-border:#2e8b6e;
-  --danger:#ef9a9a;--danger-soft:#4a2020;
-  --muted:#a1a1a6;--shadow:0 1px 4px rgba(0,0,0,.4);
+  --bg:#1a1b1e;--text:#ececec;--card:#2c2e33;--border:#3f424a;
+  --accent:#7aa2ff;--accent-soft:#243056;
+  --var-bg:#4a3f1f;--var-border:#6b5a28;
+  --hint-bg:#0f3d32;--hint-border:#1a6b56;
+  --danger:#f87171;--danger-soft:#3d2222;
+  --muted:#a0a8b4;--shadow:0 1px 4px rgba(0,0,0,.35);
+  --shadow-lg:0 8px 28px rgba(0,0,0,.5);
 }
 *{box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans",Meiryo,sans-serif;margin:0;padding:16px;padding-bottom:88px;background:var(--bg);color:var(--text);line-height:1.55}
-h1{font-size:22px;margin:0 0 18px;font-weight:700}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;margin:0;padding:16px;padding-bottom:88px;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
+h1{font-size:22px;margin:0 0 18px;font-weight:700;letter-spacing:-.02em}
 h2{font-size:13px;margin:28px 0 10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 h3{font-size:15px;margin:18px 0 10px;color:var(--muted);font-weight:600}
 .buttons{display:flex;flex-wrap:wrap;gap:8px}
-button{border:none;border-radius:var(--radius-sm);padding:11px 15px;font-size:14px;background:var(--card);box-shadow:var(--shadow);cursor:pointer;color:var(--text);-webkit-touch-callout:none;user-select:none;transition:transform .1s,opacity .12s}
+button{border:none;border-radius:var(--radius-sm);padding:11px 15px;font-size:14px;background:var(--card);box-shadow:var(--shadow);cursor:pointer;color:var(--text);-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;transition:transform .1s,opacity .12s,background .15s;border:1px solid transparent}
 button:active{transform:scale(.96);opacity:.9}
 button.var-btn{background:var(--var-bg);border:1px solid var(--var-border)}
 button[data-title],button[data-body]{background:var(--hint-bg);border:1px solid var(--hint-border)}
 button.selected{opacity:.4;pointer-events:none;text-decoration:line-through}
 button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!important;border:1px solid var(--danger)!important;opacity:1;pointer-events:auto;text-decoration:none}
-.menuButton{width:100%;margin-bottom:8px;padding:16px 18px;font-size:15px;text-align:left;font-weight:500;border-radius:var(--radius)}
+.menuButton{width:100%;margin-bottom:8px;padding:16px 18px;font-size:15px;text-align:left;font-weight:500;border-radius:var(--radius);border:1px solid var(--border)}
 #promptArea{position:sticky;top:0;z-index:1000;background:var(--bg);margin:-16px -16px 16px;padding:14px 16px 12px;border-bottom:1px solid var(--border)}
-#prompt{margin:0;padding:12px 14px;background:var(--card);border-radius:var(--radius);min-height:52px;word-break:break-word;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;max-height:110px;overflow:hidden;transition:max-height .25s}
+#prompt{margin:0;padding:12px 14px;background:var(--card);border-radius:var(--radius);min-height:52px;word-break:break-word;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;max-height:110px;overflow:hidden;transition:max-height .25s;border:1px solid var(--border)}
 #prompt.expanded{max-height:none;overflow:visible}
 #prompt .placeholder{color:var(--muted);font-size:13px;padding:4px 0}
 #promptExpand{display:none;width:100%;text-align:center;padding:8px;margin-top:6px;font-size:12px;color:var(--accent);background:var(--card);border-radius:8px;border:1px dashed var(--border);cursor:pointer}
@@ -50,74 +52,54 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 #copyButton,#clearButton{flex:1;padding:13px;font-size:14px;font-weight:600;border-radius:var(--radius-sm)}
 #copyButton{background:var(--accent);color:#fff}
 #copyButton.copied{background:#16a34a}
-#clearButton{background:var(--card);color:var(--danger);border:1px solid #fecaca}
-.backButton{margin-bottom:14px;background:var(--card);padding:10px 14px;font-size:13px;border-radius:var(--radius-sm)}
+#clearButton{background:var(--card);color:var(--danger);border:1px solid var(--danger)}
+.backButton{margin-bottom:14px;background:var(--card);padding:10px 14px;font-size:13px;border-radius:var(--radius-sm);border:1px solid var(--border)}
 .page{display:none}.page.active{display:block}
 .count{font-size:12px;color:var(--muted);margin-top:6px;text-align:right}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center;padding:16px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:16px}
 .overlay.active{display:flex}
 #reorderOverlay{align-items:flex-end;padding:0}
 #reorderOverlay .panel{border-radius:20px 20px 0 0;max-width:100%;width:100%;margin:0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px))}
-.panel{background:var(--card);border-radius:20px;padding:22px;width:100%;max-width:380px;max-height:80vh;overflow-y:auto;text-align:center;color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.panel{background:var(--card);border-radius:20px;padding:22px;width:100%;max-width:380px;max-height:80vh;overflow-y:auto;text-align:center;color:var(--text);box-shadow:var(--shadow-lg);border:1px solid var(--border)}
 .panel h3{margin:0 0 14px;font-size:16px;font-weight:700}
 .panel .list{display:flex;flex-direction:column;gap:8px}
 .panel .list button{width:100%;text-align:left;padding:13px 15px;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm)}
 .panel .list button .desc{display:block;font-size:12px;color:var(--muted);margin-top:3px;font-weight:400}
-.panel .cancel{margin-top:14px;width:100%;background:var(--bg);border-radius:var(--radius-sm)}
+.panel .cancel{margin-top:14px;width:100%;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border)}
 .panel .row{display:flex;gap:8px;margin-top:12px}
 .panel .row button{flex:1;border-radius:var(--radius-sm)}
 .panel .yes{background:var(--accent);color:#fff}
-.panel .no{background:var(--bg)}
+.panel .no{background:var(--bg);border:1px solid var(--border)}
 #weightButtons{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-#weightButtons button{min-width:52px;padding:12px 10px;font-size:14px;font-weight:600}
-#weightButtons button.active{background:var(--accent);color:#fff}
+#weightButtons button{min-width:52px;padding:12px 10px;font-size:14px;font-weight:600;border:1px solid var(--border)}
+#weightButtons button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 #descOverlay .panel{text-align:left;max-width:340px}
 #descOverlay .desc-title{font-size:17px;font-weight:700;margin:0 0 10px;text-align:center}
 #descOverlay .desc-body{font-size:14px;line-height:1.7;color:var(--text);margin-bottom:10px;white-space:pre-line}
-#descOverlay .desc-note{font-size:12px;line-height:1.6;color:var(--muted);background:var(--bg);border-radius:var(--radius-sm);padding:12px;margin-bottom:4px}
+#descOverlay .desc-note{font-size:12px;line-height:1.6;color:var(--muted);background:var(--bg);border-radius:var(--radius-sm);padding:12px;margin-bottom:4px;border:1px solid var(--border)}
 #descOverlay .desc-note strong{display:block;color:var(--danger);margin-bottom:4px;font-size:12px}
-#homeFab{position:fixed;bottom:20px;right:16px;z-index:1500;width:50px;height:50px;border-radius:50%;background:var(--accent);color:#fff;font-size:20px;box-shadow:0 4px 16px rgba(37,99,235,.35);display:flex;align-items:center;justify-content:center;padding:0;border:none}
+#homeFab{position:fixed;bottom:20px;right:16px;z-index:1500;width:50px;height:50px;border-radius:50%;background:var(--accent);color:#fff;font-size:20px;box-shadow:0 4px 16px rgba(37,99,235,.4);display:flex;align-items:center;justify-content:center;padding:0;border:none}
 #homeFab:active{transform:scale(.92)}
 #reorderOverlay .reorder-label{font-size:14px;font-weight:600;margin-bottom:6px;word-break:break-all}
 #reorderOverlay .reorder-pos{font-size:12px;color:var(--muted);margin-bottom:14px}
 #reorderOverlay .reorder-btns{display:flex;flex-direction:column;gap:8px}
-#reorderOverlay .reorder-btns button{width:100%;padding:15px;font-size:16px;font-weight:600;background:var(--accent-soft);color:var(--accent);border-radius:var(--radius-sm)}
+#reorderOverlay .reorder-btns button{width:100%;padding:15px;font-size:16px;font-weight:600;background:var(--accent-soft);color:var(--accent);border-radius:var(--radius-sm);border:1px solid var(--border)}
 #reorderOverlay .reorder-btns button:disabled{opacity:.3}
-
-.tool-section{margin:16px 0;padding:16px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border)}
-.tool-section h3{margin:0 0 6px;font-size:15px;font-weight:700;color:var(--text);text-transform:none}
-.tool-hint{font-size:12px;color:var(--muted);margin:0 0 12px}
+.random-section{margin:12px 0;padding:18px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border)}
+.random-section h3{margin:0 0 4px;font-size:15px;font-weight:700;color:var(--text);text-transform:none;letter-spacing:0}
+.random-hint{font-size:12px;color:var(--muted);margin:0 0 14px}
 .random-options{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.random-options button{flex:1;min-width:90px;padding:11px 8px;font-size:13px;font-weight:500;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--bg)}
+.random-options button{flex:1;min-width:100px;padding:11px 10px;font-size:13px;font-weight:500;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--bg)}
 .random-options button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .random-run{width:100%;padding:14px;font-size:14px;font-weight:600;background:var(--accent);color:#fff;border-radius:var(--radius-sm);margin-top:4px}
-.candidate-list{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.candidate-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 .candidate-card{text-align:left;padding:14px 16px;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);width:100%}
+.candidate-card:active{border-color:var(--accent)}
 .candidate-card .pack-title{font-weight:600;font-size:14px;margin-bottom:4px;color:var(--text)}
-.candidate-card .pack-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:8px}
-.candidate-card .pack-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.candidate-card .pack-desc{font-size:12px;color:var(--muted);line-height:1.45;margin-bottom:8px}
+.candidate-card .pack-tags{display:flex;flex-wrap:wrap;gap:4px}
 .candidate-card .pack-tag{font-size:11px;background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:2px 7px;font-weight:500}
-.candidate-card .pack-actions{display:flex;gap:8px}
-.candidate-card .pack-actions button{flex:1;padding:10px;font-size:13px;font-weight:600}
-.batch-controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center}
-.batch-controls label{font-size:13px;color:var(--muted)}
-.batch-controls select,.batch-controls input[type="number"]{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px}
-.batch-list{display:flex;flex-direction:column;gap:10px;margin-top:12px;max-height:400px;overflow-y:auto}
-.batch-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;text-align:left}
-.batch-item .batch-num{font-size:11px;color:var(--muted);margin-bottom:4px}
-.batch-item .batch-text{font-size:12px;line-height:1.5;word-break:break-all;max-height:60px;overflow:hidden}
-.batch-item .batch-actions{display:flex;gap:6px;margin-top:8px}
-.batch-item .batch-actions button{flex:1;padding:9px;font-size:12px;font-weight:600}
-.history-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;max-height:300px;overflow-y:auto}
-.history-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:left;font-size:12px}
-.history-item .hist-date{font-size:11px;color:var(--muted);margin-bottom:4px}
-.history-item .hist-text{word-break:break-all;max-height:48px;overflow:hidden;line-height:1.4}
-.history-item .hist-actions{display:flex;gap:6px;margin-top:8px}
-.history-item .hist-actions button{flex:1;padding:8px;font-size:12px}
-.template-row{display:flex;gap:8px;margin-bottom:10px}
-.template-row input{flex:1;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px}
-.template-row button{padding:10px 14px;font-weight:600}
-.conflict-warning{background:var(--danger-soft);color:var(--danger);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0 0;font-size:12px;display:none;line-height:1.5}
+.conflict-warning{background:var(--danger-soft);color:var(--danger);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0 0;font-size:12px;display:none;line-height:1.5;border:1px solid var(--danger)}
 .conflict-warning.show{display:block}
 </style>
 </head>
@@ -132,7 +114,6 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
     <button id="clearButton" onclick="clearPrompt()">すべて消去</button>
   </div>
 </div>
-
 <button id="homeFab" onclick="showPage('homePage')" title="ホーム">🏠</button>
 
 <div id="chipMenuOverlay" class="overlay"><div class="panel"><h3 id="chipMenuTitle">操作</h3><div class="list" id="chipMenuList"></div><button class="cancel" onclick="closeChipMenu()">キャンセル</button></div></div>
@@ -143,7 +124,6 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 <div id="descOverlay" class="overlay"><div class="panel"><div class="desc-title" id="descTitle"></div><div class="desc-body" id="descBody"></div><div class="desc-note" id="descNote" style="display:none"></div><button class="cancel" onclick="closeDesc()">閉じる</button></div></div>
 
 <div id="homePage" class="page active">
-  <button class="menuButton" onclick="showPage('toolsPage')">便利機能（ランダム・バッチ・履歴）</button>
   <button class="menuButton" onclick="showPage('basePage')">ベース</button>
   <button class="menuButton" onclick="showPage('viewPage')">視点</button>
   <button class="menuButton" onclick="showPage('subjectViewPage')">視点（被写体側）</button>
@@ -154,520 +134,1198 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="menuButton" onclick="showPage('appearancePage')">外見</button>
   <button class="menuButton" onclick="showPage('characterPage')">キャラクター</button>
   <button class="menuButton" onclick="showPage('artistPage')">アーティスト</button>
-  <h2 style="margin-top:28px">設定</h2>
-  <button class="menuButton" onclick="toggleTheme()" id="themeButton">🌙 ダークモード切替</button>
+  <button class="menuButton" onclick="showPage('toolsPage')" style="margin-top:12px;border-color:var(--accent);color:var(--accent)">便利機能（ランダム・テーマ）</button>
 </div>
 
 <div id="toolsPage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
   <h1>便利機能</h1>
-
-  <div class="tool-section">
+  <div class="random-section">
     <h3>シーンをランダム生成</h3>
-    <p class="tool-hint">完成に近いプロンプト候補を出します。各候補に状況の説明が付きます。</p>
+    <p class="random-hint">体位・前戯＋動き＋反応などを組み合わせた候補を出します。カードをタップで一括追加。</p>
     <div class="random-options">
-      <button id="randForeplay" onclick="setRandMode('foreplay')">前戯中心</button>
-      <button id="randPosition" onclick="setRandMode('position')">体位中心</button>
+      <button id="randForeplay" onclick="setRandMode('foreplay')">前戯シーン</button>
+      <button id="randPosition" onclick="setRandMode('position')">体位シーン</button>
       <button id="randSex" onclick="setRandMode('sex')">性行フル</button>
       <button id="randBody" onclick="setRandMode('body')">身体＋体液</button>
-      <button id="randFull" onclick="setRandMode('full')">フルランダム</button>
     </div>
-    <div class="batch-controls">
-      <label>候補数</label>
-      <select id="randCount"><option value="4">4</option><option value="6" selected>6</option><option value="8">8</option></select>
-      <label style="margin-left:8px"><input type="checkbox" id="randIncludeBase" checked> 品質タグも付ける</label>
-    </div>
-    <button class="random-run" onclick="runRandom()">候補を生成</button>
+    <button class="random-run" onclick="runRandom()">候補を6つ出す</button>
     <div id="conflictWarning" class="conflict-warning"></div>
     <div id="candidateArea" class="candidate-list" style="display:none"></div>
   </div>
+  <h2>表示設定</h2>
+  <button class="menuButton" onclick="toggleTheme()" id="themeButton">🌙 ダークモード切替</button>
+</div>
 
-  <div class="tool-section">
-    <h3>バッチ生成（量産用）</h3>
-    <p class="tool-hint">今選択中のタグを固定し、体位・表情・視点を変えた複数の完成プロンプトを作ります。</p>
-    <div class="batch-controls">
-      <label>枚数</label>
-      <input type="number" id="batchCount" value="8" min="1" max="20" style="width:60px">
-      <label style="margin-left:8px"><input type="checkbox" id="batchVaryPose" checked> 体位</label>
-      <label><input type="checkbox" id="batchVaryExpr" checked> 表情</label>
-      <label><input type="checkbox" id="batchVaryView"> 視点</label>
-    </div>
-    <button class="random-run" onclick="runBatch()">バッチ生成</button>
-    <div id="batchArea" class="batch-list" style="display:none"></div>
+<div id="basePage" class="page">
+  <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
+  <h1>ベース</h1>
+  <h2>複数キャラ</h2>
+  <div class="buttons">
+    <button data-title="1girl" data-body="女性キャラクターが1人の構図。" data-note="2girls・3girls・solo と同時に使うと矛盾しやすい。" onclick="addP('1girl','1girl','basePage')">1girl</button>
+    <button data-title="2girls" data-body="女性キャラクターが2人の構図。" onclick="addP('2girls','2girls','basePage')">2girls</button>
+    <button data-title="3girls" data-body="女性キャラクターが3人の構図。" onclick="addP('3girls','3girls','basePage')">3girls</button>
+    <button data-title="1boy" data-body="男性キャラクターが1人の構図。" onclick="addP('1boy','1boy','basePage')">1boy</button>
+    <button data-title="1boy 1girl" data-body="男性1人・女性1人の二人構図。" onclick="addP('1boy, 1girl','1boy 1girl','basePage')">1boy 1girl</button>
+    <button data-title="2boys" data-body="男性が2人の構図。" onclick="addP('2boys','2boys','basePage')">2boys</button>
+    <button data-title="multiple girls" data-body="複数の女性がいる構図。" onclick="addP('multiple girls','multiple girls','basePage')">multiple girls</button>
+    <button data-title="solo" data-body="画面内に人物が1人だけの構図。" data-note="1boy 1girl や 2girls と矛盾する。" onclick="addP('solo','solo','basePage')">solo</button>
   </div>
-
-  <div class="tool-section">
-    <h3>テンプレート</h3>
-    <p class="tool-hint">現在の選択内容を名前付きで保存・呼び出しできます。</p>
-    <div class="template-row">
-      <input type="text" id="templateName" placeholder="テンプレート名">
-      <button onclick="saveTemplate()">保存</button>
-    </div>
-    <div id="templateList" class="history-list"></div>
+  <h2>役割分担</h2>
+  <div class="buttons">
+    <button class="var-btn" onclick="openVariation('role_position')">上下関係・体位</button>
+    <button class="var-btn" onclick="openVariation('role_dominance')">攻め・受け</button>
+    <button class="var-btn" onclick="openVariation('role_gaze')">視線の関係</button>
   </div>
-
-  <div class="tool-section">
-    <h3>コピー履歴</h3>
-    <p class="tool-hint">コピーしたプロンプトをここに残します（最大50件）。</p>
-    <button class="menuButton" style="margin-bottom:8px" onclick="clearHistory()">履歴を全消去</button>
-    <div id="historyList" class="history-list"></div>
+  <h2>基本</h2>
+  <div class="buttons">
+    <button data-title="ベース" data-body="画質・アーティスト指定を底上げする定番セット。" onclick="addP('best quality, amazing quality,1.5::artist:key(kagibgngou)::, 1.3::artist:ishigaki takashi::, 1.3::artist:meme50 ::, 1.2::artist:kotoyama::, 1.2::artist:orushibu::, 1.2::artist:siirakannu::,highres,4K, highly detailed, Curated, masterpiece, simple background, depth of field,ultra complexity,-4::multiple views::,-4::speech bubble::,-4::sound effects::,','ベース','basePage')">ベース</button>
+    <button data-title="ネガティブ" data-body="文字・吹き出し・効果音・低品質などを抑える除外用タグ。" onclick="addP('text, written text, letters, words, dialogue, speech bubble, sound effects, onomatopoeia, japanese sound effects, manga sound effect text, sfx, comic text, manga text, impact (font), free-standing text, handwritten text, japanese text, english text, captions, narration, lowres, worst quality, bad quality, artistic error, jpeg artifacts, scan artifacts, film grain, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page, missing limbs, realistic, ai generated,','ネガティブ','basePage')">ネガティブ</button>
+    <button data-title="モザイク" data-body="NSFWにモザイク検閲を入れる指定。" onclick="addP('nsfw, mosaic censoring','モザイク','basePage')">モザイク</button>
+    <button data-title="陰毛" data-body="黒い陰毛を描画する指定。" onclick="addP('black pubic hair','陰毛','basePage')">陰毛</button>
   </div>
 </div>
 
-<!-- 以降、既存の全カテゴリページをそのまま維持（basePage〜euphoniumPage） -->
-<!-- 紙面の都合上、ここでは主要なページ構造を示し、VARIATIONSとスクリプトを完全版で記載します。 -->
-<!-- 実際の使用時は前回の全ページHTMLをベースに、このスクリプトとCSSを適用してください。 -->
+<div id="viewPage" class="page">
+  <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
+  <h1>視点</h1>
+  <h2>基本の視点</h2>
+  <div class="buttons">
+    <button data-title="目線の高さ" data-body="人物の目線と同じ高さから見る構図。" onclick="addP('eye-level view','目線の高さ','viewPage')">目線の高さ</button>
+    <button data-title="下から見上げる" data-body="低い位置から見上げるアングル。" data-note="強くしすぎると顔が小さく歪みやすい。" onclick="addP('low-angle view','下から見上げる','viewPage')">下から見上げる</button>
+    <button data-title="上から見下ろす" data-body="高い位置から見下ろす構図。" data-note="頭が大きく、足元が画面外に出やすい。" onclick="addP('high-angle view','上から見下ろす','viewPage')">上から見下ろす</button>
+    <button data-title="真上から" data-body="真上（鳥瞰）から見下ろす構図。" onclick="addP(&quot;bird's-eye view&quot;,'真上から','viewPage')">真上から</button>
+    <button data-title="かなり低い位置から" data-body="地面すれすれの極端なあおり構図。" onclick="addP(&quot;worm's-eye view&quot;,'かなり低い位置から','viewPage')">かなり低い位置から</button>
+  </div>
+  <h2>カメラの位置</h2>
+  <div class="buttons">
+    <button data-title="主観（POV）" data-body="見る側＝行為者側の視点。" onclick="addP('pov','主観','viewPage')">主観</button>
+    <button data-title="正面" data-body="被写体を真正面から捉える構図。" onclick="addP('front view','正面','viewPage')">正面</button>
+    <button data-title="横" data-body="横方向から見た構図。" onclick="addP('side view','横','viewPage')">横</button>
+    <button data-title="真横" data-body="完全に横顔・真横のシルエット。" onclick="addP('profile view','真横','viewPage')">真横</button>
+    <button data-title="後ろ" data-body="背面からの構図。" data-note="looking at viewer と矛盾しやすい。" onclick="addP('rear view','後ろ','viewPage')">後ろ</button>
+    <button data-title="斜め" data-body="斜め約45度から捉える定番構図。" onclick="addP('three-quarter view','斜め','viewPage')">斜め</button>
+    <button data-title="後方" data-body="やや後ろ寄りから見る構図。" onclick="addP('from behind','後方','viewPage')">後方</button>
+    <button data-title="上方" data-body="上方向から見下ろすカメラ位置。" onclick="addP('from above','上方','viewPage')">上方</button>
+    <button data-title="下方" data-body="下方向から見上げるカメラ位置。" onclick="addP('from below','下方','viewPage')">下方</button>
+    <button data-title="引いた構図" data-body="被写体を小さく、周囲の空間を多く入れる。" onclick="addP('wide shot','引いた構図','viewPage')">引いた構図</button>
+    <button data-title="中距離" data-body="腰から上〜膝上程度の中距離ショット。" onclick="addP('medium shot','中距離','viewPage')">中距離</button>
+    <button data-title="全身+周囲" data-body="全身が入る距離で背景もある程度写る。" onclick="addP('long shot','全身+周囲','viewPage')">全身+周囲</button>
+    <button class="var-btn" onclick="openVariation('closeup')">クローズアップ</button>
+    <button data-title="ダッチアングル" data-body="カメラを斜めに傾ける構図。" onclick="addP('dutch angle','ダッチアングル','viewPage')">ダッチアングル</button>
+    <button data-title="肩越し" data-body="手前の人物の肩越しに奥を見る構図。" onclick="addP('over the shoulder','肩越し','viewPage')">肩越し</button>
+    <button data-title="魚眼" data-body="魚眼レンズのような強い歪み。" onclick="addP('fisheye','魚眼','viewPage')">魚眼</button>
+    <button data-title="シネマティック" data-body="映画的な画角・ライティングを意識した構図。" onclick="addP('cinematic angle','シネマティック','viewPage')">シネマティック</button>
+  </div>
+</div>
+
+<div id="subjectViewPage" class="page">
+  <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
+  <h1>視点（被写体側）</h1>
+  <div class="buttons">
+    <button data-title="カメラ目線" data-body="被写体がカメラを見つめている。" data-note="from behind / rear view と矛盾しやすい。" onclick="addP('looking at viewer','カメラ目線','subjectViewPage')">カメラ目線</button>
+    <button data-title="視線を外す" data-body="カメラから意図的に視線を外している。" onclick="addP('looking away','視線を外す','subjectViewPage')">視線を外す</button>
+    <button data-title="遠くを見ている" data-body="遠くの一点を見つめる視線。" onclick="addP('looking into the distance','遠くを見ている','subjectViewPage')">遠くを見ている</button>
+    <button data-title="横を見る" data-body="横方向を見ている。" onclick="addP('looking to the side','横を見る','subjectViewPage')">横を見る</button>
+    <button data-title="振り返る" data-body="体はそのまま、顔だけ振り返る。" onclick="addP('looking back','振り返る','subjectViewPage')">振り返る</button>
+    <button data-title="上を見る" data-body="上方向を見ている。" onclick="addP('looking up','上を見る','subjectViewPage')">上を見る</button>
+    <button data-title="上目遣い" data-body="下がり気味の顔から上目で見る視線。" onclick="addP('upturned eyes','上目遣い','subjectViewPage')">上目遣い</button>
+    <button data-title="下を見る" data-body="下方向を見ている。" onclick="addP('looking down','下を見る','subjectViewPage')">下を見る</button>
+    <button data-title="うつむく" data-body="視線を落としてうつむいている。" onclick="addP('downcast eyes','うつむく','subjectViewPage')">うつむく</button>
+    <button data-title="斜め上を見る" data-body="斜め上方を見ている。" onclick="addP('looking diagonally upward','斜め上を見る','subjectViewPage')">斜め上を見る</button>
+    <button data-title="斜め下を見る" data-body="斜め下方を見ている。" onclick="addP('looking diagonally downward','斜め下を見る','subjectViewPage')">斜め下を見る</button>
+    <button data-title="目を閉じる" data-body="両目を閉じている。" onclick="addP('eyes closed','目を閉じる','subjectViewPage')">目を閉じる</button>
+    <button data-title="半目" data-body="まぶたが半分閉じた、とろんとした目。" onclick="addP('half-closed eyes','半目','subjectViewPage')">半目</button>
+    <button data-title="ウインク" data-body="片目をつぶっている。" onclick="addP('winking','ウインク','subjectViewPage')">ウインク</button>
+  </div>
+</div>
+
+<div id="situationPage" class="page">
+  <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
+  <h1>状況</h1>
+  <button class="menuButton" onclick="showPage('placePage')">場所</button>
+  <button class="menuButton" onclick="showPage('backgroundPage')">背景</button>
+  <button class="menuButton" onclick="showPage('propsPage')">道具</button>
+</div>
+
+<div id="placePage" class="page">
+  <button class="backButton" onclick="showPage('situationPage')">← 戻る</button>
+  <h1>場所</h1>
+  <div class="buttons">
+    <button data-title="夜" data-body="夜間の時間帯。" data-note="day / morning と矛盾する。" onclick="addP('night','夜','placePage')">夜</button>
+    <button data-title="昼" data-body="昼間の時間帯。" data-note="night と矛盾する。" onclick="addP('day','昼','placePage')">昼</button>
+    <button data-title="夕方" data-body="夕方・黄昏時。" onclick="addP('evening','夕方','placePage')">夕方</button>
+    <button data-title="朝" data-body="朝の時間帯。" onclick="addP('morning','朝','placePage')">朝</button>
+    <button data-title="室内" data-body="屋内の空間。" data-note="outdoors と矛盾する。" onclick="addP('indoors','室内','placePage')">室内</button>
+    <button data-title="屋外" data-body="屋外の空間。" data-note="indoors と矛盾する。" onclick="addP('outdoors','屋外','placePage')">屋外</button>
+    <button onclick="addP('bedroom','寝室','placePage')">寝室</button>
+    <button onclick="addP('classroom','教室','placePage')">教室</button>
+    <button onclick="addP('bathroom','浴室','placePage')">浴室</button>
+    <button onclick="addP('shower','シャワー','placePage')">シャワー</button>
+    <button onclick="addP('kitchen','キッチン','placePage')">キッチン</button>
+    <button onclick="addP('living room','リビング','placePage')">リビング</button>
+    <button onclick="addP('stylish room','おしゃれな部屋','placePage')">おしゃれな部屋</button>
+    <button onclick="addP('office','オフィス','placePage')">オフィス</button>
+    <button onclick="addP('hotel room','ホテルの部屋','placePage')">ホテルの部屋</button>
+    <button onclick="addP('beach','ビーチ','placePage')">ビーチ</button>
+    <button onclick="addP('pool','プール','placePage')">プール</button>
+    <button onclick="addP('park','公園','placePage')">公園</button>
+    <button onclick="addP('street','街中','placePage')">街中</button>
+    <button onclick="addP('rooftop','屋上','placePage')">屋上</button>
+    <button onclick="addP('train','電車内','placePage')">電車内</button>
+    <button onclick="addP('car interior','車内','placePage')">車内</button>
+    <button onclick="addP('locker room','更衣室','placePage')">更衣室</button>
+    <button onclick="addP('library','図書館','placePage')">図書館</button>
+    <button onclick="addP('stage','ステージ','placePage')">ステージ</button>
+    <button onclick="addP('onsen, hot spring','温泉','placePage')">温泉</button>
+    <button onclick="addP('changing room','試着室','placePage')">試着室</button>
+    <button onclick="addP('elevator','エレベーター','placePage')">エレベーター</button>
+    <button onclick="addP('alley','路地','placePage')">路地</button>
+    <button onclick="addP('rain','雨','placePage')">雨</button>
+    <button onclick="addP('cafe','カフェ','placePage')">カフェ</button>
+    <button onclick="addP('restaurant','レストラン','placePage')">レストラン</button>
+    <button onclick="addP('classroom after school','放課後の教室','placePage')">放課後の教室</button>
+    <button onclick="addP('gym storage','体育倉庫','placePage')">体育倉庫</button>
+    <button onclick="addP('rooftop at night','夜の屋上','placePage')">夜の屋上</button>
+    <button data-title="ベッドの上" data-body="ベッドの上にいる構図。" onclick="addP('on bed','ベッドの上','placePage')">ベッドの上</button>
+    <button onclick="addP('on floor','床の上','placePage')">床の上</button>
+    <button data-title="壁際" data-body="壁の近く、または壁に寄った位置。" onclick="addP('against wall','壁際','placePage')">壁際</button>
+  </div>
+</div>
+
+<div id="backgroundPage" class="page">
+  <button class="backButton" onclick="showPage('situationPage')">← 戻る</button>
+  <h1>背景</h1>
+  <div class="buttons">
+    <button data-title="ぼかされた背景" data-body="背景をぼかして被写体を目立たせる。" onclick="addP('blurred background','ぼかされた背景','backgroundPage')">ぼかされた背景</button>
+    <button data-title="情報を減らす" data-body="背景の要素を少なくする。" onclick="addP('minimal background','情報を減らす','backgroundPage')">情報を減らす</button>
+    <button data-title="シンプル背景" data-body="簡素な背景。" data-note="detailed background と矛盾しやすい。" onclick="addP('simple background','シンプル背景','backgroundPage')">シンプル背景</button>
+    <button data-title="白背景" data-body="真っ白に近い背景。" data-note="黒背景と矛盾する。" onclick="addP('white background','白背景','backgroundPage')">白背景</button>
+    <button data-title="黒背景" data-body="真っ黒に近い背景。" data-note="白背景と矛盾する。" onclick="addP('black background','黒背景','backgroundPage')">黒背景</button>
+    <button onclick="addP('gradient background','グラデーション背景','backgroundPage')">グラデーション背景</button>
+    <button data-title="詳細な背景" data-body="背景にも細かい描写を入れる。" data-note="simple background と矛盾しやすい。" onclick="addP('detailed background','詳細な背景','backgroundPage')">詳細な背景</button>
+    <button data-title="ボケ" data-body="背景の光が玉ボケになる表現。" onclick="addP('bokeh','ボケ','backgroundPage')">ボケ</button>
+    <button data-title="被写界深度" data-body="手前と奥でピントの合い方が違うボケ。" onclick="addP('depth of field','被写界深度','backgroundPage')">被写界深度</button>
+    <button onclick="addP('no background','背景なし','backgroundPage')">背景なし</button>
+    <button onclick="addP('scenery','風景','backgroundPage')">風景</button>
+    <button onclick="addP('cityscape','街並み','backgroundPage')">街並み</button>
+    <button onclick="addP('nature','自然','backgroundPage')">自然</button>
+    <button onclick="addP('indoor lighting','室内照明','backgroundPage')">室内照明</button>
+    <button onclick="addP('dramatic lighting','ドラマチック照明','backgroundPage')">ドラマチック照明</button>
+    <button onclick="addP('soft lighting','柔らかい光','backgroundPage')">柔らかい光</button>
+    <button data-title="逆光" data-body="光源が被写体の後ろにあり、輪郭が光る。" onclick="addP('backlighting','逆光','backgroundPage')">逆光</button>
+    <button onclick="addP('neon lights','ネオン','backgroundPage')">ネオン</button>
+    <button data-title="壁" data-body="背景に壁がある。" onclick="addP('walls','壁','backgroundPage')">壁</button>
+    <button onclick="addP('plain wall','無地の壁','backgroundPage')">無地の壁</button>
+    <button onclick="addP('brick wall','レンガの壁','backgroundPage')">レンガの壁</button>
+    <button onclick="addP('concrete wall','コンクリートの壁','backgroundPage')">コンクリートの壁</button>
+    <button onclick="addP('wooden wall','木の壁','backgroundPage')">木の壁</button>
+    <button data-title="壁に寄りかかる" data-body="壁に体を預けている寄りかかり。" onclick="addP('against wall','壁に寄りかかる','backgroundPage')">壁に寄りかかる</button>
+  </div>
+</div>
+
+<div id="propsPage" class="page">
+  <button class="backButton" onclick="showPage('situationPage')">← 戻る</button>
+  <h1>道具</h1>
+  <div class="buttons">
+    <button class="var-btn" onclick="openVariation('condom')">コンドーム</button>
+    <button class="var-btn" onclick="openVariation('dildo')">ディルド</button>
+    <button class="var-btn" onclick="openVariation('vibrator')">バイブ</button>
+    <button class="var-btn" onclick="openVariation('anal')">アナル系</button>
+    <button class="var-btn" onclick="openVariation('restraint')">拘束具</button>
+    <button class="var-btn" onclick="openVariation('other_toy')">その他性具</button>
+  </div>
+</div>
+
+<div id="sexPage" class="page">
+  <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
+  <h1>性行</h1>
+  <h2>前戯</h2>
+  <div class="buttons">
+    <button class="var-btn" onclick="openVariation('kiss')">キス</button>
+    <button class="var-btn" onclick="openVariation('fellatio')">フェラチオ</button>
+    <button class="var-btn" onclick="openVariation('irrumatio')">イラマチオ</button>
+    <button class="var-btn" onclick="openVariation('cunnilingus')">クンニ</button>
+    <button class="var-btn" onclick="openVariation('handjob')">手コキ</button>
+    <button class="var-btn" onclick="openVariation('paizuri')">パイズリ</button>
+    <button class="var-btn" onclick="openVariation('nipple')">乳首責め</button>
+    <button class="var-btn" onclick="openVariation('analingus')">アナル舐め</button>
+    <button class="var-btn" onclick="openVariation('balls')">玉・睾丸</button>
+    <button class="var-btn" onclick="openVariation('fingering')">指入れ</button>
+    <button class="var-btn" onclick="openBodyLick()">体を舐める</button>
+    <button class="var-btn" onclick="openVariation('footjob')">足コキ</button>
+    <button class="var-btn" onclick="openVariation('grinding')">素股</button>
+    <button class="var-btn" onclick="openVariation('teasing')">焦らし</button>
+    <button class="var-btn" onclick="openVariation('kiss_finger')">キスしながら指入れ</button>
+    <button class="var-btn" onclick="openVariation('mutual_mast')">相互オナニー</button>
+    <button class="var-btn" onclick="openVariation('spanking')">お尻を叩く</button>
+    <button class="var-btn" onclick="openVariation('hair_pull')">髪を掴む</button>
+    <button class="var-btn" onclick="openVariation('choking')">首を軽く締める</button>
+  </div>
+  <h2>性交体位</h2>
+  <div class="buttons">
+    <button class="var-btn" onclick="openVariation('missionary')">正常位</button>
+    <button class="var-btn" onclick="openVariation('doggy')">後背位</button>
+    <button class="var-btn" onclick="openVariation('cowgirl')">騎乗位</button>
+    <button class="var-btn" onclick="openVariation('mating_press')">種付けプレス</button>
+    <button class="var-btn" onclick="openVariation('daisuki_hold')">だいしゅきホールド</button>
+    <button class="var-btn" onclick="openVariation('ekiben')">駅弁</button>
+    <button class="var-btn" onclick="openVariation('sitting_sex')">対面座位</button>
+    <button class="var-btn" onclick="openVariation('standing_face')">立位対面</button>
+    <button class="var-btn" onclick="openVariation('spooning')">側位</button>
+    <button class="var-btn" onclick="openVariation('side_facing')">側位対面</button>
+    <button class="var-btn" onclick="openVariation('sixtynine')">69</button>
+    <button class="var-btn" onclick="openVariation('full_nelson')">フルネルソン</button>
+    <button class="var-btn" onclick="openVariation('amazon')">アマゾネス体位</button>
+    <button class="var-btn" onclick="openVariation('lotus')">座位（密着）</button>
+    <button class="var-btn" onclick="openVariation('wall_sex')">壁ドン立位</button>
+    <button class="var-btn" onclick="openVariation('table_sex')">机の上</button>
+    <button class="var-btn" onclick="openVariation('suspended')">吊り下げ体位</button>
+    <button class="var-btn" onclick="openVariation('reverse_missionary')">逆正常位</button>
+  </div>
+  <h2>エフェクト・反応</h2>
+  <div class="buttons">
+    <button class="var-btn" onclick="openVariation('thrust')">腰振り・ピストン</button>
+    <button class="var-btn" onclick="openVariation('bounce')">揺れ・バウンス</button>
+    <button class="var-btn" onclick="openVariation('intense_move')">激しい動き</button>
+    <button class="var-btn" onclick="openVariation('clenching')">締め付け</button>
+    <button class="var-btn" onclick="openVariation('convulsion')">痙攣・ピクピク</button>
+    <button class="var-btn" onclick="openVariation('orgasm')">絶頂中</button>
+    <button class="var-btn" onclick="openVariation('afterglow')">余韻</button>
+    <button data-title="モーションライン" data-body="動きを線で強調する表現。" onclick="addP('motion lines, speed lines','モーションライン','sexPage')">モーションライン</button>
+    <button data-title="残像" data-body="動きの残像・多重露光っぽい表現。" onclick="addP('afterimage, multiple exposure','残像','sexPage')">残像</button>
+    <button class="var-btn" onclick="openVariation('creampie_fx')">中出し</button>
+    <button class="var-btn" onclick="openVariation('cum_overflow')">溢れ出す精液</button>
+  </div>
+</div>
+
+<div id="bodyPage" class="page">
+  <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
+  <h1>身体描写</h1>
+  <h2>身体の詳細</h2>
+  <div class="buttons">
+    <button class="var-btn" onclick="openVariation('breasts')">おっぱい</button>
+    <button class="var-btn" onclick="openVariation('ass')">お尻・太もも</button>
+    <button class="var-btn" onclick="openVariation('pussy')">性器</button>
+    <button class="var-btn" onclick="openVariation('skin')">肌の状態</button>
+    <button class="var-btn" onclick="openVariation('body_focus')">身体の強調</button>
+  </div>
+  <h2>体液</h2>
+  <div class="buttons">
+    <button class="var-btn" onclick="openVariation('love_juice')">愛液</button>
+    <button class="var-btn" onclick="openVariation('semen')">精液</button>
+    <button class="var-btn" onclick="openVariation('saliva')">よだれ・唾液</button>
+    <button class="var-btn" onclick="openVariation('sweat')">汗</button>
+  </div>
+  <h2>ポーズ</h2>
+  <div class="buttons">
+    <button data-title="立つ" data-body="立っているポーズ。" data-note="sitting / lying と矛盾しやすい。" onclick="addP('standing','立つ','bodyPage')">立つ</button>
+    <button data-title="座る" data-body="座っているポーズ。" data-note="standing / lying と矛盾しやすい。" onclick="addP('sitting','座る','bodyPage')">座る</button>
+    <button data-title="横になる" data-body="横たわっているポーズ。" data-note="standing / sitting と矛盾しやすい。" onclick="addP('lying','横になる','bodyPage')">横になる</button>
+    <button onclick="addP('kneeling','膝立ち','bodyPage')">膝立ち</button>
+    <button onclick="addP('crouching','しゃがむ','bodyPage')">しゃがむ</button>
+    <button onclick="addP('on all fours','四つん這い','bodyPage')">四つん這い</button>
+    <button onclick="addP('leaning forward','前かがみ','bodyPage')">前かがみ</button>
+    <button onclick="addP('arching back','背中を反らす','bodyPage')">背中を反らす</button>
+    <button onclick="addP('legs spread','脚を開く','bodyPage')">脚を開く</button>
+    <button onclick="addP('one leg raised','片脚を上げる','bodyPage')">片脚を上げる</button>
+    <button onclick="addP('presenting, presenting ass, presenting pussy','差し出し・見せつけ','bodyPage')">差し出し・見せつけ</button>
+    <button data-title="M字開脚" data-body="両脚をM字に開くポーズ。" onclick="addP('spread legs, M-legs','M字開脚','bodyPage')">M字開脚</button>
+    <button onclick="addP('all fours, face down ass up','尻を高く上げる','bodyPage')">尻を高く上げる</button>
+    <button onclick="addP('bent over, bent over table','前屈み・机に手をつく','bodyPage')">前屈み・机に手をつく</button>
+    <button onclick="addP('lying on back, legs up','仰向けで脚上げ','bodyPage')">仰向けで脚上げ</button>
+    <button onclick="addP('lying on side','横向き','bodyPage')">横向き</button>
+    <button onclick="addP('squatting, deep squat','しゃがみ込み','bodyPage')">しゃがみ込み</button>
+    <button onclick="addP('hands behind head','頭の後ろで手を組む','bodyPage')">頭の後ろで手を組む</button>
+    <button onclick="addP('arms behind back','両手を後ろに','bodyPage')">両手を後ろに</button>
+    <button onclick="addP('covering breasts, covering pussy','局部を隠す','bodyPage')">局部を隠す</button>
+    <button onclick="addP('stretching, body stretch','体を伸ばす','bodyPage')">体を伸ばす</button>
+    <button onclick="addP('wariza, seiza','正座・あぐら','bodyPage')">正座・あぐら</button>
+    <button onclick="addP('hands on knees','膝に手','bodyPage')">膝に手</button>
+    <button onclick="addP('reaching out','手を伸ばす','bodyPage')">手を伸ばす</button>
+    <button onclick="addP('hugging knees','膝を抱える','bodyPage')">膝を抱える</button>
+    <button class="var-btn" onclick="openVariation('head_pat')">頭を撫でる</button>
+    <button class="var-btn" onclick="openVariation('body_press')">身体を密着させる</button>
+  </div>
+</div>
+
+<div id="expressionPage" class="page">
+  <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
+  <h1>表情</h1>
+  <button class="menuButton" onclick="showPage('sexyExpressionPage')">セクシー</button>
+  <button class="menuButton" onclick="showPage('smilePage')">笑顔</button>
+  <button class="menuButton" onclick="showPage('sadnessPage')">悲しみ</button>
+  <button class="menuButton" onclick="showPage('angerPage')">怒り</button>
+  <button class="menuButton" onclick="showPage('fearPage')">恐怖</button>
+  <button class="menuButton" onclick="showPage('surprisePage')">驚き</button>
+  <button class="menuButton" onclick="showPage('shynessPage')">恥じらい</button>
+  <button class="menuButton" onclick="showPage('disgustPage')">嫌悪</button>
+  <button class="menuButton" onclick="showPage('exasperationPage')">呆れ</button>
+</div>
+
+<div id="sexyExpressionPage" class="page">
+  <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
+  <h1>セクシー</h1>
+  <div class="buttons">
+    <button data-title="アヘ顔" data-body="快感で目が宙を泳ぐ極端なトロけ顔。" data-note="強く出すと顔が崩れやすい。" onclick="addP('ahegao','アヘ顔','sexyExpressionPage')">アヘ顔</button>
+    <button data-title="トロ顔" data-body="とろけた、理性が薄れた表情。" onclick="addP('torogao','トロ顔','sexyExpressionPage')">トロ顔</button>
+    <button onclick="addP('seductive gaze','誘惑する視線','sexyExpressionPage')">誘惑する視線</button>
+    <button data-title="色気のある半目" data-body="色気を帯びた半開きの目。" onclick="addP('bedroom eyes','色気のある半目','sexyExpressionPage')">色気のある半目</button>
+    <button onclick="addP('licking lips','唇を舐める','sexyExpressionPage')">唇を舐める</button>
+    <button onclick="addP('parted lips','唇が少し開いている','sexyExpressionPage')">唇が少し開いている</button>
+    <button onclick="addP('slightly open mouth','口がわずかに開いている','sexyExpressionPage')">口がわずかに開いている</button>
+    <button onclick="addP('flushed with arousal','興奮で顔が赤い','sexyExpressionPage')">興奮で顔が赤い</button>
+    <button onclick="addP('panting','息切れ','sexyExpressionPage')">息切れ</button>
+    <button onclick="addP('breathing heavily','荒い息','sexyExpressionPage')">荒い息</button>
+    <button onclick="addP('dazed expression','快感でぼんやりする','sexyExpressionPage')">快感でぼんやりする</button>
+    <button onclick="addP('intoxicated look','酔ったような目','sexyExpressionPage')">酔ったような目</button>
+    <button onclick="addP('dreamy eyes','夢見心地の目','sexyExpressionPage')">夢見心地の目</button>
+    <button onclick="addP('hungry gaze','飢えた目','sexyExpressionPage')">飢えた目</button>
+    <button onclick="addP('teasing look','焦らす目つき','sexyExpressionPage')">焦らす目つき</button>
+    <button onclick="addP('inviting expression','誘っている','sexyExpressionPage')">誘っている</button>
+    <button onclick="addP('rolling eyes back','快感で目が上を向く','sexyExpressionPage')">快感で目が上を向く</button>
+    <button onclick="addP('tongue out slightly','舌が少し出る','sexyExpressionPage')">舌が少し出る</button>
+    <button onclick="addP('drooling slightly','少しよだれが出る','sexyExpressionPage')">少しよだれが出る</button>
+    <button onclick="addP('orgasmic expression','絶頂','sexyExpressionPage')">絶頂</button>
+    <button onclick="addP('ecstasy face','恍惚','sexyExpressionPage')">恍惚</button>
+    <button onclick="addP('trembling with pleasure','快感で震える','sexyExpressionPage')">快感で震える</button>
+    <button onclick="addP('biting lip','唇を噛む','sexyExpressionPage')">唇を噛む</button>
+    <button onclick="addP('moaning','喘ぎ','sexyExpressionPage')">喘ぎ</button>
+    <button onclick="addP('crying from pleasure','快感で泣く','sexyExpressionPage')">快感で泣く</button>
+    <button onclick="addP('confused arousal','戸惑いながらの興奮','sexyExpressionPage')">戸惑いながらの興奮</button>
+    <button onclick="addP('pleasure face','快感の表情','sexyExpressionPage')">快感の表情</button>
+    <button data-title="理性が飛ぶ" data-body="快感で頭が真っ白になったような表情。" onclick="addP('fucked silly','理性が飛ぶ','sexyExpressionPage')">理性が飛ぶ</button>
+  </div>
+</div>
+
+<div id="smilePage" class="page">
+  <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
+  <h1>笑顔</h1>
+  <div class="buttons">
+    <button onclick="addP('smiling','笑顔','smilePage')">笑顔</button>
+    <button onclick="addP('soft smile','柔らかい笑顔','smilePage')">柔らかい笑顔</button>
+    <button onclick="addP('shy smile','照れた笑顔','smilePage')">照れた笑顔</button>
+    <button onclick="addP('bashful smile','はにかんだ笑顔','smilePage')">はにかんだ笑顔</button>
+    <button onclick="addP('awkward smile','気まずい笑顔','smilePage')">気まずい笑顔</button>
+    <button onclick="addP('embarrassed smile','恥ずかしそうな笑顔','smilePage')">恥ずかしそうな笑顔</button>
+    <button onclick="addP('wry smile','苦笑い','smilePage')">苦笑い</button>
+    <button onclick="addP('forced smile','作り笑い','smilePage')">作り笑い</button>
+    <button onclick="addP('business smile','ビジネススマイル','smilePage')">ビジネススマイル</button>
+    <button onclick="addP('mischievous smile','悪戯っぽい笑顔','smilePage')">悪戯っぽい笑顔</button>
+    <button onclick="addP('teasing smile','からかうような笑顔','smilePage')">からかうような笑顔</button>
+    <button onclick="addP('seductive smile','誘惑する笑顔','smilePage')">誘惑する笑顔</button>
+    <button onclick="addP('mysterious smile','謎めいた笑顔','smilePage')">謎めいた笑顔</button>
+    <button onclick="addP('knowing smile','意味深な笑顔','smilePage')">意味深な笑顔</button>
+    <button onclick="addP('tearful smile','涙ぐみながらの笑顔','smilePage')">涙ぐみながらの笑顔</button>
+    <button onclick="addP('sneering','侮蔑の笑顔','smilePage')">侮蔑の笑顔</button>
+    <button onclick="addP('smiling through tears','涙を流しながら笑う','smilePage')">涙を流しながら笑う</button>
+    <button onclick="addP('laughing','声を出して笑う','smilePage')">声を出して笑う</button>
+    <button onclick="addP('laughing hard','腹を抱えて笑う','smilePage')">腹を抱えて笑う</button>
+    <button onclick="addP('giggling','クスクス笑う','smilePage')">クスクス笑う</button>
+    <button onclick="addP('chuckling','小さめに笑う','smilePage')">小さめに笑う</button>
+    <button onclick="addP('covering mouth while laughing','口を手で覆って笑う','smilePage')">口を手で覆って笑う</button>
+    <button onclick="addP('eyes closed from laughing','笑いすぎて目を細める','smilePage')">笑いすぎて目を細める</button>
+    <button onclick="addP('teeth showing smile','歯が見える笑顔','smilePage')">歯が見える笑顔</button>
+    <button onclick="addP('one-sided smile','片側だけ上がった笑顔','smilePage')">片側だけ上がった笑顔</button>
+  </div>
+</div>
+
+<div id="sadnessPage" class="page">
+  <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
+  <h1>悲しみ</h1>
+  <div class="buttons">
+    <button onclick="addP('crying','泣く','sadnessPage')">泣く</button>
+    <button onclick="addP('sobbing','すすり泣き','sadnessPage')">すすり泣き</button>
+    <button onclick="addP('weeping','しくしく泣く','sadnessPage')">しくしく泣く</button>
+    <button onclick="addP('teary-eyed','今にも泣きそう','sadnessPage')">今にも泣きそう</button>
+    <button onclick="addP('tears streaming down face','涙が頬を伝って流れる','sadnessPage')">涙が頬を伝って流れる</button>
+    <button onclick="addP('single tear rolling down cheek','一筋の涙が頬を伝う','sadnessPage')">一筋の涙が頬を伝う</button>
+    <button onclick="addP('crying with open mouth','子供っぽく泣く','sadnessPage')">子供っぽく泣く</button>
+    <button onclick="addP('crying with closed eyes','目を閉じて泣く','sadnessPage')">目を閉じて泣く</button>
+    <button onclick="addP('silently crying','声を出さず泣く','sadnessPage')">声を出さず泣く</button>
+    <button onclick="addP('sniffing','泣いた後鼻をすする','sadnessPage')">泣いた後鼻をすする</button>
+    <button onclick="addP('red-rimmed eyes','泣いた後の顔','sadnessPage')">泣いた後の顔</button>
+    <button onclick="addP('puffy eyes from crying','泣いて目が腫れる','sadnessPage')">泣いて目が腫れる</button>
+    <button onclick="addP('devastated look','打ちのめされた顔','sadnessPage')">打ちのめされた顔</button>
+    <button onclick="addP('empty eyes','虚ろな目','sadnessPage')">虚ろな目</button>
+    <button onclick="addP('looking down sadly','悲しそうに下を向く','sadnessPage')">悲しそうに下を向く</button>
+    <button onclick="addP('biting lip in sadness','悲しさで唇を噛む','sadnessPage')">悲しさで唇を噛む</button>
+  </div>
+</div>
+
+<div id="angerPage" class="page">
+  <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
+  <h1>怒り</h1>
+  <div class="buttons">
+    <button onclick="addP('angry glare','睨む','angerPage')">睨む</button>
+    <button onclick="addP('furrowed brows','眉間に皺を寄せる','angerPage')">眉間に皺を寄せる</button>
+    <button onclick="addP('clenched teeth','歯を食いしばる','angerPage')">歯を食いしばる</button>
+    <button onclick="addP('flushed with anger','怒りで顔を赤くする','angerPage')">怒りで顔を赤くする</button>
+    <button onclick="addP('cold stare','感情を殺した怒り','angerPage')">感情を殺した怒り</button>
+    <button onclick="addP('icy expression','冷たい表情','angerPage')">冷たい表情</button>
+    <button onclick="addP('irritated look','イライラした顔','angerPage')">イライラした顔</button>
+    <button onclick="addP('annoyed face','うんざりした顔','angerPage')">うんざりした顔</button>
+    <button onclick="addP('looking down on someone','上から目線','angerPage')">上から目線</button>
+    <button onclick="addP('tight-lipped anger','唇を結び怒りを堪える','angerPage')">唇を結び怒りを堪える</button>
+  </div>
+</div>
+
+<div id="fearPage" class="page">
+  <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
+  <h1>恐怖</h1>
+  <div class="buttons">
+    <button onclick="addP('eyes wide open','目を大きく見開く','fearPage')">目を大きく見開く</button>
+    <button onclick="addP('raised eyebrows','眉を上げる','fearPage')">眉を上げる</button>
+    <button onclick="addP('mouth agape','口を開け放している','fearPage')">口を開け放している</button>
+    <button onclick="addP('stunned expression','呆然とした顔','fearPage')">呆然とした顔</button>
+    <button onclick="addP('stiff expression','強張った顔','fearPage')">強張った顔</button>
+    <button onclick="addP('pale face','青ざめた顔','fearPage')">青ざめた顔</button>
+    <button onclick="addP('frightened eyes','怯えた目','fearPage')">怯えた目</button>
+    <button onclick="addP('trembling','震える','fearPage')">震える</button>
+    <button onclick="addP('sweating nervously','緊張で汗をかく','fearPage')">緊張で汗をかく</button>
+    <button onclick="addP('covering mouth in shock','ショックで口を手で覆う','fearPage')">ショックで口を手で覆う</button>
+    <button onclick="addP('biting nails','爪を噛む','fearPage')">爪を噛む</button>
+  </div>
+</div>
+
+<div id="surprisePage" class="page">
+  <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
+  <h1>驚き</h1>
+  <div class="buttons">
+    <button onclick="addP('surprised','驚いた顔','surprisePage')">驚いた顔</button>
+    <button onclick="addP('shocked','ショックを受けた顔','surprisePage')">ショックを受けた顔</button>
+    <button onclick="addP('wide-eyed','目を見開く','surprisePage')">目を見開く</button>
+    <button onclick="addP('mouth open in surprise','口を開けて驚く','surprisePage')">口を開けて驚く</button>
+    <button onclick="addP('gasping','ハッとする','surprisePage')">ハッとする</button>
+    <button onclick="addP('startled','びくりとする','surprisePage')">びくりとする</button>
+    <button onclick="addP('taken aback','たじろぐ','surprisePage')">たじろぐ</button>
+    <button onclick="addP('astonished','仰天した顔','surprisePage')">仰天した顔</button>
+    <button onclick="addP('jaw dropped','あっけにとられる','surprisePage')">あっけにとられる</button>
+    <button onclick="addP('covering mouth in surprise','驚いて口を手で覆う','surprisePage')">驚いて口を手で覆う</button>
+    <button onclick="addP('raised eyebrows in surprise','眉を上げて驚く','surprisePage')">眉を上げて驚く</button>
+    <button onclick="addP('speechless','言葉を失う','surprisePage')">言葉を失う</button>
+    <button onclick="addP('flustered surprise','慌てて驚く','surprisePage')">慌てて驚く</button>
+    <button onclick="addP('pleasant surprise','嬉しい驚き','surprisePage')">嬉しい驚き</button>
+    <button onclick="addP('disbelief','信じられない顔','surprisePage')">信じられない顔</button>
+  </div>
+</div>
+
+<div id="shynessPage" class="page">
+  <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
+  <h1>恥じらい</h1>
+  <div class="buttons">
+    <button onclick="addP('blushing','照れ','shynessPage')">照れ</button>
+    <button onclick="addP('heavy blush','強い赤面','shynessPage')">強い赤面</button>
+    <button onclick="addP('red face','顔全体が赤い','shynessPage')">顔全体が赤い</button>
+    <button onclick="addP('looking away shyly','恥ずかしそうに目を逸らす','shynessPage')">恥ずかしそうに目を逸らす</button>
+    <button onclick="addP('glancing sideways','横目でちらっと見る','shynessPage')">横目でちらっと見る</button>
+    <button onclick="addP('peeking through fingers','指の隙間から覗く','shynessPage')">指の隙間から覗く</button>
+    <button onclick="addP('covering face with hands','両手で顔を隠す','shynessPage')">両手で顔を隠す</button>
+    <button onclick="addP('fidgeting','そわそわする','shynessPage')">そわそわする</button>
+    <button onclick="addP('looking down bashfully','はにかんで下を向く','shynessPage')">はにかんで下を向く</button>
+  </div>
+</div>
+
+<div id="disgustPage" class="page">
+  <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
+  <h1>嫌悪</h1>
+  <div class="buttons">
+    <button onclick="addP('reluctant face','嫌がる','disgustPage')">嫌がる</button>
+    <button onclick="addP('unwilling face','気の進まない','disgustPage')">気の進まない</button>
+    <button onclick="addP('pained expression','苦しそうな顔','disgustPage')">苦しそうな顔</button>
+    <button onclick="addP('distressed face','困惑した顔','disgustPage')">困惑した顔</button>
+    <button onclick="addP('grimacing','しかめ面','disgustPage')">しかめ面</button>
+    <button onclick="addP('averted gaze','視線を逸らす','disgustPage')">視線を逸らす</button>
+    <button onclick="addP('tightly closed mouth','口を固く閉じる','disgustPage')">口を固く閉じる</button>
+    <button onclick="addP('embarrassed reluctant','恥ずかしそうに嫌がる','disgustPage')">恥ずかしそうに嫌がる</button>
+    <button onclick="addP('resisting expression','抵抗する顔','disgustPage')">抵抗する顔</button>
+    <button onclick="addP('shaking head','首を横に振る','disgustPage')">首を横に振る</button>
+    <button onclick="addP('sweat drop','冷や汗','disgustPage')">冷や汗</button>
+  </div>
+</div>
+
+<div id="exasperationPage" class="page">
+  <button class="backButton" onclick="showPage('expressionPage')">← 戻る</button>
+  <h1>呆れ</h1>
+  <div class="buttons">
+    <button onclick="addP('exasperated','うんざり','exasperationPage')">うんざり</button>
+    <button onclick="addP('disappointed','失望','exasperationPage')">失望</button>
+    <button onclick="addP('tired expression','疲れた顔','exasperationPage')">疲れた顔</button>
+    <button onclick="addP('unamused','面白くなさそう','exasperationPage')">面白くなさそう</button>
+    <button onclick="addP('sighing','ため息をつく','exasperationPage')">ため息をつく</button>
+    <button onclick="addP('furrowed brow','眉をひそめる','exasperationPage')">眉をひそめる</button>
+    <button onclick="addP('narrowed eyes','目を細める','exasperationPage')">目を細める</button>
+    <button onclick="addP('slight frown','軽く眉を下げる','exasperationPage')">軽く眉を下げる</button>
+    <button onclick="addP('deadpan','無表情','exasperationPage')">無表情</button>
+  </div>
+</div>
+
+<div id="appearancePage" class="page">
+  <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
+  <h1>外見</h1>
+  <button class="menuButton" onclick="showPage('clothingPage')">服装</button>
+  <button class="menuButton" onclick="showPage('hairstylePage')">髪型</button>
+</div>
+
+<div id="clothingPage" class="page">
+  <button class="backButton" onclick="showPage('appearancePage')">← 戻る</button>
+  <h1>服装</h1>
+  <h3>基本（色→状態）</h3>
+  <div class="buttons">
+    <button onclick="addP('Plain white T-shirt','白の無地のTシャツ','clothingPage')">白の無地のTシャツ</button>
+    <button class="var-btn" onclick="openClothingColor('lingerie')">ランジェリー</button>
+    <button class="var-btn" onclick="openClothingColor('bikini')">ビキニ系</button>
+    <button class="var-btn" onclick="openClothingColor('school_swimsuit')">スクール水着</button>
+    <button class="var-btn" onclick="openClothingColor('uniform')">制服</button>
+    <button class="var-btn" onclick="openClothingColor('nurse_maid')">ナース・メイド</button>
+    <button class="var-btn" onclick="openVariation('bunny')">バニー衣装</button>
+    <button class="var-btn" onclick="openClothingColor('china')">チャイナドレス</button>
+    <button onclick="addP('gym uniform','体操服','clothingPage')">体操服</button>
+    <button onclick="addP('bloomers','ブルマ','clothingPage')">ブルマ</button>
+    <button class="var-btn" onclick="openClothingColor('office')">OL・スーツ</button>
+    <button class="var-btn" onclick="openVariation('clothing_state')">着衣の状態（汎用）</button>
+    <button onclick="addP('garter belt','ガーターベルト','clothingPage')">ガーターベルト</button>
+    <button onclick="addP('stockings','ストッキング','clothingPage')">ストッキング</button>
+    <button onclick="addP('thighhighs','サイハイソックス','clothingPage')">サイハイソックス</button>
+    <button onclick="addP('fishnet stockings','網タイツ','clothingPage')">網タイツ</button>
+    <button onclick="addP('collar','首輪','clothingPage')">首輪</button>
+    <button onclick="addP('choker','チョーカー','clothingPage')">チョーカー</button>
+    <button onclick="addP('apron','エプロン','clothingPage')">エプロン</button>
+    <button onclick="addP('lab coat','白衣','clothingPage')">白衣</button>
+    <button onclick="addP('cheerleader outfit','チア衣装','clothingPage')">チア衣装</button>
+    <button onclick="addP('swimsuit','水着','clothingPage')">水着</button>
+    <button onclick="addP('towel','タオルだけ','clothingPage')">タオルだけ</button>
+    <button onclick="addP('open shirt','シャツ一枚','clothingPage')">シャツ一枚</button>
+  </div>
+  <h3>特殊</h3>
+  <div class="buttons">
+    <button onclick="addP('kitauji school uniform','北宇治高校制服','clothingPage')">北宇治高校制服</button>
+    <button onclick="addP('hatsuboshi gakuen school uniform','初星学園制服','clothingPage')">初星学園制服</button>
+    <button onclick="addP('kimi to semi blue (idolmaster)','君とセミブルー','clothingPage')">君とセミブルー</button>
+    <button onclick="addP('cow print bikini, micro bikini, cow print elbow gloves, cow ears, small cow horns','牛ビキニ','clothingPage')">牛ビキニ</button>
+  </div>
+</div>
+
+<div id="hairstylePage" class="page">
+  <button class="backButton" onclick="showPage('appearancePage')">← 戻る</button>
+  <h1>髪型</h1>
+  <div class="buttons">
+    <button onclick="addP('ponytail','ポニーテール','hairstylePage')">ポニーテール</button>
+    <button onclick="addP('high ponytail','ハイポニテ','hairstylePage')">ハイポニテ</button>
+    <button onclick="addP('low ponytail','ローポニテ','hairstylePage')">ローポニテ</button>
+    <button onclick="addP('side ponytail','サイドポニテ','hairstylePage')">サイドポニテ</button>
+    <button onclick="addP('hair bun','お団子','hairstylePage')">お団子</button>
+    <button onclick="addP('twin tails','ツインテール','hairstylePage')">ツインテール</button>
+    <button onclick="addP('long hair','ロングヘア','hairstylePage')">ロングヘア</button>
+    <button onclick="addP('short hair','ショートヘア','hairstylePage')">ショートヘア</button>
+    <button onclick="addP('medium hair','ミディアムヘア','hairstylePage')">ミディアムヘア</button>
+    <button onclick="addP('braided hair','三つ編み','hairstylePage')">三つ編み</button>
+    <button onclick="addP('messy hair','ボサボサ髪','hairstylePage')">ボサボサ髪</button>
+    <button onclick="addP('wet hair','濡れた髪','hairstylePage')">濡れた髪</button>
+    <button onclick="addP('hair over one eye','片目隠れ','hairstylePage')">片目隠れ</button>
+    <button onclick="addP('ahoge','アホ毛','hairstylePage')">アホ毛</button>
+    <button onclick="addP('hair down','下ろした髪','hairstylePage')">下ろした髪</button>
+    <button onclick="addP('disheveled hair','乱れた髪','hairstylePage')">乱れた髪</button>
+    <button onclick="addP('bob cut','ボブ','hairstylePage')">ボブ</button>
+    <button onclick="addP('curly hair','巻き髪','hairstylePage')">巻き髪</button>
+  </div>
+</div>
+
+<div id="characterPage" class="page">
+  <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
+  <h1>キャラクター</h1>
+  <button class="menuButton" onclick="showPage('malePage')">竿役</button>
+  <button class="menuButton" onclick="showPage('idolmasterPage')">学園アイドルマスター</button>
+  <button class="menuButton" onclick="showPage('euphoniumPage')">響け！ユーフォニアム</button>
+</div>
+
+<div id="artistPage" class="page">
+  <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
+  <h1>アーティスト</h1>
+  <div class="buttons">
+    <button data-title="愛上陸" data-body="作品&#10;イジラレ&#10;催眠性指導" onclick="addP('artist:aiue oka','愛上陸','artistPage')">愛上陸</button>
+    <button data-title="あるぷ" data-body="作品&#10;オタク友達とのセックスは最高に気持ちいい&#10;アンモラルアイランド" onclick="addP('artist:alp','あるぷ','artistPage')">あるぷ</button>
+    <button data-title="イシガキタカシ" data-body="イラストレーター・作家タグ。" onclick="addP('artist:ishigaki takashi','イシガキタカシ','artistPage')">イシガキタカシ</button>
+    <button data-title="INAZUMA." data-body="作品&#10;イナズマプリティウオーリア" onclick="addP('artist:satou syouji','INAZUMA.','artistPage')">INAZUMA.</button>
+    <button data-title="小畑健" data-body="作品&#10;DEATH NOTE&#10;ヒカルの碁" onclick="addP('artist:obata takeru','小畑健','artistPage')">小畑健</button>
+    <button data-title="おるとろ" data-body="作品&#10;溺愛観察日記" onclick="addP('artist:orushibu','おるとろ','artistPage')">おるとろ</button>
+    <button data-title="きい" data-body="作品&#10;群青ノイズ&#10;不完全マーブル" onclick="addP('artist:key(kagibgngou)','きい','artistPage')">きい</button>
+    <button data-title="コトヤマ" data-body="作品&#10;だがしかし&#10;よふかしのうた" onclick="addP('artist:kotoyama','コトヤマ','artistPage')">コトヤマ</button>
+    <button data-title="彩画堂" data-body="作品&#10;めしべの咲き誇る島で" onclick="addP('artist:saigadou','彩画堂','artistPage')">彩画堂</button>
+    <button data-title="サインこす" data-body="イラストレーター・作家タグ。" onclick="addP('artist:sincos','サインこす','artistPage')">サインこす</button>
+    <button data-title="さくらぷりん" data-body="作品&#10;腐界に眠る王女のアバドーン" onclick="addP('artist:sakuraprin','さくらぷりん','artistPage')">さくらぷりん</button>
+    <button data-title="ジャイロウ" data-body="作品&#10;乱交で分かろう！&#10;少年が大人になった夏" onclick="addP('artist:jairou','ジャイロウ','artistPage')">ジャイロウ</button>
+    <button data-title="ぞんだ" data-body="作品&#10;フェラチオ研究部" onclick="addP('artist:zonda(solid_air)','ぞんだ','artistPage')">ぞんだ</button>
+    <button data-title="フクダーダ" data-body="作品&#10;ぱぷぱふの書" onclick="addP('artist:fukudahda','フクダーダ','artistPage')">フクダーダ</button>
+    <button data-title="水龍敬" data-body="作品&#10;おいでよ！水龍敬ランド" onclick="addP('mizuryu kei','水龍敬','artistPage')">水龍敬</button>
+    <button data-title="ミモネル" data-body="作品&#10;仲間と一線超えちゃう本" onclick="addP('artist:mimonel','ミモネル','artistPage')">ミモネル</button>
+    <button data-title="メメ屋" data-body="作品&#10;オカネダイスキ&#10;性癖マッチングアプリ ズボプリ" onclick="addP('artist:meme50','メメ屋','artistPage')">メメ屋</button>
+  </div>
+</div>
+
+<div id="malePage" class="page">
+  <button class="backButton" onclick="showPage('characterPage')">← 戻る</button>
+  <h1>竿役</h1>
+  <h2>基本</h2>
+  <div class="buttons">
+    <button onclick="addP('boy','男性','malePage')">男性</button>
+    <button onclick="addP('teenage boy','若い男性','malePage')">若い男性</button>
+    <button onclick="addP('young man','青年','malePage')">青年</button>
+    <button onclick="addP('adult male','成人男性','malePage')">成人男性</button>
+    <button data-title="顔なし" data-body="顔を描かず、体や行為を主役にする指定。" onclick="addP('faceless','顔なし','malePage')">顔なし</button>
+    <button onclick="addP('faceless male','顔なし男性','malePage')">顔なし男性</button>
+  </div>
+  <h2>体型</h2>
+  <div class="buttons">
+    <button onclick="addP('average build','普通体型','malePage')">普通体型</button>
+    <button onclick="addP('muscular','筋肉質','malePage')">筋肉質</button>
+    <button onclick="addP('slim','スリム','malePage')">スリム</button>
+    <button onclick="addP('athletic','アスリート体型','malePage')">アスリート体型</button>
+    <button onclick="addP('tall','長身','malePage')">長身</button>
+    <button onclick="addP('short','低め','malePage')">低め</button>
+    <button onclick="addP('broad shoulders','広い肩幅','malePage')">広い肩幅</button>
+  </div>
+  <h2>その他</h2>
+  <div class="buttons">
+    <button onclick="addP('male focus','男性フォーカス','malePage')">男性フォーカス</button>
+    <button onclick="addP('from male pov','男性視点','malePage')">男性視点</button>
+    <button onclick="addP('erect penis','勃起','malePage')">勃起</button>
+    <button onclick="addP('large penis','大きい','malePage')">大きい</button>
+    <button onclick="addP('veiny penis','血管が浮いた','malePage')">血管が浮いた</button>
+  </div>
+</div>
+
+<div id="idolmasterPage" class="page">
+  <button class="backButton" onclick="showPage('characterPage')">← 戻る</button>
+  <h1>学園アイドルマスター</h1>
+  <div class="buttons">
+    <button onclick="addP('gakuen idolmaster','学園アイドルマスター','idolmasterPage')">学園アイドルマスター</button>
+    <button onclick="addP('hanami saki','花海咲季','idolmasterPage')">花海咲季</button>
+    <button onclick="addP('tsukimura temari','月村手毬','idolmasterPage')">月村手毬</button>
+    <button onclick="addP('fuzita kotone','藤田ことね','idolmasterPage')">藤田ことね</button>
+    <button onclick="addP('shiun sumika','紫雲清夏','idolmasterPage')">紫雲清夏</button>
+    <button onclick="addP('katsuragi lilja','葛城リーリヤ','idolmasterPage')">葛城リーリヤ</button>
+    <button onclick="addP('hanami ume','花海佑芽','idolmasterPage')">花海佑芽</button>
+    <button onclick="addP('shinosawa hiro','篠澤広','idolmasterPage')">篠澤広</button>
+    <button onclick="addP('kuramoto china','倉本千奈','idolmasterPage')">倉本千奈</button>
+    <button onclick="addP('hataya misuzu','秦谷美鈴','idolmasterPage')">秦谷美鈴</button>
+    <button onclick="addP('kaya rinha','賀陽燐羽','idolmasterPage')">賀陽燐羽</button>
+    <button onclick="addP('juo sena','十王星南','idolmasterPage')">十王星南</button>
+    <button onclick="addP('arimura mao','有村麻央','idolmasterPage')">有村麻央</button>
+    <button onclick="addP('himesaki rinami','姫崎莉波','idolmasterPage')">姫崎莉波</button>
+    <button onclick="addP('amaya tsubame','雨夜燕','idolmasterPage')">雨夜燕</button>
+    <button onclick="addP('neo asari','根緒亜紗里','idolmasterPage')">根緒亜紗里</button>
+  </div>
+</div>
+
+<div id="euphoniumPage" class="page">
+  <button class="backButton" onclick="showPage('characterPage')">← 戻る</button>
+  <h1>響け！ユーフォニアム</h1>
+  <div class="buttons">
+    <button onclick="addP('hibike! euphonium','響け！ユーフォニアム','euphoniumPage')">響け！ユーフォニアム</button>
+    <button onclick="addP('Liz to aoitori','リズと青い鳥','euphoniumPage')">リズと青い鳥</button>
+    <button onclick="addP('oumae kumiko','黄前久美子','euphoniumPage')">黄前久美子</button>
+    <button onclick="addP('kousaka reina','高坂麗奈','euphoniumPage')">高坂麗奈</button>
+    <button onclick="addP('katou hazuki','加藤葉月','euphoniumPage')">加藤葉月</button>
+    <button onclick="addP('kawashima sapphire','川島緑輝','euphoniumPage')">川島緑輝</button>
+    <button onclick="addP('kuroe mayu','黒江真由','euphoniumPage')">黒江真由</button>
+    <button onclick="addP('tsukamoto syuuichi','塚本秀一','euphoniumPage')">塚本秀一</button>
+    <button onclick="addP('kamaya tsubame','釜屋つばめ','euphoniumPage')">釜屋つばめ</button>
+    <button onclick="addP('tanaka asuka','田中あすか','euphoniumPage')">田中あすか</button>
+    <button onclick="addP('nakaseko kaori','中世古香織','euphoniumPage')">中世古香織</button>
+    <button onclick="addP('ogasawara haruka','小笠原晴香','euphoniumPage')">小笠原晴香</button>
+    <button onclick="addP('saitou aoi','斎藤葵','euphoniumPage')">斎藤葵</button>
+    <button onclick="addP('nakagawa natsuki','中川夏紀','euphoniumPage')">中川夏紀</button>
+    <button onclick="addP('yoshikawa yuuko','吉川優子','euphoniumPage')">吉川優子</button>
+    <button onclick="addP('kasaki nozomi','傘木希美','euphoniumPage')">傘木希美</button>
+    <button onclick="addP('yoroizuka mizore','鎧塚みぞれ','euphoniumPage')">鎧塚みぞれ</button>
+    <button onclick="addP('nagase riko','長瀬莉子','euphoniumPage')">長瀬莉子</button>
+    <button onclick="addP('gotou takuya','後藤卓也','euphoniumPage')">後藤卓也</button>
+    <button onclick="addP('hisaishi kanade','久石奏','euphoniumPage')">久石奏</button>
+    <button onclick="addP('kenzaki ririka','剣崎梨々香','euphoniumPage')">剣崎梨々香</button>
+    <button onclick="addP('suzuki mirei','鈴木美玲','euphoniumPage')">鈴木美玲</button>
+    <button onclick="addP('suzuki satsuki','鈴木さつき','euphoniumPage')">鈴木さつき</button>
+    <button onclick="addP('tsuninaga motomu','月永求','euphoniumPage')">月永求</button>
+    <button onclick="addP('hariya kaho','針谷佳穂','euphoniumPage')">針谷佳穂</button>
+    <button onclick="addP('kamaya suzume','釜屋すずめ','euphoniumPage')">釜屋すずめ</button>
+    <button onclick="addP('kamiishi yayoi','上石弥生','euphoniumPage')">上石弥生</button>
+    <button onclick="addP('yoshii sari','義井沙里','euphoniumPage')">義井沙里</button>
+    <button onclick="addP('taki noboru','滝昇','euphoniumPage')">滝昇</button>
+    <button onclick="addP('matsumoto michie','松本美知恵','euphoniumPage')">松本美知恵</button>
+    <button onclick="addP('hashimoto masahiro','橋本真博','euphoniumPage')">橋本真博</button>
+    <button onclick="addP('niiyama satomi','新山聡美','euphoniumPage')">新山聡美</button>
+    <button onclick="addP('oumae mamiko','黄前麻美子','euphoniumPage')">黄前麻美子</button>
+  </div>
+</div>
 
 <script>
-/* ========== 完全版スクリプト ========== */
-let prompts=[], currentWeightIndex=-1, reorderIndex=-1, pendingClothing=null, pendingLick=null, promptExpanded=false, pendingConflict=null, currentRandMode=null;
-const WEIGHTS=[0.8,1.0,1.1,1.2,1.3,1.5], COLLAPSE_THRESHOLD=5, HINT_MS=350, CHIP_MS=280;
-let history=[], templates=[];
-const BASE_QUALITY = "best quality, amazing quality, highres, 4K, highly detailed, masterpiece, depth of field";
+let prompts=[],currentWeightIndex=-1,reorderIndex=-1,pendingClothing=null,pendingLick=null,promptExpanded=false,pendingConflict=null,currentRandMode=null;
+const WEIGHTS=[0.8,1.0,1.1,1.2,1.3,1.5],COLLAPSE_THRESHOLD=5,HINT_MS=350,CHIP_MS=280;
 
-const VARIATIONS = {
-  // ラベルを具体的にした版
-  thrust:{title:"腰振り・ピストン",page:"sexPage",options:[
-    {label:"腰振り（ごく弱い・控えめ）",prompt:"gentle thrusting, slow shallow thrusts",desc:"ゆっくり浅く動かす"},
-    {label:"腰振り（弱い）",prompt:"mild thrusting, soft rhythm",desc:"弱めの動き"},
-    {label:"腰振り（普通）",prompt:"thrusting, steady piston",desc:"標準的なピストン"},
-    {label:"腰振り（強い・激しい）",prompt:"hard thrusting, intense piston, deep thrusts",desc:"強く深く突く"},
-    {label:"腰振り（非常に強い・限界）",prompt:"extremely intense thrusting, pounding, relentless",desc:"限界まで激しく突く"}
-  ]},
-  bounce:{title:"揺れ・バウンス",page:"sexPage",options:[
-    {label:"揺れ（軽い）",prompt:"light bouncing, slight jiggle",desc:"小さく揺れる"},
-    {label:"揺れ（普通）",prompt:"bouncing, jiggle",desc:"標準的な揺れ"},
-    {label:"揺れ（強い）",prompt:"intense bouncing, heavy jiggle, vigorous bounce",desc:"大きく揺れる"},
-    {label:"揺れ（おっぱいが揺れている）",prompt:"bouncing breasts, jiggle",desc:"胸が大きく揺れる"},
-    {label:"揺れ（尻が揺れている）",prompt:"bouncing ass, jiggling butt",desc:"お尻が大きく揺れる"}
-  ]},
-  orgasm:{title:"絶頂中",page:"sexPage",options:[
-    {label:"絶頂（弱い）",prompt:"mild orgasm, soft climax",desc:"弱い絶頂"},
-    {label:"絶頂（普通）",prompt:"orgasm, climax",desc:"標準的な絶頂"},
-    {label:"絶頂（強い）",prompt:"intense orgasm, strong climax, shaking",desc:"強く震える絶頂"},
-    {label:"絶頂（非常に強い・連続）",prompt:"extreme orgasm, multiple orgasms, overwhelming climax",desc:"限界の連続絶頂"}
-  ]},
-  // 他のVARIATIONSも同様にlabelを具体化（前回の内容をベースに修正）
-  missionary:{title:"正常位",page:"sexPage",options:[
-    {label:"正常位（基本）",prompt:"missionary position, man on top, woman on her back with legs spread, face to face, deep penetration",desc:"標準の正常位"},
-    {label:"正常位（脚を上げた）",prompt:"missionary with woman's legs over man's shoulders, deep angle",desc:"脚を肩に乗せて深く"},
-    {label:"正常位（片脚上げ）",prompt:"missionary, one of woman's legs raised high, other wrapped around man's waist",desc:"片脚を高く上げる"},
-    {label:"正常位（膝を抱えた）",prompt:"missionary, man holding woman's knees to her chest",desc:"膝を胸に寄せる"},
-    {label:"正常位（深く突き上げ）",prompt:"missionary, deep thrusting, intense penetration",desc:"深く激しく突く"}
-  ]},
-  doggy:{title:"後背位",page:"sexPage",options:[
-    {label:"後背位（基本）",prompt:"doggy style, woman on all fours, man behind, arched back",desc:"四つん這いの標準後背位"},
-    {label:"後背位（うつ伏せ）",prompt:"prone bone, woman lying flat on her stomach, man on top from behind",desc:"うつ伏せの後背位"},
-    {label:"後背位（膝立ち）",prompt:"kneeling doggy, both on knees, man thrusting from behind",desc:"膝立ちの後背位"},
-    {label:"後背位（立ちバック）",prompt:"standing doggy, woman bent over a table or wall, man standing behind",desc:"立ったままの後背位"},
-    {label:"後背位（尻を掴んで）",prompt:"doggy style, grabbing ass, holding hips",desc:"尻を掴みながら"}
-  ]},
-  cowgirl:{title:"騎乗位",page:"sexPage",options:[
-    {label:"騎乗位（基本）",prompt:"cowgirl, woman on top facing man, riding, hands on his chest",desc:"対面の標準騎乗位"},
-    {label:"騎乗位（逆）",prompt:"reverse cowgirl, woman on top facing away, looking back over her shoulder",desc:"後ろ向きの騎乗位"},
-    {label:"騎乗位（前傾）",prompt:"cowgirl leaning forward, breasts close to man's face",desc:"前かがみで胸を近づける"},
-    {label:"騎乗位（激しく腰を振る）",prompt:"cowgirl, intense riding, bouncing hard",desc:"激しく腰を動かす"}
-  ]},
-  // 他のキーも同じ方針で具体的なlabelに修正済みと仮定
+const VARIATIONS={
+role_position:{title:"上下関係・体位",page:"basePage",options:[
+{label:"男性が上",prompt:"man on top, male dominant position",desc:"男性が上から行為している"},
+{label:"女性が上",prompt:"woman on top, female dominant position",desc:"女性が上から行為している"},
+{label:"横並び・対等",prompt:"side by side, equal position",desc:"横に並んで対等"}
+]},
+role_dominance:{title:"攻め・受け",page:"basePage",options:[
+{label:"男性が攻め",prompt:"dominant male, assertive man",desc:"男性が主導"},
+{label:"女性が攻め",prompt:"dominant female, assertive woman",desc:"女性が主導"},
+{label:"互いに攻め合う",prompt:"mutual dominance, equal intensity",desc:"互いに積極的"}
+]},
+role_gaze:{title:"視線の関係",page:"basePage",options:[
+{label:"見つめ合っている",prompt:"eye contact, looking at each other",desc:"視線が交差"},
+{label:"男性が女性を見ている",prompt:"man looking at woman",desc:"男性→女性"},
+{label:"女性が男性を見ている",prompt:"woman looking at man",desc:"女性→男性"},
+{label:"視線を逸らしている",prompt:"averted eyes, looking away from each other",desc:"目を合わせない"}
+]},
+closeup:{title:"クローズアップ",page:"viewPage",options:[
+{label:"クローズアップ",prompt:"close-up",desc:"顔や上半身を大きく"},
+{label:"顔アップ",prompt:"face close-up, portrait",desc:"顔中心"},
+{label:"極端なクローズアップ",prompt:"extreme close-up",desc:"目や唇など細部"},
+{label:"局部アップ",prompt:"pussy focus, crotch close-up",desc:"性器を強調"},
+{label:"胸アップ",prompt:"breast focus, chest close-up",desc:"胸を強調"}
+]},
+condom:{title:"コンドーム",page:"propsPage",options:[
+{label:"コンドームを着けている",prompt:"condom, wearing condom",desc:"装着中"},
+{label:"コンドームの包装を開けている",prompt:"opening condom wrapper",desc:"準備中"},
+{label:"使用済みコンドーム",prompt:"used condom, removed condom",desc:"使用後"},
+{label:"精液が入ったコンドーム",prompt:"condom filled with cum",desc:"射精後"}
+]},
+dildo:{title:"ディルド",page:"propsPage",options:[
+{label:"ディルドを持っている",prompt:"holding dildo",desc:"手に持っている"},
+{label:"ディルドを挿入している",prompt:"dildo insertion, using dildo",desc:"使用中"},
+{label:"ディルドを口にくわえている",prompt:"dildo in mouth",desc:"咥えている"},
+{label:"両端ディルド",prompt:"double dildo",desc:"両端タイプ"}
+]},
+vibrator:{title:"バイブ",page:"propsPage",options:[
+{label:"バイブを当てている",prompt:"vibrator against pussy, using vibrator",desc:"当てて刺激"},
+{label:"バイブを挿入している",prompt:"vibrator insertion",desc:"挿入使用"},
+{label:"クリトリスにバイブ",prompt:"vibrator on clitoris",desc:"クリ刺激"}
+]},
+anal:{title:"アナル系",page:"propsPage",options:[
+{label:"アナルビーズ",prompt:"anal beads",desc:"ビーズ"},
+{label:"アナルプラグ",prompt:"anal plug, butt plug",desc:"プラグ"},
+{label:"アナル拡張",prompt:"anal stretching, gaping anus",desc:"拡張"}
+]},
+restraint:{title:"拘束具",page:"propsPage",options:[
+{label:"手錠",prompt:"handcuffs, cuffed",desc:"手首を拘束"},
+{label:"ロープ・縄",prompt:"rope bondage, shibari",desc:"縄で縛る"},
+{label:"目隠し",prompt:"blindfold",desc:"目を隠す"},
+{label:"口枷",prompt:"gag, ball gag",desc:"口を塞ぐ"},
+{label:"足枷",prompt:"ankle cuffs, leg restraints",desc:"足首を拘束"}
+]},
+other_toy:{title:"その他性具",page:"propsPage",options:[
+{label:"ローター",prompt:"bullet vibrator, vibe egg",desc:"小型バイブ"},
+{label:"乳首クリップ",prompt:"nipple clamps",desc:"乳首を挟む"},
+{label:"鞭",prompt:"whip, flogger",desc:"叩く道具"},
+{label:"潤滑剤",prompt:"lube, lubricant",desc:"ローション"}
+]},
+kiss:{title:"キス",page:"sexPage",options:[
+{label:"軽いキス",prompt:"light kiss, peck",desc:"触れる程度のキス"},
+{label:"深いキス（舌）",prompt:"deep kiss, french kiss, tongue kiss",desc:"舌を絡める深いキス"},
+{label:"情熱的なキス",prompt:"passionate kiss, intense kissing",desc:"激しく求め合うキス"},
+{label:"首筋へのキス",prompt:"kissing neck, neck kiss",desc:"首にキスする"},
+{label:"耳へのキス",prompt:"kissing ear, ear kiss",desc:"耳にキスする"},
+{label:"行為中のキス",prompt:"kissing during sex",desc:"挿入しながらキス"}
+]},
+fellatio:{title:"フェラチオ",page:"sexPage",options:[
+{label:"基本のフェラ",prompt:"fellatio, oral sex, sucking penis",desc:"口で咥える"},
+{label:"深く咥えるフェラ",prompt:"deepthroat, deep fellatio",desc:"奥まで咥える"},
+{label:"玉も舐めるフェラ",prompt:"fellatio, licking balls",desc:"睾丸も舐める"},
+{label:"顔射されるフェラ",prompt:"facial after fellatio, cum on face",desc:"顔にかけられる"},
+{label:"口内射精されるフェラ",prompt:"cum in mouth, oral creampie",desc:"口の中に出される"},
+{label:"上から咥えるフェラ",prompt:"woman on top fellatio, kneeling fellatio",desc:"女性が上から咥える"}
+]},
+irrumatio:{title:"イラマチオ",page:"sexPage",options:[
+{label:"基本のイラマ",prompt:"irrumatio, face fucking, forced oral",desc:"突くようにフェラさせる"},
+{label:"激しいイラマ",prompt:"intense irrumatio, rough face fucking",desc:"激しく突き入れる"},
+{label:"涙目のイラマ",prompt:"irrumatio, teary eyes, gagging",desc:"涙が出るほど"},
+{label:"喉奥までイラマ",prompt:"deep irrumatio, throat fucking",desc:"喉の奥まで"}
+]},
+cunnilingus:{title:"クンニ",page:"sexPage",options:[
+{label:"基本のクンニ",prompt:"cunnilingus, oral sex, licking pussy",desc:"性器を舐める"},
+{label:"クリトリス重点のクンニ",prompt:"cunnilingus, licking clitoris",desc:"クリトリスを中心に"},
+{label:"深く舌を入れるクンニ",prompt:"deep cunnilingus, tongue in pussy",desc:"舌を奥まで入れる"},
+{label:"脚を開かせたクンニ",prompt:"cunnilingus, legs spread",desc:"脚を開いて舐める"},
+{label:"顔を埋めるクンニ",prompt:"face buried in pussy, intense cunnilingus",desc:"顔を密着させて"}
+]},
+handjob:{title:"手コキ",page:"sexPage",options:[
+{label:"基本の手コキ",prompt:"handjob, stroking penis",desc:"手でしごく"},
+{label:"両手の手コキ",prompt:"two-handed handjob",desc:"両手で"},
+{label:"オイル手コキ",prompt:"oiled handjob, slippery handjob",desc:"ローション付き"},
+{label:"射精させる手コキ",prompt:"handjob, cumshot, ejaculation",desc:"射精までしごく"}
+]},
+paizuri:{title:"パイズリ",page:"sexPage",options:[
+{label:"基本のパイズリ",prompt:"paizuri, titjob, breast job",desc:"胸で挟む"},
+{label:"顔を押し付けるパイズリ",prompt:"paizuri, face pressed into breasts",desc:"顔を胸に埋める"},
+{label:"胸に射精されるパイズリ",prompt:"paizuri, cum on breasts",desc:"胸にかけられる"},
+{label:"舌も使うパイズリ",prompt:"paizuri, licking tip during titjob",desc:"先端を舐めながら"}
+]},
+nipple:{title:"乳首責め",page:"sexPage",options:[
+{label:"男性が女性の乳首を責める",prompt:"nipple play, sucking nipples, man sucking woman's nipples",desc:"男性→女性"},
+{label:"女性が男性の乳首を責める",prompt:"nipple play, woman sucking man's nipples",desc:"女性→男性"},
+{label:"乳首を摘まむ・捻る",prompt:"pinching nipples, twisting nipples",desc:"指で摘まむ"},
+{label:"乳首を強く吸う",prompt:"hard sucking nipples, intense nipple play",desc:"強く吸う"}
+]},
+analingus:{title:"アナル舐め",page:"sexPage",options:[
+{label:"男性が女性のアナルを舐める",prompt:"anilingus, rimming, man licking woman's anus",desc:"男性→女性"},
+{label:"女性が男性のアナルを舐める",prompt:"anilingus, rimming, woman licking man's anus",desc:"女性→男性"},
+{label:"深く舌を入れるアナル舐め",prompt:"deep anilingus, tongue in anus",desc:"奥まで"}
+]},
+balls:{title:"玉・睾丸",page:"sexPage",options:[
+{label:"玉を舐める",prompt:"ball licking, licking testicles",desc:"舌で舐める"},
+{label:"玉を吸う",prompt:"sucking balls, ball sucking",desc:"口で吸う"},
+{label:"玉を優しく触る",prompt:"gentle ball massage",desc:"手で優しく"}
+]},
+fingering:{title:"指入れ",page:"sexPage",options:[
+{label:"男性が女性に指入れ",prompt:"fingering, finger in pussy, man fingering woman",desc:"男性→女性"},
+{label:"女性が自分に指入れ",prompt:"fingering herself, masturbation",desc:"オナニー"},
+{label:"二本指で指入れ",prompt:"two fingers, double fingering",desc:"2本"},
+{label:"Gスポット刺激の指入れ",prompt:"g-spot stimulation, fingering g-spot",desc:"Gスポ"},
+{label:"アナルに指入れ",prompt:"anal fingering, finger in anus",desc:"アナル"}
+]},
+footjob:{title:"足コキ",page:"sexPage",options:[
+{label:"両足の足コキ",prompt:"footjob, both feet, stroking with feet",desc:"両足で"},
+{label:"足の裏の足コキ",prompt:"solejob, footjob with soles",desc:"足裏で"},
+{label:"足指の足コキ",prompt:"toejob, footjob with toes",desc:"足指で"},
+{label:"射精させる足コキ",prompt:"footjob, cumshot from footjob",desc:"足で射精させる"}
+]},
+grinding:{title:"素股",page:"sexPage",options:[
+{label:"基本の素股",prompt:"grinding, dry humping, thigh sex",desc:"擦りつける"},
+{label:"クリトリスに当てる素股",prompt:"grinding against clitoris",desc:"クリに当てて"},
+{label:"激しく擦る素股",prompt:"intense grinding, hard dry humping",desc:"激しく擦る"}
+]},
+teasing:{title:"焦らし",page:"sexPage",options:[
+{label:"入口で止める焦らし",prompt:"teasing, tip only, no insertion",desc:"入れずに止める"},
+{label:"ゆっくり擦る焦らし",prompt:"slow teasing, gentle rubbing",desc:"ゆっくり"},
+{label:"触れそうで触れない焦らし",prompt:"almost touching, denial teasing",desc:"寸前で止める"}
+]},
+kiss_finger:{title:"キスしながら指入れ",page:"sexPage",options:[
+{label:"深いキス＋指入れ",prompt:"deep kiss while fingering, kissing and fingering",desc:"キスと指を同時に"},
+{label:"首キス＋指入れ",prompt:"neck kiss while fingering",desc:"首にキスしながら指"}
+]},
+mutual_mast:{title:"相互オナニー",page:"sexPage",options:[
+{label:"互いに触る相互オナニー",prompt:"mutual masturbation, touching each other",desc:"同時に触り合う"},
+{label:"見つめ合いながら相互オナニー",prompt:"mutual masturbation, eye contact",desc:"視線を交わしながら"}
+]},
+spanking:{title:"お尻を叩く",page:"sexPage",options:[
+{label:"軽くお尻を叩く",prompt:"light spanking, gentle slap on ass",desc:"優しめ"},
+{label:"強くお尻を叩く",prompt:"hard spanking, intense slap on ass",desc:"強め"},
+{label:"連続でお尻を叩く",prompt:"repeated spanking, continuous spanking",desc:"連打"},
+{label:"赤い痕がつくほど叩く",prompt:"spanking, red marks on ass",desc:"痕が残る"}
+]},
+hair_pull:{title:"髪を掴む",page:"sexPage",options:[
+{label:"軽く髪を掴む",prompt:"light hair pulling, holding hair",desc:"優しめ"},
+{label:"強く髪を掴む",prompt:"hard hair pulling, yanking hair",desc:"強め"},
+{label:"後ろから髪を掴む",prompt:"hair pulling from behind",desc:"後背位などで"}
+]},
+choking:{title:"首を軽く締める",page:"sexPage",options:[
+{label:"首に軽く手を当てる",prompt:"light choking, hand on neck",desc:"優しめ"},
+{label:"少し圧をかけて首を締める",prompt:"choking, mild pressure on neck",desc:"圧あり"},
+{label:"行為中に首を締める",prompt:"choking during sex",desc:"挿入しながら"}
+]},
+missionary:{title:"正常位",page:"sexPage",options:[
+{label:"基本の正常位",prompt:"missionary position, man on top, woman on her back with legs spread, face to face, deep penetration",desc:"仰向けで向かい合って挿入"},
+{label:"脚を肩に乗せた正常位",prompt:"missionary with woman's legs over man's shoulders, deep angle",desc:"脚を肩に乗せて深く"},
+{label:"片脚上げ正常位",prompt:"missionary, one of woman's legs raised high, other wrapped around man's waist",desc:"片脚を高く上げる"},
+{label:"膝を胸に抱えた正常位",prompt:"missionary, man holding woman's knees to her chest",desc:"膝を胸まで折り曲げる"},
+{label:"深く突き上げる正常位",prompt:"missionary, deep thrusting, intense penetration",desc:"深く強く突く正常位"}
+]},
+doggy:{title:"後背位",page:"sexPage",options:[
+{label:"基本の後背位",prompt:"doggy style, woman on all fours, man behind, arched back",desc:"四つん這いで後ろから"},
+{label:"うつ伏せ後背位",prompt:"prone bone, woman lying flat on her stomach, man on top from behind",desc:"うつ伏せで後ろから"},
+{label:"膝立ち後背位",prompt:"kneeling doggy, both on knees, man thrusting from behind",desc:"両者が膝立ちで"},
+{label:"立ちバック",prompt:"standing doggy, woman bent over a table or wall, man standing behind",desc:"立ったまま後ろから"},
+{label:"尻を掴んだ後背位",prompt:"doggy style, grabbing ass, holding hips",desc:"尻を掴んで突く"}
+]},
+cowgirl:{title:"騎乗位",page:"sexPage",options:[
+{label:"基本の騎乗位",prompt:"cowgirl, woman on top facing man, riding, hands on his chest",desc:"女性が上で向かい合って腰を振る"},
+{label:"逆騎乗位",prompt:"reverse cowgirl, woman on top facing away, looking back over her shoulder",desc:"女性が上で後ろ向き"},
+{label:"前かがみ騎乗位",prompt:"cowgirl leaning forward, breasts close to man's face",desc:"胸を近づけて前かがみ"},
+{label:"後ろ手つき逆騎乗位",prompt:"reverse cowgirl, woman leaning back with hands on the bed for support",desc:"後ろに手をついて"},
+{label:"激しく腰を振る騎乗位",prompt:"cowgirl, intense riding, bouncing hard",desc:"激しく上下に動く"}
+]},
+mating_press:{title:"種付けプレス",page:"sexPage",options:[
+{label:"基本の種付けプレス",prompt:"mating press, legs pushed back, deep penetration, folded in half",desc:"脚を折り曲げて上から押さえ込む"},
+{label:"体重を乗せた種付けプレス",prompt:"intense mating press, full body weight, deep",desc:"体重を乗せて深く"},
+{label:"中出ししながらの種付けプレス",prompt:"mating press, creampie, cum deep inside",desc:"押さえ込みながら中出し"}
+]},
+daisuki_hold:{title:"だいしゅきホールド",page:"sexPage",options:[
+{label:"基本のだいしゅきホールド",prompt:"full nelson, legs held up, arms locked, deep penetration",desc:"脚を抱え上げて密着挿入"},
+{label:"強く抱きしめただいしゅきホールド",prompt:"tight full nelson, intense embrace while penetrating",desc:"強く抱きながら"},
+{label:"中出しだいしゅきホールド",prompt:"full nelson, creampie",desc:"抱きしめたまま中出し"}
+]},
+ekiben:{title:"駅弁",page:"sexPage",options:[
+{label:"基本の駅弁",prompt:"standing carry, ekiben, woman held up, legs wrapped around man",desc:"抱き上げて立ったまま挿入"},
+{label:"壁に押し付けた駅弁",prompt:"standing carry against wall, pressed to wall",desc:"壁に押し付けて"},
+{label:"激しく突き上げる駅弁",prompt:"intense standing carry, hard thrusting while holding",desc:"抱き上げて激しく突く"}
+]},
+sitting_sex:{title:"対面座位",page:"sexPage",options:[
+{label:"基本の対面座位",prompt:"sitting face to face, woman straddling man on a chair or bed, intimate eye contact",desc:"向かい合って座る"},
+{label:"密着した対面座位",prompt:"sitting sex, bodies pressed close, tight embrace",desc:"体を密着させて"},
+{label:"椅子の上の対面座位",prompt:"sitting sex on chair, straddling",desc:"椅子の上で"}
+]},
+standing_face:{title:"立位対面",page:"sexPage",options:[
+{label:"基本の立位対面",prompt:"standing face to face, woman with one leg raised, man supporting her thigh",desc:"立ったまま向かい合う"},
+{label:"両脚を抱えた立位",prompt:"standing sex, lifting both legs",desc:"両脚を持ち上げる"},
+{label:"壁に寄りかかった立位対面",prompt:"standing sex against wall, face to face",desc:"壁を使って"}
+]},
+spooning:{title:"側位",page:"sexPage",options:[
+{label:"基本の側位",prompt:"spooning position, both lying on their side, man behind",desc:"横向きで後ろから"},
+{label:"脚を絡めた側位",prompt:"spooning, legs intertwined",desc:"脚を絡める"},
+{label:"深く挿入する側位",prompt:"spooning, deep penetration from behind",desc:"深く突く"}
+]},
+side_facing:{title:"側位対面",page:"sexPage",options:[
+{label:"基本の側位対面",prompt:"side by side facing each other, legs intertwined",desc:"向かい合って横になる"},
+{label:"片脚上げの側位対面",prompt:"side sex, one leg raised",desc:"片脚を上げる"}
+]},
+sixtynine:{title:"69",page:"sexPage",options:[
+{label:"基本の69",prompt:"69 position, mutual oral, one on top of the other",desc:"互いに口で刺激"},
+{label:"女性が上の69",prompt:"69, woman on top",desc:"女性が上"},
+{label:"横向きの69",prompt:"sideways 69",desc:"横になって"}
+]},
+full_nelson:{title:"フルネルソン",page:"sexPage",options:[
+{label:"基本のフルネルソン",prompt:"full nelson, arms locked behind head, legs spread, deep penetration",desc:"腕をロックして脚を開く"},
+{label:"強く抱き込んだフルネルソン",prompt:"intense full nelson, tight hold",desc:"強く抱き込む"}
+]},
+amazon:{title:"アマゾネス体位",page:"sexPage",options:[
+{label:"基本のアマゾネス",prompt:"amazon position, woman on top, man's legs up, female dominant",desc:"女性上位で男性の脚を上げる"},
+{label:"激しく腰を振るアマゾネス",prompt:"amazon position, intense riding",desc:"激しく腰を振る"}
+]},
+lotus:{title:"座位（密着）",page:"sexPage",options:[
+{label:"基本の座位密着",prompt:"lotus position, sitting face to face, legs wrapped, intimate",desc:"脚を絡めて密着"},
+{label:"抱きしめた座位密着",prompt:"lotus, tight embrace while sitting",desc:"強く抱きながら"}
+]},
+wall_sex:{title:"壁ドン立位",page:"sexPage",options:[
+{label:"壁に押し付けた立位",prompt:"sex against wall, standing, pressed to wall",desc:"壁を使って立位"},
+{label:"片脚上げの壁ドン立位",prompt:"wall sex, one leg raised",desc:"片脚を上げて"}
+]},
+table_sex:{title:"机の上",page:"sexPage",options:[
+{label:"机に座らせて挿入",prompt:"sex on table, woman sitting on edge",desc:"机の端に座らせて"},
+{label:"机に伏せて後背位",prompt:"bent over table, sex from behind",desc:"机に伏せて後ろから"}
+]},
+suspended:{title:"吊り下げ体位",page:"sexPage",options:[
+{label:"抱き上げて挿入",prompt:"suspended congress, lifting sex, holding up",desc:"持ち上げて立位"},
+{label:"激しく突き上げる吊り下げ",prompt:"intense suspended sex, hard thrusting while holding",desc:"抱き上げて激しく"}
+]},
+reverse_missionary:{title:"逆正常位",page:"sexPage",options:[
+{label:"女性が上の対面挿入",prompt:"reverse missionary, woman on top facing man, lying down",desc:"女性が上で向かい合う"},
+{label:"深く腰を落とす逆正常位",prompt:"reverse missionary, deep penetration",desc:"深く沈める"}
+]},
+thrust:{title:"腰振り・ピストン",page:"sexPage",options:[
+{label:"ごく弱いピストン",prompt:"gentle thrusting, slow shallow thrusts",desc:"ゆっくり浅く突く"},
+{label:"弱いピストン",prompt:"mild thrusting, soft rhythm",desc:"弱めのリズム"},
+{label:"普通のピストン",prompt:"thrusting, steady piston",desc:"一定の強さで突く"},
+{label:"強いピストン",prompt:"hard thrusting, intense piston, deep thrusts",desc:"強く深く突く"},
+{label:"限界まで激しいピストン",prompt:"extremely intense thrusting, pounding, relentless",desc:"止まらないほど激しく突く"}
+]},
+bounce:{title:"揺れ・バウンス",page:"sexPage",options:[
+{label:"軽い揺れ",prompt:"light bouncing, slight jiggle",desc:"小さく揺れる"},
+{label:"普通の揺れ",prompt:"bouncing, jiggle",desc:"はっきり揺れる"},
+{label:"強い揺れ",prompt:"intense bouncing, heavy jiggle, vigorous bounce",desc:"大きく激しく揺れる"},
+{label:"おっぱいが揺れる",prompt:"bouncing breasts, jiggle",desc:"胸が上下に揺れる"},
+{label:"尻が揺れる",prompt:"bouncing ass, jiggling butt",desc:"尻が大きく揺れる"},
+{label:"体全体がバウンド",prompt:"body bounce, bouncing",desc:"体ごと弾む"}
+]},
+intense_move:{title:"激しい動き",page:"sexPage",options:[
+{label:"ごく弱い動き",prompt:"subtle movement, slight motion",desc:"わずかに動く"},
+{label:"弱い動き",prompt:"mild intense movement, soft dynamic",desc:"弱めの動き"},
+{label:"普通の激しい動き",prompt:"intense movement, dynamic pose",desc:"はっきりした動き"},
+{label:"強い動き",prompt:"very intense movement, vigorous, dynamic",desc:"力強い動き"},
+{label:"限界まで激しい動き",prompt:"extremely intense movement, wild, frantic",desc:"制御を失ったような動き"}
+]},
+clenching:{title:"締め付け",page:"sexPage",options:[
+{label:"ごく弱い締め付け",prompt:"subtle clenching, light tightening",desc:"わずかに締める"},
+{label:"弱い締め付け",prompt:"mild clenching, soft tightening",desc:"弱めに締める"},
+{label:"普通の締め付け",prompt:"clenching, tightening",desc:"はっきり締める"},
+{label:"強い締め付け",prompt:"strong clenching, tight grip, squeezing hard",desc:"強く締める"},
+{label:"限界まで締め付ける",prompt:"extreme clenching, crushing grip, intense tightening",desc:"強く締め続ける"}
+]},
+convulsion:{title:"痙攣・ピクピク",page:"sexPage",options:[
+{label:"ごく弱い痙攣",prompt:"subtle twitching, slight spasm",desc:"わずかにピクピク"},
+{label:"弱い痙攣",prompt:"mild twitching, light convulsing",desc:"弱めの痙攣"},
+{label:"普通の痙攣",prompt:"twitching, convulsing",desc:"はっきり痙攣"},
+{label:"強い痙攣",prompt:"intense twitching, strong convulsing, shaking",desc:"強く震える"},
+{label:"全身が激しく痙攣",prompt:"violent convulsing, extreme twitching, full body spasm",desc:"全身が激しく痙攣"}
+]},
+orgasm:{title:"絶頂中",page:"sexPage",options:[
+{label:"ごく弱い絶頂",prompt:"mild orgasm, soft climax",desc:"弱い絶頂"},
+{label:"弱い絶頂",prompt:"light orgasm, gentle climax",desc:"弱めの絶頂"},
+{label:"普通の絶頂",prompt:"orgasm, climax",desc:"はっきりした絶頂"},
+{label:"強い絶頂",prompt:"intense orgasm, strong climax, shaking",desc:"体が震える強い絶頂"},
+{label:"連続・限界の絶頂",prompt:"extreme orgasm, multiple orgasms, overwhelming climax",desc:"連続で限界まで"}
+]},
+afterglow:{title:"余韻",page:"sexPage",options:[
+{label:"ごく弱い余韻",prompt:"subtle afterglow, mild satisfaction",desc:"わずかな余韻"},
+{label:"弱い余韻",prompt:"light afterglow, soft post-orgasm",desc:"弱めの余韻"},
+{label:"普通の余韻",prompt:"afterglow, post-orgasm glow",desc:"満たされた余韻"},
+{label:"強い余韻・荒い息",prompt:"intense afterglow, heavy breathing after climax",desc:"息が荒い余韻"},
+{label:"ぐったりした余韻",prompt:"exhausted afterglow, spent, collapsed",desc:"脱力して動けない"}
+]},
+creampie_fx:{title:"中出し",page:"sexPage",options:[
+{label:"基本の中出し",prompt:"creampie, cum in pussy",desc:"中に出す"},
+{label:"大量中出し",prompt:"creampie, excessive cum inside, lots of cum",desc:"量が多い中出し"},
+{label:"溢れそうな中出し",prompt:"creampie, cum almost overflowing",desc:"溢れかけ"},
+{label:"奥に中出し",prompt:"creampie, deep creampie, cum deep inside",desc:"奥まで射精"}
+]},
+cum_overflow:{title:"溢れ出す精液",page:"sexPage",options:[
+{label:"少し溢れる",prompt:"cum overflow, slight drip",desc:"わずかに滴る"},
+{label:"普通に溢れる",prompt:"cum overflow, cum dripping out",desc:"はっきり溢れる"},
+{label:"大量に溢れる",prompt:"excessive cum overflow, cum pouring out",desc:"大量に流れ出る"},
+{label:"太ももを伝う精液",prompt:"cum overflow running down thighs",desc:"太ももの内側を伝う"}
+]},
+head_pat:{title:"頭を撫でる",page:"bodyPage",options:[
+{label:"男性が女性の頭を撫でる",prompt:"man stroking woman's head, headpat, hand on head",desc:"男性→女性"},
+{label:"女性が男性の頭を撫でる",prompt:"woman stroking man's head, headpat, hand on head",desc:"女性→男性"},
+{label:"優しく頭を撫でる",prompt:"gentle headpat, stroking hair",desc:"優しい触れ方"},
+{label:"抱きながら頭を撫でる",prompt:"headpat while hugging, stroking head in embrace",desc:"抱擁しながら"}
+]},
+body_press:{title:"身体を密着させる",page:"bodyPage",options:[
+{label:"体を密着させている",prompt:"bodies pressed together, close contact, skin to skin",desc:"肌がくっついている"},
+{label:"正面から密着",prompt:"chest to chest, bodies pressed face to face",desc:"正面で押し付ける"},
+{label:"後ろから密着",prompt:"body pressed from behind, back to chest",desc:"後ろから寄り添う"},
+{label:"抱きしめて密着",prompt:"tight embrace, bodies tightly pressed",desc:"強く抱きしめる"},
+{label:"壁に押し付けて密着",prompt:"pressed against wall, bodies flush",desc:"壁際で密着"}
+]},
+breasts:{title:"おっぱい",page:"bodyPage",options:[
+{label:"大きいおっぱい",prompt:"large breasts, big breasts",desc:"サイズ強調"},
+{label:"垂れたおっぱい",prompt:"sagging breasts, soft breasts",desc:"柔らかい・垂れている"},
+{label:"ピンと張ったおっぱい",prompt:"perky breasts, firm breasts",desc:"ハリがある"},
+{label:"揺れているおっぱい",prompt:"bouncing breasts, jiggle",desc:"動いている"},
+{label:"寄せて谷間を作っている",prompt:"cleavage, squeezed breasts, pressed breasts",desc:"寄せている"},
+{label:"乳首が見えている",prompt:"nipples visible, erect nipples",desc:"勃起した乳首"},
+{label:"おっぱいを掴まれている",prompt:"groping breasts, hands on breasts",desc:"触られている"}
+]},
+ass:{title:"お尻・太もも",page:"bodyPage",options:[
+{label:"大きなお尻・太い太もも",prompt:"large ass, big butt, thick thighs",desc:"ボリューム"},
+{label:"桃尻",prompt:"peach ass, round ass",desc:"丸くて形が良い"},
+{label:"尻を強調・見せつけ",prompt:"ass focus, presenting ass",desc:"尻を向けている"},
+{label:"尻を掴まれている",prompt:"groping ass, hands on ass",desc:"触られている"},
+{label:"太ももを触られている",prompt:"hands on thighs, stroking thighs",desc:"太ももを触る"}
+]},
+pussy:{title:"性器",page:"bodyPage",options:[
+{label:"濡れた性器",prompt:"wet pussy, dripping pussy, soaked",desc:"愛液で濡れている"},
+{label:"開いた性器",prompt:"spread pussy, open pussy, gaping",desc:"開いている"},
+{label:"挿入されている性器",prompt:"penis in pussy, penetration, vaginal penetration",desc:"挿入中"},
+{label:"クリトリスが目立つ",prompt:"visible clitoris, swollen clitoris",desc:"クリトリス強調"},
+{label:"性器アップ",prompt:"pussy focus, close-up pussy",desc:"局部を強調"}
+]},
+skin:{title:"肌の状態",page:"bodyPage",options:[
+{label:"汗だくの肌",prompt:"sweaty, covered in sweat, glistening skin",desc:"汗で光っている"},
+{label:"興奮で赤い肌",prompt:"flushed skin, red skin, aroused flush",desc:"赤みがある"},
+{label:"オイルで光る肌",prompt:"oiled skin, shiny skin, glossy skin",desc:"テカっている"},
+{label:"キス跡・吸い跡がある肌",prompt:"hickeys, love bites, kiss marks",desc:"痕がついている"}
+]},
+body_focus:{title:"身体の強調",page:"bodyPage",options:[
+{label:"おっぱいフォーカス",prompt:"breast focus, chest focus",desc:"胸に焦点"},
+{label:"尻フォーカス",prompt:"ass focus, butt focus",desc:"尻に焦点"},
+{label:"局部フォーカス",prompt:"pussy focus, crotch focus",desc:"性器に焦点"},
+{label:"全身を見せる",prompt:"full body, entirely visible",desc:"全身が入る"},
+{label:"上半身強調",prompt:"upper body focus",desc:"上半身中心"}
+]},
+love_juice:{title:"愛液",page:"bodyPage",options:[
+{label:"愛液が流れている",prompt:"pussy juice, love juice, dripping, wet",desc:"流れ落ちている"},
+{label:"太ももを伝う愛液",prompt:"pussy juice on thighs, trails of juice",desc:"太ももを伝う"},
+{label:"シーツに染みた愛液",prompt:"wet stain on sheets, soaked sheets",desc:"染みになっている"},
+{label:"糸を引く愛液",prompt:"string of pussy juice, sticky",desc:"粘ついて糸を引く"},
+{label:"我慢汁（先走り）",prompt:"pre-cum, precum, precum dripping",desc:"先走り"},
+{label:"潮吹き",prompt:"squirting, female ejaculation",desc:"潮を吹いている"}
+]},
+semen:{title:"精液",page:"bodyPage",options:[
+{label:"顔にかかった精液",prompt:"facial, cum on face, cum on cheeks",desc:"顔射"},
+{label:"胸にかかった精液",prompt:"cum on breasts, cum on chest",desc:"胸に"},
+{label:"中出しされた精液",prompt:"cum in pussy, creampie",desc:"中に"},
+{label:"お腹・体にかかった精液",prompt:"cum on stomach, cum on body",desc:"体に飛び散る"},
+{label:"口に出された精液",prompt:"cum in mouth, cum on tongue",desc:"口内"},
+{label:"大量の精液",prompt:"excessive cum, lots of cum, cum overflow",desc:"量が多い"}
+]},
+saliva:{title:"よだれ・唾液",page:"bodyPage",options:[
+{label:"よだれが垂れている",prompt:"drool, drooling, saliva",desc:"口から垂れる"},
+{label:"舌が唾液で湿っている",prompt:"saliva on tongue, wet tongue",desc:"舌が湿る"},
+{label:"キスで唾液の糸",prompt:"saliva trail, string of saliva, deep kiss",desc:"糸を引くキス"}
+]},
+sweat:{title:"汗",page:"bodyPage",options:[
+{label:"全身が汗だく",prompt:"sweat, sweaty body, covered in sweat",desc:"全身汗"},
+{label:"額に汗",prompt:"sweat on forehead, beads of sweat",desc:"額の汗"},
+{label:"汗で肌が光る",prompt:"glistening sweat, shiny with sweat",desc:"テカる"}
+]},
+bunny:{title:"バニー衣装",page:"clothingPage",options:[
+{label:"通常のバニー",prompt:"bunny suit, playboy bunny, rabbit ears",desc:"定番バニー"},
+{label:"逆バニー",prompt:"reverse bunny, reverse bunny suit",desc:"逆バニー"},
+{label:"黒バニー",prompt:"black bunny suit, black playboy bunny",desc:"黒"},
+{label:"白バニー",prompt:"white bunny suit, white playboy bunny",desc:"白"}
+]},
+clothing_state:{title:"着衣の状態（汎用）",page:"clothingPage",options:[
+{label:"普通に着ている",prompt:"fully clothed",desc:"きちんとした着衣"},
+{label:"はだけている",prompt:"open clothes, unbuttoned, disheveled clothes",desc:"はだける"},
+{label:"半脱ぎ",prompt:"half-undressed, clothes around waist",desc:"半分脱げた"},
+{label:"ずり下げ",prompt:"clothes pulled down, around thighs",desc:"ずり下げ"},
+{label:"破れている",prompt:"torn clothes, ripped clothes",desc:"破れ"},
+{label:"完全に裸",prompt:"completely nude, naked",desc:"全裸"}
+]}
 };
 
-const CONFLICT_PAIRS = [["standing","sitting"],["standing","lying"],["from behind","looking at viewer"],["solo","2girls"],["day","night"],["indoors","outdoors"],["white background","black background"],["completely nude","school uniform"],["eyes closed","looking at viewer"]];
+const CLOTHING_COLORS={lingerie:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"紫",value:"purple"}],bikini:[{label:"黒",value:"black"},{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"赤",value:"red"},{label:"ネイビー",value:"navy"},{label:"青",value:"blue"}],school_swimsuit:[{label:"ネイビー",value:"navy"},{label:"黒",value:"black"},{label:"白",value:"white"}],uniform:[{label:"紺",value:"navy"},{label:"黒",value:"black"},{label:"指定なし",value:""}],nurse_maid:[{label:"白",value:"white"},{label:"ピンク",value:"pink"},{label:"黒",value:"black"}],office:[{label:"黒",value:"black"},{label:"グレー",value:"gray"},{label:"ネイビー",value:"navy"}],china:[{label:"赤",value:"red"},{label:"青",value:"blue"},{label:"黄",value:"yellow"},{label:"紫",value:"purple"},{label:"白",value:"white"}]};
+const CLOTHING_STATES={lingerie:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", lingerie aside, panties aside, pulled aside"},{label:"はだけている",suffix:", open lingerie, disheveled lingerie"},{label:"半分脱がされている",suffix:", half-removed lingerie, lingerie around thighs"},{label:"破れている",suffix:", torn lingerie, ripped lingerie"}],bikini:[{label:"普通に着ている",suffix:""},{label:"マイクロビキニ",suffix:", micro bikini"},{label:"紐ビキニ",suffix:", string bikini"},{label:"紐を解いている",suffix:", untied bikini, bikini strings undone"},{label:"ずらしている",suffix:", bikini aside, pulled aside bikini"},{label:"濡れている",suffix:", wet bikini, see-through bikini"},{label:"半分脱げている",suffix:", half-removed bikini, bikini around ankles"}],school_swimsuit:[{label:"普通に着ている",suffix:""},{label:"ずらしている",suffix:", school swimsuit aside, pulled aside"},{label:"ずり下げ",suffix:", school swimsuit pulled down, around thighs"},{label:"濡れている",suffix:", wet school swimsuit, see-through school swimsuit"},{label:"破れている",suffix:", torn school swimsuit"}],uniform:[{label:"普通に着ている",suffix:", short skirt"},{label:"シャツはだけ",suffix:", open shirt, unbuttoned blouse, short skirt"},{label:"スカートめくれ",suffix:", skirt lift, lifted skirt, upskirt"},{label:"乱れている",suffix:", disheveled uniform, messy clothes"},{label:"半脱ぎ",suffix:", half-undressed, clothes around waist"}],nurse_maid:[{label:"普通に着ている",suffix:""},{label:"はだけている",suffix:", open, unbuttoned, cleavage"},{label:"スカートめくれ",suffix:", skirt lift, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],office:[{label:"普通に着ている",suffix:", tight skirt"},{label:"ブラウスはだけ",suffix:", unbuttoned blouse, open shirt, tight skirt"},{label:"スカートめくれ",suffix:", skirt lift, tight skirt, upskirt"},{label:"乱れている",suffix:", disheveled, messy clothes"}],china:[{label:"普通に着ている",suffix:""},{label:"スリット高め",suffix:", high slit"},{label:"はだけている",suffix:", open china dress"},{label:"乱れている",suffix:", disheveled china dress"}]};
+const CLOTHING_BASE={lingerie:"lingerie",bikini:"bikini",school_swimsuit:"school swimsuit",uniform:"school uniform",nurse_maid:"nurse outfit",office:"office lady, suit",china:"china dress"};
+const LICK_PARTS=[{label:"首筋",m2f:"neck kissing, licking neck, man licking woman's neck",f2m:"neck kissing, licking neck, woman licking man's neck",j:"首筋"},{label:"耳",m2f:"ear licking, man licking woman's ear, whispering",f2m:"ear licking, woman licking man's ear, whispering",j:"耳"},{label:"脇",m2f:"armpit licking, man licking woman's armpit",f2m:"armpit licking, woman licking man's armpit",j:"脇"},{label:"へそ",m2f:"navel licking, man licking woman's navel",f2m:"navel licking, woman licking man's navel",j:"へそ"},{label:"体・胸元",m2f:"body licking, licking body, man licking woman's body",f2m:"body licking, licking body, woman licking man's body",j:"体"},{label:"太もも",m2f:"licking thighs, man licking woman's thighs",f2m:"licking thighs, woman licking man's thighs",j:"太もも"},{label:"足・足指",m2f:"foot licking, toe sucking, man licking woman's feet",f2m:"foot licking, toe sucking, woman licking man's feet",j:"足"},{label:"背中",m2f:"licking back, man licking woman's back",f2m:"licking back, woman licking man's back",j:"背中"},{label:"お腹",m2f:"licking stomach, man licking woman's stomach",f2m:"licking stomach, woman licking man's stomach",j:"お腹"}];
+const CONFLICT_PAIRS=[["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],["solo","2girls"],["solo","1boy"],["solo","multiple girls"],["1girl","2girls"],["1girl","3girls"],["day","night"],["morning","night"],["indoors","outdoors"],["white background","black background"],["simple background","detailed background"],["completely nude","school uniform"],["completely nude","lingerie"],["completely nude","bikini"],["eyes closed","looking at viewer"],["from behind","looking at viewer"],["1boy","2boys"],["faceless","looking at viewer"]];
 
 try{const s=localStorage.getItem("novelai_prompts_v3");if(s)prompts=JSON.parse(s)}catch(e){}
-try{const h=localStorage.getItem("novelai_history_v1");if(h)history=JSON.parse(h)}catch(e){}
-try{const t=localStorage.getItem("novelai_templates_v1");if(t)templates=JSON.parse(t)}catch(e){}
 try{if(localStorage.getItem("novelai_theme")==="dark")document.body.classList.add("dark")}catch(e){}
-
 function savePrompts(){try{localStorage.setItem("novelai_prompts_v3",JSON.stringify(prompts))}catch(e){}}
-function saveHistory(){try{localStorage.setItem("novelai_history_v1",JSON.stringify(history.slice(0,50)))}catch(e){}}
-function saveTemplates(){try{localStorage.setItem("novelai_templates_v1",JSON.stringify(templates))}catch(e){}}
-
-function toggleTheme(){
-  document.body.classList.toggle("dark");
-  const isDark=document.body.classList.contains("dark");
-  document.getElementById("themeButton").textContent=isDark?"☀️ ライトモード切替":"🌙 ダークモード切替";
-  try{localStorage.setItem("novelai_theme",isDark?"dark":"light")}catch(e){}
-}
-if(document.body.classList.contains("dark"))document.getElementById("themeButton").textContent="☀️ ライトモード切替";
-
+function toggleTheme(){document.body.classList.toggle("dark");const isDark=document.body.classList.contains("dark");const tb=document.getElementById("themeButton");if(tb)tb.textContent=isDark?"☀️ ライトモード切替":"🌙 ダークモード切替";try{localStorage.setItem("novelai_theme",isDark?"dark":"light")}catch(e){}}
+if(document.body.classList.contains("dark")){const tb=document.getElementById("themeButton");if(tb)tb.textContent="☀️ ライトモード切替"}
 function hideCopyMsg(){document.getElementById("copyMsg").classList.remove("show");document.getElementById("copyButton").classList.remove("copied")}
-function addP(text,label,page,skipConflict){
-  if(prompts.some(p=>p.text===text))return;
-  if(!skipConflict){
-    const conf=findConflictWith(text);
-    if(conf){pendingConflict={text,label,page};document.getElementById("conflictMsg").textContent=conf+"と矛盾しています、追加しますか？";document.getElementById("conflictOverlay").classList.add("active");return}
-  }
-  prompts.push({text,label:label||text,weight:1.0,page:page||null});
-  hideCopyMsg();updatePrompt();savePrompts();
-}
-function findConflictWith(text){
-  const tl=text.toLowerCase();
-  for(const [a,b] of CONFLICT_PAIRS){
-    const al=a.toLowerCase(),bl=b.toLowerCase();
-    if(tl.includes(al)){const p=prompts.find(x=>x.text.toLowerCase().includes(bl));if(p)return p.label||p.text}
-    if(tl.includes(bl)){const p=prompts.find(x=>x.text.toLowerCase().includes(al));if(p)return p.label||p.text}
-  }
-  return null;
-}
+function addP(text,label,page,skipConflict){if(prompts.some(p=>p.text===text))return;if(!skipConflict){const conf=findConflictWith(text);if(conf){pendingConflict={text,label,page};document.getElementById("conflictMsg").textContent=conf+"と矛盾しています、追加しますか？";document.getElementById("conflictOverlay").classList.add("active");return}}prompts.push({text,label:label||text,weight:1.0,page:page||null});hideCopyMsg();updatePrompt();savePrompts()}
+function findConflictWith(text){const tl=text.toLowerCase();for(const [a,b] of CONFLICT_PAIRS){const al=a.toLowerCase(),bl=b.toLowerCase();if(tl.includes(al)){const p=prompts.find(x=>x.text.toLowerCase().includes(bl));if(p)return p.label||p.text}if(tl.includes(bl)){const p=prompts.find(x=>x.text.toLowerCase().includes(al));if(p)return p.label||p.text}}return null}
 function confirmConflictAdd(){if(pendingConflict){addP(pendingConflict.text,pendingConflict.label,pendingConflict.page,true);pendingConflict=null}closeConflict()}
 function closeConflict(){document.getElementById("conflictOverlay").classList.remove("active");pendingConflict=null}
 function removePrompt(i){prompts.splice(i,1);hideCopyMsg();updatePrompt();savePrompts()}
 function formatPrompt(p){return p.weight===1.0?p.text:(p.weight+"::"+p.text+"::")}
-function updatePrompt(){
-  const el=document.getElementById("prompt"),c=document.getElementById("promptCount"),exp=document.getElementById("promptExpand");
-  if(!prompts.length){
-    el.innerHTML='<span class="placeholder">ここに選択したプロンプトが表示されます</span>';
-    el.classList.remove("expanded");exp.classList.remove("show");promptExpanded=false;
-  }else{
-    el.innerHTML=prompts.map((p,i)=>{
-      const b=p.weight!==1.0?`<span class="weight">${p.weight}</span>`:"";
-      return `<span class="prompt-chip" data-index="${i}"><span class="chip-label">${escapeHtml(p.label||p.text)}</span>${b}<span class="remove" data-remove="${i}">×</span></span>`;
-    }).join("");
-    if(prompts.length>COLLAPSE_THRESHOLD){exp.classList.add("show");if(!promptExpanded)el.classList.remove("expanded");else el.classList.add("expanded");exp.textContent=promptExpanded?"▲ 閉じる":"… タップで展開（"+prompts.length+"個）"}
-    else{exp.classList.remove("show");el.classList.add("expanded");promptExpanded=true}
-  }
-  c.textContent=prompts.length+" 個選択中";
-  attachChipEvents();updateSelectedButtons();updateHomeFab();checkCurrentConflicts();
-}
+function getConflictKeywords(){const texts=prompts.map(p=>p.text.toLowerCase()),keys=new Set();CONFLICT_PAIRS.forEach(([a,b])=>{const hasA=texts.some(t=>t.includes(a.toLowerCase())),hasB=texts.some(t=>t.includes(b.toLowerCase()));if(hasA&&!hasB)keys.add(b.toLowerCase());if(hasB&&!hasA)keys.add(a.toLowerCase())});return keys}
+function updateSelectedButtons(){const conflictKeys=getConflictKeywords();document.querySelectorAll("button[onclick*='addP']").forEach(btn=>{const m=btn.getAttribute("onclick").match(/addP\('([^']+)'/);if(!m)return;const text=m[1];const exists=prompts.some(p=>p.text===text);btn.classList.toggle("selected",exists);btn.classList.toggle("conflict-btn",!exists&&[...conflictKeys].some(k=>text.toLowerCase().includes(k)))})}
+function togglePromptExpand(){promptExpanded=!promptExpanded;const el=document.getElementById("prompt"),btn=document.getElementById("promptExpand");el.classList.toggle("expanded",promptExpanded);btn.textContent=promptExpanded?"▲ 閉じる":"… タップで展開"}
+function updatePrompt(){const el=document.getElementById("prompt"),c=document.getElementById("promptCount"),exp=document.getElementById("promptExpand");if(!prompts.length){el.innerHTML='<span class="placeholder">ここに選択したプロンプトが表示されます</span>';el.classList.remove("expanded");exp.classList.remove("show");promptExpanded=false}else{el.innerHTML=prompts.map((p,i)=>{const b=p.weight!==1.0?`<span class="weight">${p.weight}</span>`:"";return `<span class="prompt-chip" data-index="${i}"><span class="chip-label">${escapeHtml(p.label||p.text)}</span>${b}<span class="remove" data-remove="${i}">×</span></span>`}).join("");if(prompts.length>COLLAPSE_THRESHOLD){exp.classList.add("show");if(!promptExpanded)el.classList.remove("expanded");else el.classList.add("expanded");exp.textContent=promptExpanded?"▲ 閉じる":"… タップで展開（"+prompts.length+"個）"}else{exp.classList.remove("show");el.classList.add("expanded");promptExpanded=true}}c.textContent=prompts.length+" 個選択中";attachChipEvents();updateSelectedButtons();updateHomeFab();checkCurrentConflicts()}
 function escapeHtml(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML}
-function attachChipEvents(){
-  document.querySelectorAll(".prompt-chip").forEach(chip=>{
-    const rm=chip.querySelector(".remove");
-    if(rm)rm.addEventListener("click",e=>{e.stopPropagation();removePrompt(+rm.dataset.remove)});
-    let timer=null;
-    const start=e=>{if(e.target.classList.contains("remove"))return;chip._ts=Date.now();timer=setTimeout(()=>openChipMenu(+chip.dataset.index),CHIP_MS)};
-    const end=e=>{clearTimeout(timer);if(e.target.classList.contains("remove"))return;if(Date.now()-(chip._ts||0)<CHIP_MS){const p=prompts[+chip.dataset.index];if(p&&p.page)showPage(p.page)}};
-    chip.addEventListener("touchstart",start,{passive:true});
-    chip.addEventListener("touchend",end);
-    chip.addEventListener("mousedown",start);
-    chip.addEventListener("mouseup",end);
-  });
-}
-function openChipMenu(i){
-  const p=prompts[i];
-  document.getElementById("chipMenuTitle").textContent=p.label||p.text;
-  document.getElementById("chipMenuList").innerHTML=`<button onclick="closeChipMenu();openReorder(${i})">順番を変える</button><button onclick="closeChipMenu();openWeightPanel(${i})">重みを変更</button>`;
-  document.getElementById("chipMenuOverlay").classList.add("active");
-}
+function openChipMenu(i){const p=prompts[i];document.getElementById("chipMenuTitle").textContent=p.label||p.text;document.getElementById("chipMenuList").innerHTML=`<button onclick="closeChipMenu();openReorder(${i})">順番を変える</button><button onclick="closeChipMenu();openWeightPanel(${i})">重みを変更</button>`;document.getElementById("chipMenuOverlay").classList.add("active")}
 function closeChipMenu(){document.getElementById("chipMenuOverlay").classList.remove("active")}
 function openReorder(i){reorderIndex=i;refreshReorderUI();document.getElementById("reorderOverlay").classList.add("active")}
-function refreshReorderUI(){
-  if(reorderIndex<0||reorderIndex>=prompts.length){closeReorder();return}
-  const p=prompts[reorderIndex];
-  document.getElementById("reorderLabel").textContent=p.label||p.text;
-  document.getElementById("reorderPos").textContent=(reorderIndex+1)+" / "+prompts.length;
-  document.getElementById("reorderUp").disabled=reorderIndex<=0;
-  document.getElementById("reorderDown").disabled=reorderIndex>=prompts.length-1;
-}
-function reorderMove(dir){
-  if(reorderIndex<0)return;
-  const j=reorderIndex+dir;if(j<0||j>=prompts.length)return;
-  const t=prompts[reorderIndex];prompts[reorderIndex]=prompts[j];prompts[j]=t;reorderIndex=j;
-  updatePrompt();savePrompts();refreshReorderUI();
-}
+function refreshReorderUI(){if(reorderIndex<0||reorderIndex>=prompts.length){closeReorder();return}const p=prompts[reorderIndex];document.getElementById("reorderLabel").textContent=p.label||p.text;document.getElementById("reorderPos").textContent=(reorderIndex+1)+" / "+prompts.length;document.getElementById("reorderUp").disabled=reorderIndex<=0;document.getElementById("reorderDown").disabled=reorderIndex>=prompts.length-1}
+function reorderMove(dir){if(reorderIndex<0)return;const j=reorderIndex+dir;if(j<0||j>=prompts.length)return;const t=prompts[reorderIndex];prompts[reorderIndex]=prompts[j];prompts[j]=t;reorderIndex=j;updatePrompt();savePrompts();refreshReorderUI()}
 function closeReorder(){document.getElementById("reorderOverlay").classList.remove("active");reorderIndex=-1}
-function openWeightPanel(i){
-  currentWeightIndex=i;
-  const cur=prompts[i].weight;
-  document.getElementById("weightButtons").innerHTML=WEIGHTS.map(w=>`<button class="${w===cur?"active":""}" onclick="setWeight(${w})">${w}</button>`).join("");
-  document.getElementById("weightOverlay").classList.add("active");
-}
-function setWeight(w){if(currentWeightIndex>=0){prompts[currentWeightIndex].weight=w;updatePrompt();savePrompts()}closeWeightPanel()}
-function closeWeightPanel(){document.getElementById("weightOverlay").classList.remove("active");currentWeightIndex=-1}
-function openVariation(k){
-  const d=VARIATIONS[k];if(!d)return;
-  document.getElementById("variationTitle").textContent=d.title;
-  document.getElementById("variationList").innerHTML=d.options.map(o=>`<button onclick="selectVariation(\`${o.prompt.replace(/`/g,"\\`")}\`,'${o.label.replace(/'/g,"\\'")}','${d.page||""}')">${o.label}${o.desc?`<span class="desc">${o.desc}</span>`:""}</button>`).join("");
-  document.getElementById("variationOverlay").classList.add("active");
-}
+function openVariation(k){const d=VARIATIONS[k];if(!d)return;document.getElementById("variationTitle").textContent=d.title;document.getElementById("variationList").innerHTML=d.options.map(o=>`<button onclick="selectVariation(\`${o.prompt.replace(/`/g,"\\`")}\`,'${o.label.replace(/'/g,"\\'")}','${d.page||""}')">${o.label}${o.desc?`<span class="desc">${o.desc}</span>`:""}</button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
 function selectVariation(t,label,page){addP(t,label,page);closeVariationPanel()}
 function closeVariationPanel(){document.getElementById("variationOverlay").classList.remove("active");pendingClothing=null;pendingLick=null}
-function openDesc(title,body,note){
-  document.getElementById("descTitle").textContent=title;
-  document.getElementById("descBody").textContent=body;
-  const n=document.getElementById("descNote");
-  if(note){n.style.display="block";n.innerHTML="<strong>注意</strong>"+escapeHtml(note)}else{n.style.display="none";n.innerHTML=""}
-  document.getElementById("descOverlay").classList.add("active");
-}
+function openClothingColor(type){pendingClothing={type,color:null};const colors=CLOTHING_COLORS[type]||[];document.getElementById("variationTitle").textContent="色を選択";document.getElementById("variationList").innerHTML=colors.map(c=>`<button onclick="selectClothingColor('${c.value}')">${c.label}</button>`).join("");document.getElementById("variationOverlay").classList.add("active")}
+function selectClothingColor(colorValue){pendingClothing.color=colorValue;const states=CLOTHING_STATES[pendingClothing.type]||[];const colorLabel=({black:"黒",white:"白",pink:"ピンク",red:"赤",purple:"紫",navy:"ネイビー",blue:"青",yellow:"黄",gray:"グレー","":"指定なし"})[pendingClothing.color]||pendingClothing.color;document.getElementById("variationTitle").textContent="状態を選択";document.getElementById("variationList").innerHTML=states.map(s=>{const base=CLOTHING_BASE[pendingClothing.type];const colorPart=pendingClothing.color?pendingClothing.color+" ":"";let prompt="",jlabel=colorLabel+(colorLabel?"の":"")+(({lingerie:"ランジェリー",bikini:"ビキニ",school_swimsuit:"スクール水着",uniform:"制服",nurse_maid:"ナース・メイド",office:"OL・スーツ",china:"チャイナドレス"})[pendingClothing.type]||"")+(s.label==="普通に着ている"?"":"・"+s.label);if(pendingClothing.type==="nurse_maid"){const isMaid=pendingClothing.color==="black";prompt=(isMaid?"black maid outfit":(pendingClothing.color?pendingClothing.color+" nurse outfit":"nurse outfit"))+s.suffix;jlabel=(isMaid?"黒メイド":colorLabel+"ナース")+(s.label==="普通に着ている"?"":"・"+s.label)}else if(pendingClothing.type==="office"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"office lady, suit"+s.suffix}else if(pendingClothing.type==="uniform"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"school uniform"+s.suffix}else if(pendingClothing.type==="china"){prompt=(pendingClothing.color?pendingClothing.color+" ":"")+"china dress"+s.suffix}else{prompt=colorPart+base+s.suffix}return `<button onclick="selectVariation(\`${prompt.replace(/`/g,"\\`")}\`,'${jlabel.replace(/'/g,"\\'")}','clothingPage')">${s.label}</button>`}).join("")}
+function openBodyLick(){pendingLick={dir:null};document.getElementById("variationTitle").textContent="誰が舐める？";document.getElementById("variationList").innerHTML=`<button onclick="selectLickDir('m2f')">男性が女性を舐める<span class="desc">男性→女性</span></button><button onclick="selectLickDir('f2m')">女性が男性を舐める<span class="desc">女性→男性</span></button>`;document.getElementById("variationOverlay").classList.add("active")}
+function selectLickDir(dir){pendingLick.dir=dir;document.getElementById("variationTitle").textContent="どこを舐める？";document.getElementById("variationList").innerHTML=LICK_PARTS.map(p=>{const prompt=dir==="m2f"?p.m2f:p.f2m;const who=dir==="m2f"?"男性が女性の":"女性が男性の";const jlabel=who+p.j+"を舐める";return `<button onclick="selectVariation(\`${prompt.replace(/`/g,"\\`")}\`,'${jlabel.replace(/'/g,"\\'")}','sexPage')">${p.label}<span class="desc">${jlabel}</span></button>`}).join("")}
+function attachChipEvents(){document.querySelectorAll(".prompt-chip").forEach(chip=>{const rm=chip.querySelector(".remove");if(rm){rm.addEventListener("click",e=>{e.stopPropagation();removePrompt(+rm.dataset.remove)})}let timer=null;const start=e=>{if(e.target.classList.contains("remove"))return;chip._ts=Date.now();timer=setTimeout(()=>{openChipMenu(+chip.dataset.index)},CHIP_MS)};const end=e=>{clearTimeout(timer);if(e.target.classList.contains("remove"))return;if(Date.now()-(chip._ts||0)<CHIP_MS){const p=prompts[+chip.dataset.index];if(p&&p.page)showPage(p.page)}};chip.addEventListener("touchstart",start,{passive:true});chip.addEventListener("touchend",end);chip.addEventListener("touchcancel",()=>clearTimeout(timer));chip.addEventListener("mousedown",start);chip.addEventListener("mouseup",end);chip.addEventListener("mouseleave",()=>clearTimeout(timer))})}
+(function setupButtonHints(){let hintTimer=null;function isHintTarget(btn){if(!btn||btn.classList.contains("var-btn")||btn.classList.contains("menuButton")||btn.classList.contains("backButton")||btn.classList.contains("cancel")||btn.classList.contains("yes")||btn.classList.contains("no")||btn.id==="copyButton"||btn.id==="clearButton"||btn.id==="themeButton"||btn.id==="promptExpand"||btn.id==="homeFab"||btn.id==="reorderUp"||btn.id==="reorderDown")return false;return !!(btn.getAttribute("data-title")||btn.getAttribute("data-body"))}function startHint(e){const btn=e.target.closest("button");if(!isHintTarget(btn))return;hintTimer=setTimeout(()=>{openDesc(btn.getAttribute("data-title")||btn.textContent.trim(),btn.getAttribute("data-body")||"",btn.getAttribute("data-note")||"")},HINT_MS)}function endHint(){clearTimeout(hintTimer)}document.body.addEventListener("touchstart",startHint,{passive:true});document.body.addEventListener("touchend",endHint);document.body.addEventListener("touchcancel",endHint);document.body.addEventListener("mousedown",startHint);document.body.addEventListener("mouseup",endHint);document.body.addEventListener("mouseleave",endHint)})();
+function openDesc(title,body,note){document.getElementById("descTitle").textContent=title;document.getElementById("descBody").textContent=body;const n=document.getElementById("descNote");if(note){n.style.display="block";n.innerHTML="<strong>注意</strong>"+escapeHtml(note)}else{n.style.display="none";n.innerHTML=""}document.getElementById("descOverlay").classList.add("active")}
 function closeDesc(){document.getElementById("descOverlay").classList.remove("active")}
-function copyPrompt(){
-  const t=prompts.map(formatPrompt).join(", ");
-  if(!t)return;
-  const out=t.endsWith(",")?t:t+",";
-  const btn=document.getElementById("copyButton"),msg=document.getElementById("copyMsg");
-  const done=()=>{
-    btn.classList.add("copied");msg.classList.add("show");
-    setTimeout(()=>btn.classList.remove("copied"),1200);
-    history.unshift({text:out,date:new Date().toLocaleString("ja-JP"),ts:Date.now()});
-    if(history.length>50)history=history.slice(0,50);
-    saveHistory();renderHistory();
-  };
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(out).then(done).catch(()=>{fallbackCopy(out);done()});
-  }else{fallbackCopy(out);done()}
-}
-function fallbackCopy(text){
-  const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.left="-9999px";
-  document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);
-}
+function openWeightPanel(i){currentWeightIndex=i;const cur=prompts[i].weight;document.getElementById("weightButtons").innerHTML=WEIGHTS.map(w=>`<button class="${w===cur?"active":""}" onclick="setWeight(${w})">${w}</button>`).join("");document.getElementById("weightOverlay").classList.add("active")}
+function setWeight(w){if(currentWeightIndex>=0){prompts[currentWeightIndex].weight=w;updatePrompt();savePrompts()}closeWeightPanel()}
+function closeWeightPanel(){document.getElementById("weightOverlay").classList.remove("active");currentWeightIndex=-1}
+function copyPrompt(){const t=prompts.map(formatPrompt).join(", ");if(!t)return;const out=t.endsWith(",")?t:t+",";const btn=document.getElementById("copyButton");const msg=document.getElementById("copyMsg");const done=()=>{btn.classList.add("copied");msg.classList.add("show");setTimeout(()=>{btn.classList.remove("copied")},1200)};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(out).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=out;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done()})}else{const ta=document.createElement("textarea");ta.value=out;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done()}}
 function clearPrompt(){prompts=[];hideCopyMsg();updatePrompt();savePrompts()}
-function updateHomeFab(){
-  const fab=document.getElementById("homeFab");
-  const onHome=document.getElementById("homePage").classList.contains("active");
-  fab.style.display=onHome?"none":"flex";
-}
-function showPage(id){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  window.scrollTo(0,0);
-  updateSelectedButtons();updateHomeFab();
-}
-function updateSelectedButtons(){
-  const conflictKeys=new Set();
-  const texts=prompts.map(p=>p.text.toLowerCase());
-  CONFLICT_PAIRS.forEach(([a,b])=>{
-    const hasA=texts.some(t=>t.includes(a.toLowerCase()));
-    const hasB=texts.some(t=>t.includes(b.toLowerCase()));
-    if(hasA&&!hasB)conflictKeys.add(b.toLowerCase());
-    if(hasB&&!hasA)conflictKeys.add(a.toLowerCase());
-  });
-  document.querySelectorAll("button[onclick*='addP']").forEach(btn=>{
-    const m=btn.getAttribute("onclick").match(/addP\('([^']+)'/);
-    if(!m)return;
-    const text=m[1];
-    const exists=prompts.some(p=>p.text===text);
-    btn.classList.toggle("selected",exists);
-    btn.classList.toggle("conflict-btn",!exists&&[...conflictKeys].some(k=>text.toLowerCase().includes(k)));
-  });
-}
-function checkCurrentConflicts(){
-  const warn=document.getElementById("conflictWarning");
-  if(!warn)return;
-  const conflicts=[];
-  const texts=prompts.map(p=>p.text.toLowerCase());
-  CONFLICT_PAIRS.forEach(([a,b])=>{
-    const hasA=texts.some(t=>t.includes(a.toLowerCase()));
-    const hasB=texts.some(t=>t.includes(b.toLowerCase()));
-    if(hasA&&hasB)conflicts.push(`「${a}」と「${b}」が同時`);
-  });
-  if(conflicts.length){warn.innerHTML="<strong>注意：</strong> "+conflicts.slice(0,3).join(" / ");warn.classList.add("show")}
-  else{warn.classList.remove("show");warn.innerHTML=""}
-}
+function updateHomeFab(){const fab=document.getElementById("homeFab");const onHome=document.getElementById("homePage").classList.contains("active");fab.style.display=onHome?"none":"flex"}
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0);updateSelectedButtons();updateHomeFab()}
 
 function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
-function pickOpt(key){
-  const v=VARIATIONS[key];
-  if(!v||!v.options||!v.options.length)return null;
-  const o=pick(v.options);
-  return{prompt:o.prompt,label:o.label,page:v.page||"sexPage",key,desc:o.desc};
-}
-
-function buildPositionScene(){
-  const posKeys=["missionary","doggy","cowgirl"];
-  const pos=pickOpt(pick(posKeys));
-  if(!pos)return null;
-  const tags=[pos];
-  let desc=pos.label+"で";
-  if(Math.random()<0.85){const t=pickOpt("thrust");if(t){tags.push(t);desc+=t.label.replace("腰振り（","").replace("）","")+"、"}}
-  if(Math.random()<0.55){const fx=Math.random()<0.55?pickOpt("orgasm"):null;if(fx){tags.push(fx);desc+=fx.label+"している"}else{desc+="行為中"}}
-  else{desc+="行為中"}
-  return{title:tags.map(t=>t.label).join(" · "),desc:desc+"シーン",tags};
-}
-function buildForeplayScene(){
-  const keys=["fellatio","cunnilingus","handjob","paizuri"];
-  const main=pickOpt(pick(keys));
-  if(!main)return null;
-  const tags=[main];
-  let desc=main.label+"をしているシーン";
-  return{title:main.label,desc,tags};
-}
-function buildFullSexScene(){
-  const tags=[],titleParts=[];
-  const pos=pickOpt(pick(["missionary","doggy","cowgirl"]));
-  if(pos){tags.push(pos);titleParts.push(pos.label)}
-  const th=pickOpt("thrust");if(th){tags.push(th);titleParts.push(th.label)}
-  if(Math.random()<0.7){const end=pickOpt("orgasm");if(end){tags.push(end);titleParts.push(end.label)}}
-  if(!tags.length)return null;
-  return{title:titleParts.join(" · "),desc:titleParts.join("、")+"のシーン",tags};
-}
-function buildBodyScene(){
-  const tags=[];
-  const b=pickOpt(pick(["breasts","ass","pussy"]));
-  if(b)tags.push(b);
-  if(Math.random()<0.7){const f=pickOpt(pick(["love_juice","semen","sweat"]));if(f)tags.push(f)}
-  if(!tags.length)return null;
-  return{title:tags.map(t=>t.label).join(" · "),desc:"身体描写中心のシーン",tags};
-}
-function buildFullRandomScene(){
-  const tags=[],titleParts=[];
-  if(Math.random()<0.7){tags.push({prompt:"1boy, 1girl",label:"1boy 1girl",page:"basePage"});titleParts.push("1boy1girl")}
-  const pos=pickOpt(pick(["missionary","doggy","cowgirl"]));
-  if(pos){tags.push(pos);titleParts.push(pos.label)}
-  if(Math.random()<0.7){const t=pickOpt("thrust");if(t){tags.push(t);titleParts.push(t.label)}}
-  if(Math.random()<0.6){const e=pick(["ahegao","torogao","orgasmic expression"]);tags.push({prompt:e,label:e,page:"sexyExpressionPage"});titleParts.push(e)}
-  if(!tags.length)return null;
-  return{title:titleParts.join(" · "),desc:titleParts.join("、")+"のシーン",tags};
-}
-
-function generatePackages(mode,count){
-  const builders={foreplay:buildForeplayScene,position:buildPositionScene,sex:buildFullSexScene,body:buildBodyScene,full:buildFullRandomScene};
-  const fn=builders[mode];if(!fn)return[];
-  const out=[],seen=new Set();let guard=0;
-  while(out.length<count&&guard<100){
-    guard++;
-    const pack=fn();
-    if(!pack||!pack.tags.length)continue;
-    const sig=pack.tags.map(t=>t.prompt).sort().join("|");
-    if(seen.has(sig))continue;
-    seen.add(sig);
-    out.push(pack);
-  }
-  return out;
-}
-function setRandMode(mode){
-  currentRandMode=mode;
-  document.querySelectorAll(".random-options button").forEach(b=>b.classList.remove("active"));
-  const map={foreplay:"randForeplay",position:"randPosition",sex:"randSex",body:"randBody",full:"randFull"};
-  if(map[mode])document.getElementById(map[mode]).classList.add("active");
-  document.getElementById("candidateArea").style.display="none";
-}
-function runRandom(){
-  if(!currentRandMode){alert("先に種類を選んでください");return}
-  const count=+document.getElementById("randCount").value||6;
-  const includeBase=document.getElementById("randIncludeBase").checked;
-  const packs=generatePackages(currentRandMode,count);
-  const area=document.getElementById("candidateArea");
-  if(!packs.length){area.innerHTML="<p style='color:var(--muted);font-size:13px'>候補を生成できませんでした</p>";area.style.display="block";return}
-  area.innerHTML=packs.map(p=>{
-    let fullText=p.tags.map(t=>t.prompt).join(", ");
-    if(includeBase)fullText=BASE_QUALITY+", "+fullText;
-    const tagsJson=JSON.stringify(p.tags).replace(/'/g,"&#39;");
-    const fullEsc=fullText.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
-    return `<div class="candidate-card">
-      <div class="pack-title">${escapeHtml(p.title)}</div>
-      <div class="pack-desc">${escapeHtml(p.desc||"状況説明なし")}</div>
-      <div class="pack-tags">${p.tags.map(t=>`<span class="pack-tag">${escapeHtml(t.label)}</span>`).join("")}</div>
-      <div class="pack-actions">
-        <button onclick='addPackage(${tagsJson})'>現在の選択に追加</button>
-        <button onclick="copyText('${fullEsc}')">このプロンプトをコピー</button>
-      </div>
-    </div>`;
-  }).join("");
-  area.style.display="block";
-  checkCurrentConflicts();
-}
-function addPackage(tags){
-  tags.forEach(t=>{if(!prompts.some(p=>p.text===t.prompt))prompts.push({text:t.prompt,label:t.label,weight:1.0,page:t.page||null})});
-  hideCopyMsg();updatePrompt();savePrompts();
-}
-function copyText(text){
-  const out=text.endsWith(",")?text:text+",";
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(out).then(()=>{
-      history.unshift({text:out,date:new Date().toLocaleString("ja-JP"),ts:Date.now()});
-      if(history.length>50)history=history.slice(0,50);
-      saveHistory();renderHistory();
-      alert("コピーしました");
-    }).catch(()=>{fallbackCopy(out);alert("コピーしました")});
-  }else{fallbackCopy(out);alert("コピーしました")}
-}
-
-function runBatch(){
-  const count=Math.min(20,Math.max(1,+document.getElementById("batchCount").value||8));
-  const varyPose=document.getElementById("batchVaryPose").checked;
-  const varyExpr=document.getElementById("batchVaryExpr").checked;
-  const varyView=document.getElementById("batchVaryView").checked;
-  const baseTags=prompts.map(p=>p.text);
-  const results=[];
-  const poseKeys=["missionary","doggy","cowgirl"];
-  const exprList=["ahegao","torogao","orgasmic expression","pleasure face","fucked silly"];
-  const viewList=["pov","from behind","low-angle view","close-up","three-quarter view"];
-  for(let i=0;i<count;i++){
-    let parts=[...baseTags];
-    if(varyPose){const pos=pickOpt(pick(poseKeys));if(pos)parts.push(pos.prompt);if(Math.random()<0.7){const th=pickOpt("thrust");if(th)parts.push(th.prompt)}}
-    if(varyExpr)parts.push(pick(exprList));
-    if(varyView)parts.push(pick(viewList));
-    parts=[...new Set(parts)];
-    results.push(parts.join(", "));
-  }
-  const area=document.getElementById("batchArea");
-  area.innerHTML=results.map((txt,i)=>`
-    <div class="batch-item">
-      <div class="batch-num">#${i+1}</div>
-      <div class="batch-text">${escapeHtml(txt)}</div>
-      <div class="batch-actions">
-        <button onclick="copyText('${txt.replace(/'/g,"&#39;").replace(/"/g,"&quot;")}')">コピー</button>
-        <button onclick="loadBatchToCurrent('${txt.replace(/'/g,"&#39;").replace(/"/g,"&quot;")}')">これを現在の選択にする</button>
-      </div>
-    </div>`).join("");
-  area.style.display="block";
-}
-function loadBatchToCurrent(text){
-  const parts=text.split(",").map(s=>s.trim()).filter(Boolean);
-  prompts=parts.map(t=>({text:t,label:t,weight:1.0,page:null}));
-  updatePrompt();savePrompts();
-  alert("現在の選択に読み込みました");
-}
-
-function renderHistory(){
-  const list=document.getElementById("historyList");
-  if(!history.length){list.innerHTML="<p style='color:var(--muted);font-size:13px'>まだ履歴がありません</p>";return}
-  list.innerHTML=history.map((h,i)=>`
-    <div class="history-item">
-      <div class="hist-date">${escapeHtml(h.date)}</div>
-      <div class="hist-text">${escapeHtml(h.text)}</div>
-      <div class="hist-actions">
-        <button onclick="copyText('${h.text.replace(/'/g,"&#39;").replace(/"/g,"&quot;")}')">再コピー</button>
-        <button onclick="loadHistoryToCurrent(${i})">これを現在の選択にする</button>
-      </div>
-    </div>`).join("");
-}
-function loadHistoryToCurrent(i){
-  const h=history[i];if(!h)return;
-  const parts=h.text.replace(/,$/,"").split(",").map(s=>s.trim()).filter(Boolean);
-  prompts=parts.map(t=>({text:t,label:t,weight:1.0,page:null}));
-  updatePrompt();savePrompts();
-  alert("履歴から読み込みました");
-}
-function clearHistory(){if(!confirm("履歴をすべて消去しますか？"))return;history=[];saveHistory();renderHistory()}
-
-function saveTemplate(){
-  const name=document.getElementById("templateName").value.trim();
-  if(!name){alert("名前を入力してください");return}
-  if(!prompts.length){alert("保存するプロンプトがありません");return}
-  const data={name,prompts:JSON.parse(JSON.stringify(prompts)),ts:Date.now()};
-  const idx=templates.findIndex(t=>t.name===name);
-  if(idx>=0)templates[idx]=data;else templates.unshift(data);
-  saveTemplates();renderTemplates();
-  document.getElementById("templateName").value="";
-  alert("テンプレートを保存しました");
-}
-function renderTemplates(){
-  const list=document.getElementById("templateList");
-  if(!templates.length){list.innerHTML="<p style='color:var(--muted);font-size:13px'>テンプレートはまだありません</p>";return}
-  list.innerHTML=templates.map((t,i)=>`
-    <div class="history-item">
-      <div class="hist-date">${escapeHtml(t.name)}（${t.prompts.length}個）</div>
-      <div class="hist-actions">
-        <button onclick="loadTemplate(${i})">読み込み</button>
-        <button onclick="deleteTemplate(${i})">削除</button>
-      </div>
-    </div>`).join("");
-}
-function loadTemplate(i){
-  const t=templates[i];if(!t)return;
-  prompts=JSON.parse(JSON.stringify(t.prompts));
-  updatePrompt();savePrompts();
-  alert("「"+t.name+"」を読み込みました");
-}
-function deleteTemplate(i){
-  if(!confirm("このテンプレートを削除しますか？"))return;
-  templates.splice(i,1);saveTemplates();renderTemplates();
-}
-
+function pickOpt(key){const v=VARIATIONS[key];if(!v||!v.options||!v.options.length)return null;const o=pick(v.options);return{prompt:o.prompt,label:o.label,page:v.page||"sexPage",key,desc:o.desc||""}}
+function buildPositionScene(){const posKeys=["missionary","doggy","cowgirl","mating_press","daisuki_hold","ekiben","sitting_sex","standing_face","spooning","wall_sex","table_sex","full_nelson"];const pos=pickOpt(pick(posKeys));if(!pos)return null;const tags=[pos],titleParts=[pos.label];let scene=pos.desc||pos.label;if(Math.random()<0.85){const t=pickOpt("thrust");if(t){tags.push(t);titleParts.push(t.label);scene+="。"+t.desc}}if(Math.random()<0.55){const fx=Math.random()<0.6?pickOpt("creampie_fx"):pickOpt("orgasm");if(fx){tags.push(fx);titleParts.push(fx.label);scene+="。"+fx.desc}}if(Math.random()<0.4){const r=Math.random()<0.5?pickOpt("bounce"):pickOpt("convulsion");if(r){tags.push(r);titleParts.push(r.label);scene+="。"+r.desc}}if(Math.random()<0.25){const c=pickOpt("clenching");if(c){tags.push(c);titleParts.push(c.label);scene+="。"+c.desc}}return{title:titleParts.join(" · "),desc:scene,tags}}
+function buildForeplayScene(){const keys=["kiss","fellatio","irrumatio","cunnilingus","handjob","paizuri","nipple","fingering","footjob","grinding","teasing","analingus","balls"];const main=pickOpt(pick(keys));if(!main)return null;const tags=[main],titleParts=[main.label];let scene=main.desc||main.label;if(Math.random()<0.35){const second=pickOpt(pick(keys.filter(k=>k!==main.key)));if(second){tags.push(second);titleParts.push(second.label);scene+="。あわせて"+second.desc}}if(Math.random()<0.45){const r=Math.random()<0.5?pickOpt("orgasm"):pickOpt("convulsion");if(r){tags.push(r);titleParts.push(r.label);scene+="。"+r.desc}}return{title:titleParts.join(" · "),desc:scene,tags}}
+function buildFullSexScene(){const tags=[],titleParts=[];let scene="";const fp=pickOpt(pick(["kiss","fellatio","cunnilingus","handjob","paizuri","fingering"]));if(fp){tags.push(fp);titleParts.push(fp.label);scene=fp.desc}const pos=pickOpt(pick(["missionary","doggy","cowgirl","mating_press","ekiben","daisuki_hold","sitting_sex"]));if(pos){tags.push(pos);titleParts.push(pos.label);scene+=(scene?"。その後、":"")+pos.desc}const th=pickOpt("thrust");if(th){tags.push(th);titleParts.push(th.label);scene+="。"+th.desc}if(Math.random()<0.7){const end=Math.random()<0.55?pickOpt("creampie_fx"):pickOpt("orgasm");if(end){tags.push(end);titleParts.push(end.label);scene+="。"+end.desc}}if(Math.random()<0.3){const b=pickOpt("bounce");if(b){tags.push(b);titleParts.push(b.label);scene+="。"+b.desc}}if(!tags.length)return null;return{title:titleParts.join(" · "),desc:scene,tags}}
+function buildBodyScene(){const tags=[],titleParts=[];let scene="";const b=pickOpt(pick(["breasts","ass","pussy","skin","body_focus"]));if(b){tags.push(b);titleParts.push(b.label);scene=b.desc}if(Math.random()<0.7){const f=pickOpt(pick(["love_juice","semen","sweat","saliva"]));if(f){tags.push(f);titleParts.push(f.label);scene+=(scene?"。":"")+f.desc}}if(Math.random()<0.4){const s=pickOpt("skin");if(s&&(!b||s.prompt!==b.prompt)){tags.push(s);titleParts.push(s.label);scene+=(scene?"。":"")+s.desc}}if(!tags.length)return null;return{title:titleParts.join(" · "),desc:scene,tags}}
+function generatePackages(mode,count){const builders={foreplay:buildForeplayScene,position:buildPositionScene,sex:buildFullSexScene,body:buildBodyScene};const fn=builders[mode];if(!fn)return[];const out=[],seen=new Set();let guard=0;while(out.length<count&&guard<80){guard++;const pack=fn();if(!pack||!pack.tags.length)continue;const sig=pack.tags.map(t=>t.prompt).sort().join("|");if(seen.has(sig))continue;seen.add(sig);out.push(pack)}return out}
+function setRandMode(mode){currentRandMode=mode;document.querySelectorAll(".random-options button").forEach(b=>b.classList.remove("active"));const map={foreplay:"randForeplay",position:"randPosition",sex:"randSex",body:"randBody"};if(map[mode])document.getElementById(map[mode]).classList.add("active");document.getElementById("candidateArea").style.display="none"}
+function runRandom(){if(!currentRandMode){alert("先に種類を選んでください");return}const packs=generatePackages(currentRandMode,6);const area=document.getElementById("candidateArea");if(!packs.length){area.innerHTML="<p style='color:var(--muted);font-size:13px'>候補を生成できませんでした</p>";area.style.display="block";return}area.innerHTML=packs.map(p=>{const tagsJson=JSON.stringify(p.tags).replace(/'/g,"&#39;");return `<button class="candidate-card" onclick='addPackage(${tagsJson})'><div class="pack-title">${escapeHtml(p.title)}</div><div class="pack-desc">${escapeHtml(p.desc||"")}</div><div class="pack-tags">${p.tags.map(t=>`<span class="pack-tag">${escapeHtml(t.label)}</span>`).join("")}</div></button>`}).join("");area.style.display="block";checkCurrentConflicts()}
+function addPackage(tags){tags.forEach(t=>{if(!prompts.some(p=>p.text===t.prompt)){prompts.push({text:t.prompt,label:t.label,weight:1.0,page:t.page||null})}});hideCopyMsg();updatePrompt();savePrompts()}
+function checkCurrentConflicts(){const warn=document.getElementById("conflictWarning");if(!warn)return;const conflicts=[];const texts=prompts.map(p=>p.text.toLowerCase());CONFLICT_PAIRS.forEach(([a,b])=>{const hasA=texts.some(t=>t.includes(a.toLowerCase()));const hasB=texts.some(t=>t.includes(b.toLowerCase()));if(hasA&&hasB)conflicts.push(`「${a}」と「${b}」が同時`)});if(conflicts.length){warn.innerHTML="<strong>注意：</strong> "+conflicts.slice(0,3).join(" / ");warn.classList.add("show")}else{warn.classList.remove("show");warn.innerHTML=""}}
 updatePrompt();
-renderHistory();
-renderTemplates();
 </script>
 </body>
 </html>
