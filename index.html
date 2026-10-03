@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>NovelAI Prompt Tool</title>
 <style>
 :root{
@@ -84,11 +84,13 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 #reorderOverlay .reorder-btns{display:flex;flex-direction:column;gap:8px}
 #reorderOverlay .reorder-btns button{width:100%;padding:15px;font-size:16px;font-weight:600;background:var(--accent-soft);color:var(--accent);border-radius:var(--radius-sm)}
 #reorderOverlay .reorder-btns button:disabled{opacity:.3}
-.random-section{margin:20px 0 8px;padding:18px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border)}
-.random-section h3{margin:0 0 4px;font-size:15px;font-weight:700;color:var(--text);text-transform:none;letter-spacing:0}
+
+/* ランダム・バッチ関連 */
+.random-section,.batch-section,.history-section{margin:20px 0 8px;padding:18px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border)}
+.random-section h3,.batch-section h3,.history-section h3{margin:0 0 4px;font-size:15px;font-weight:700;color:var(--text);text-transform:none;letter-spacing:0}
 .random-hint{font-size:12px;color:var(--muted);margin:0 0 14px}
 .random-options{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.random-options button{flex:1;min-width:100px;padding:11px 10px;font-size:13px;font-weight:500;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--bg)}
+.random-options button{flex:1;min-width:90px;padding:11px 8px;font-size:13px;font-weight:500;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--bg)}
 .random-options button.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,.25)}
 .random-run{width:100%;padding:14px;font-size:14px;font-weight:600;background:var(--accent);color:#fff;border-radius:var(--radius-sm);margin-top:4px}
 .candidate-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
@@ -97,8 +99,31 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 .candidate-card .pack-title{font-weight:600;font-size:14px;margin-bottom:6px;color:var(--text)}
 .candidate-card .pack-tags{display:flex;flex-wrap:wrap;gap:4px}
 .candidate-card .pack-tag{font-size:11px;background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:2px 7px;font-weight:500}
+.candidate-card .pack-actions{display:flex;gap:8px;margin-top:10px}
+.candidate-card .pack-actions button{flex:1;padding:10px;font-size:13px;font-weight:600}
 .conflict-warning{background:var(--danger-soft);color:var(--danger);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0 0;font-size:12px;display:none;line-height:1.5}
 .conflict-warning.show{display:block}
+
+.batch-controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center}
+.batch-controls label{font-size:13px;color:var(--muted)}
+.batch-controls select,.batch-controls input[type="number"]{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px}
+.batch-list{display:flex;flex-direction:column;gap:10px;margin-top:12px;max-height:400px;overflow-y:auto}
+.batch-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;text-align:left}
+.batch-item .batch-num{font-size:11px;color:var(--muted);margin-bottom:4px}
+.batch-item .batch-text{font-size:12px;line-height:1.5;word-break:break-all;max-height:60px;overflow:hidden}
+.batch-item .batch-actions{display:flex;gap:6px;margin-top:8px}
+.batch-item .batch-actions button{flex:1;padding:9px;font-size:12px;font-weight:600}
+
+.history-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;max-height:300px;overflow-y:auto}
+.history-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:left;font-size:12px}
+.history-item .hist-date{font-size:11px;color:var(--muted);margin-bottom:4px}
+.history-item .hist-text{word-break:break-all;max-height:48px;overflow:hidden;line-height:1.4}
+.history-item .hist-actions{display:flex;gap:6px;margin-top:8px}
+.history-item .hist-actions button{flex:1;padding:8px;font-size:12px}
+
+.template-row{display:flex;gap:8px;margin-bottom:10px}
+.template-row input{flex:1;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px}
+.template-row button{padding:10px 14px;font-weight:600}
 </style>
 </head>
 <body>
@@ -134,24 +159,71 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
   <button class="menuButton" onclick="showPage('characterPage')">キャラクター</button>
   <button class="menuButton" onclick="showPage('artistPage')">アーティスト</button>
 
+  <!-- ランダム生成（強化版） -->
   <div class="random-section">
     <h3>シーンをランダム生成</h3>
-    <p class="random-hint">体位・前戯＋動き＋反応などをまとめた組み合わせを出します</p>
+    <p class="random-hint">完成に近いプロンプト候補を出します。タップで現在の選択に追加、または単独コピーできます。</p>
     <div class="random-options">
-      <button id="randForeplay" onclick="setRandMode('foreplay')">前戯シーン</button>
-      <button id="randPosition" onclick="setRandMode('position')">体位シーン</button>
+      <button id="randForeplay" onclick="setRandMode('foreplay')">前戯中心</button>
+      <button id="randPosition" onclick="setRandMode('position')">体位中心</button>
       <button id="randSex" onclick="setRandMode('sex')">性行フル</button>
       <button id="randBody" onclick="setRandMode('body')">身体＋体液</button>
+      <button id="randFull" onclick="setRandMode('full')">フルランダム</button>
     </div>
-    <button class="random-run" onclick="runRandom()">候補を6つ出す</button>
+    <div class="batch-controls" style="margin-bottom:10px">
+      <label>候補数</label>
+      <select id="randCount">
+        <option value="4">4</option>
+        <option value="6" selected>6</option>
+        <option value="8">8</option>
+        <option value="12">12</option>
+      </select>
+      <label style="margin-left:8px"><input type="checkbox" id="randIncludeBase" checked> ベース品質タグも付ける</label>
+    </div>
+    <button class="random-run" onclick="runRandom()">候補を生成</button>
     <div id="conflictWarning" class="conflict-warning"></div>
     <div id="candidateArea" class="candidate-list" style="display:none"></div>
+  </div>
+
+  <!-- バッチ生成 -->
+  <div class="batch-section">
+    <h3>バッチ生成（量産用）</h3>
+    <p class="random-hint">今選択中のタグを固定し、ランダム要素を加えて複数の完成プロンプトを一括作成します。</p>
+    <div class="batch-controls">
+      <label>枚数</label>
+      <input type="number" id="batchCount" value="8" min="1" max="30" style="width:60px">
+      <label style="margin-left:8px"><input type="checkbox" id="batchVaryPose" checked> 体位を変える</label>
+      <label><input type="checkbox" id="batchVaryExpr" checked> 表情を変える</label>
+      <label><input type="checkbox" id="batchVaryView"> 視点を変える</label>
+    </div>
+    <button class="random-run" onclick="runBatch()">バッチ生成</button>
+    <div id="batchArea" class="batch-list" style="display:none"></div>
+  </div>
+
+  <!-- テンプレート -->
+  <div class="batch-section">
+    <h3>テンプレート</h3>
+    <p class="random-hint">現在の選択内容を名前付きで保存・呼び出しできます。</p>
+    <div class="template-row">
+      <input type="text" id="templateName" placeholder="テンプレート名">
+      <button onclick="saveTemplate()">保存</button>
+    </div>
+    <div id="templateList" class="history-list"></div>
+  </div>
+
+  <!-- 履歴 -->
+  <div class="history-section">
+    <h3>コピー履歴</h3>
+    <p class="random-hint">コピーしたプロンプトをここに残します（最大50件）。</p>
+    <button class="menuButton" style="margin-bottom:8px" onclick="clearHistory()">履歴を全消去</button>
+    <div id="historyList" class="history-list"></div>
   </div>
 
   <h2 style="margin-top:28px">設定</h2>
   <button class="menuButton" onclick="toggleTheme()" id="themeButton">🌙 ダークモード切替</button>
 </div>
 
+<!-- 以下、既存のページはそのまま（basePage〜euphoniumPage） -->
 <div id="basePage" class="page">
   <button class="backButton" onclick="showPage('homePage')">← ホーム</button>
   <h1>ベース</h1>
@@ -854,8 +926,10 @@ button.conflict-btn{background:var(--danger-soft)!important;color:var(--danger)!
 </div>
 
 <script>
+/* ===== 既存データとロジックをほぼそのまま維持しつつ、ランダム・バッチ・履歴・テンプレを強化 ===== */
 let prompts=[],currentWeightIndex=-1,reorderIndex=-1,pendingClothing=null,pendingLick=null,promptExpanded=false,pendingConflict=null,currentRandMode=null;
 const WEIGHTS=[0.8,1.0,1.1,1.2,1.3,1.5],COLLAPSE_THRESHOLD=5,HINT_MS=350,CHIP_MS=280;
+let history=[],templates=[];
 
 const VARIATIONS={
 role_position:{title:"上下関係・体位",page:"basePage",options:[
@@ -1268,11 +1342,21 @@ const LICK_PARTS=[{label:"首筋",m2f:"neck kissing, licking neck, man licking w
 
 const CONFLICT_PAIRS=[["standing","sitting"],["standing","lying"],["standing","kneeling"],["standing","crouching"],["sitting","lying"],["sitting","on all fours"],["lying","standing"],["lying","kneeling"],["from behind","front view"],["from behind","looking at viewer"],["rear view","front view"],["solo","2girls"],["solo","1boy"],["solo","multiple girls"],["1girl","2girls"],["1girl","3girls"],["day","night"],["morning","night"],["indoors","outdoors"],["white background","black background"],["simple background","detailed background"],["completely nude","school uniform"],["completely nude","lingerie"],["completely nude","bikini"],["eyes closed","looking at viewer"],["from behind","looking at viewer"],["1boy","2boys"],["faceless","looking at viewer"]];
 
+const BASE_QUALITY = "best quality, amazing quality, highres, 4K, highly detailed, masterpiece, depth of field";
+
+/* ===== ストレージ ===== */
 try{const s=localStorage.getItem("novelai_prompts_v3");if(s)prompts=JSON.parse(s)}catch(e){}
+try{const h=localStorage.getItem("novelai_history_v1");if(h)history=JSON.parse(h)}catch(e){}
+try{const t=localStorage.getItem("novelai_templates_v1");if(t)templates=JSON.parse(t)}catch(e){}
 try{if(localStorage.getItem("novelai_theme")==="dark")document.body.classList.add("dark")}catch(e){}
+
 function savePrompts(){try{localStorage.setItem("novelai_prompts_v3",JSON.stringify(prompts))}catch(e){}}
+function saveHistory(){try{localStorage.setItem("novelai_history_v1",JSON.stringify(history.slice(0,50)))}catch(e){}}
+function saveTemplates(){try{localStorage.setItem("novelai_templates_v1",JSON.stringify(templates))}catch(e){}}
+
 function toggleTheme(){document.body.classList.toggle("dark");const isDark=document.body.classList.contains("dark");document.getElementById("themeButton").textContent=isDark?"☀️ ライトモード切替":"🌙 ダークモード切替";try{localStorage.setItem("novelai_theme",isDark?"dark":"light")}catch(e){}}
 if(document.body.classList.contains("dark"))document.getElementById("themeButton").textContent="☀️ ライトモード切替";
+
 function hideCopyMsg(){document.getElementById("copyMsg").classList.remove("show");document.getElementById("copyButton").classList.remove("copied")}
 function addP(text,label,page,skipConflict){if(prompts.some(p=>p.text===text))return;if(!skipConflict){const conf=findConflictWith(text);if(conf){pendingConflict={text,label,page};document.getElementById("conflictMsg").textContent=conf+"と矛盾しています、追加しますか？";document.getElementById("conflictOverlay").classList.add("active");return}}prompts.push({text,label:label||text,weight:1.0,page:page||null});hideCopyMsg();updatePrompt();savePrompts()}
 function findConflictWith(text){const tl=text.toLowerCase();for(const [a,b] of CONFLICT_PAIRS){const al=a.toLowerCase(),bl=b.toLowerCase();if(tl.includes(al)){const p=prompts.find(x=>x.text.toLowerCase().includes(bl));if(p)return p.label||p.text}if(tl.includes(bl)){const p=prompts.find(x=>x.text.toLowerCase().includes(al));if(p)return p.label||p.text}}return null}
@@ -1305,23 +1389,309 @@ function closeDesc(){document.getElementById("descOverlay").classList.remove("ac
 function openWeightPanel(i){currentWeightIndex=i;const cur=prompts[i].weight;document.getElementById("weightButtons").innerHTML=WEIGHTS.map(w=>`<button class="${w===cur?"active":""}" onclick="setWeight(${w})">${w}</button>`).join("");document.getElementById("weightOverlay").classList.add("active")}
 function setWeight(w){if(currentWeightIndex>=0){prompts[currentWeightIndex].weight=w;updatePrompt();savePrompts()}closeWeightPanel()}
 function closeWeightPanel(){document.getElementById("weightOverlay").classList.remove("active");currentWeightIndex=-1}
-function copyPrompt(){const t=prompts.map(formatPrompt).join(", ");if(!t)return;const out=t.endsWith(",")?t:t+",";const btn=document.getElementById("copyButton");const msg=document.getElementById("copyMsg");const done=()=>{btn.classList.add("copied");msg.classList.add("show");setTimeout(()=>{btn.classList.remove("copied")},1200)};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(out).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=out;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done()})}else{const ta=document.createElement("textarea");ta.value=out;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done()}}
+
+function copyPrompt(){
+  const t=prompts.map(formatPrompt).join(", ");
+  if(!t)return;
+  const out=t.endsWith(",")?t:t+",";
+  const btn=document.getElementById("copyButton");
+  const msg=document.getElementById("copyMsg");
+  const done=()=>{
+    btn.classList.add("copied");
+    msg.classList.add("show");
+    setTimeout(()=>{btn.classList.remove("copied")},1200);
+    // 履歴に追加
+    history.unshift({text:out,date:new Date().toLocaleString("ja-JP"),ts:Date.now()});
+    if(history.length>50)history=history.slice(0,50);
+    saveHistory();
+    renderHistory();
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(out).then(done).catch(()=>{fallbackCopy(out);done()});
+  }else{fallbackCopy(out);done()}
+}
+function fallbackCopy(text){
+  const ta=document.createElement("textarea");
+  ta.value=text;ta.style.position="fixed";ta.style.left="-9999px";
+  document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);
+}
 function clearPrompt(){prompts=[];hideCopyMsg();updatePrompt();savePrompts()}
 function updateHomeFab(){const fab=document.getElementById("homeFab");const onHome=document.getElementById("homePage").classList.contains("active");fab.style.display=onHome?"none":"flex"}
 function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0);updateSelectedButtons();updateHomeFab()}
 
+/* ===== 強化ランダム ===== */
 function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
 function pickOpt(key){const v=VARIATIONS[key];if(!v||!v.options||!v.options.length)return null;const o=pick(v.options);return{prompt:o.prompt,label:o.label,page:v.page||"sexPage",key}}
-function buildPositionScene(){const posKeys=["missionary","doggy","cowgirl","mating_press","daisuki_hold","ekiben","sitting_sex","standing_face","spooning","wall_sex","table_sex","full_nelson"];const pos=pickOpt(pick(posKeys));if(!pos)return null;const tags=[pos],titleParts=[pos.label];if(Math.random()<0.85){const t=pickOpt("thrust");if(t){tags.push(t);titleParts.push(t.label)}}if(Math.random()<0.55){const fx=Math.random()<0.6?pickOpt("creampie_fx"):pickOpt("orgasm");if(fx){tags.push(fx);titleParts.push(fx.label)}}if(Math.random()<0.4){const r=Math.random()<0.5?pickOpt("bounce"):pickOpt("convulsion");if(r){tags.push(r);titleParts.push(r.label)}}if(Math.random()<0.25){const c=pickOpt("clenching");if(c){tags.push(c);titleParts.push(c.label)}}return{title:titleParts.join(" · "),tags}}
-function buildForeplayScene(){const keys=["kiss","fellatio","irrumatio","cunnilingus","handjob","paizuri","nipple","fingering","footjob","grinding","teasing","analingus","balls"];const main=pickOpt(pick(keys));if(!main)return null;const tags=[main],titleParts=[main.label];if(Math.random()<0.35){const second=pickOpt(pick(keys.filter(k=>k!==main.key)));if(second){tags.push(second);titleParts.push(second.label)}}if(Math.random()<0.45){const r=Math.random()<0.5?pickOpt("orgasm"):pickOpt("convulsion");if(r){tags.push(r);titleParts.push(r.label)}}return{title:titleParts.join(" · "),tags}}
-function buildFullSexScene(){const tags=[],titleParts=[];const fp=pickOpt(pick(["kiss","fellatio","cunnilingus","handjob","paizuri","fingering"]));if(fp){tags.push(fp);titleParts.push(fp.label)}const pos=pickOpt(pick(["missionary","doggy","cowgirl","mating_press","ekiben","daisuki_hold","sitting_sex"]));if(pos){tags.push(pos);titleParts.push(pos.label)}const th=pickOpt("thrust");if(th){tags.push(th);titleParts.push(th.label)}if(Math.random()<0.7){const end=Math.random()<0.55?pickOpt("creampie_fx"):pickOpt("orgasm");if(end){tags.push(end);titleParts.push(end.label)}}if(Math.random()<0.3){const b=pickOpt("bounce");if(b){tags.push(b);titleParts.push(b.label)}}if(!tags.length)return null;return{title:titleParts.join(" · "),tags}}
-function buildBodyScene(){const tags=[],titleParts=[];const b=pickOpt(pick(["breasts","ass","pussy","skin","body_focus"]));if(b){tags.push(b);titleParts.push(b.label)}if(Math.random()<0.7){const f=pickOpt(pick(["love_juice","semen","sweat","saliva"]));if(f){tags.push(f);titleParts.push(f.label)}}if(Math.random()<0.4){const s=pickOpt("skin");if(s&&(!b||s.prompt!==b.prompt)){tags.push(s);titleParts.push(s.label)}}if(!tags.length)return null;return{title:titleParts.join(" · "),tags}}
-function generatePackages(mode,count){const builders={foreplay:buildForeplayScene,position:buildPositionScene,sex:buildFullSexScene,body:buildBodyScene};const fn=builders[mode];if(!fn)return[];const out=[],seen=new Set();let guard=0;while(out.length<count&&guard<80){guard++;const pack=fn();if(!pack||!pack.tags.length)continue;const sig=pack.tags.map(t=>t.prompt).sort().join("|");if(seen.has(sig))continue;seen.add(sig);out.push(pack)}return out}
-function setRandMode(mode){currentRandMode=mode;document.querySelectorAll(".random-options button").forEach(b=>b.classList.remove("active"));const map={foreplay:"randForeplay",position:"randPosition",sex:"randSex",body:"randBody"};if(map[mode])document.getElementById(map[mode]).classList.add("active");document.getElementById("candidateArea").style.display="none"}
-function runRandom(){if(!currentRandMode){alert("先に種類を選んでください");return}const packs=generatePackages(currentRandMode,6);const area=document.getElementById("candidateArea");if(!packs.length){area.innerHTML="<p style='color:var(--muted);font-size:13px'>候補を生成できませんでした</p>";area.style.display="block";return}area.innerHTML=packs.map(p=>{const tagsJson=JSON.stringify(p.tags).replace(/'/g,"&#39;");return `<button class="candidate-card" onclick='addPackage(${tagsJson})'><div class="pack-title">${escapeHtml(p.title)}</div><div class="pack-tags">${p.tags.map(t=>`<span class="pack-tag">${escapeHtml(t.label)}</span>`).join("")}</div></button>`}).join("");area.style.display="block";checkCurrentConflicts()}
-function addPackage(tags){tags.forEach(t=>{if(!prompts.some(p=>p.text===t.prompt)){prompts.push({text:t.prompt,label:t.label,weight:1.0,page:t.page||null})}});hideCopyMsg();updatePrompt();savePrompts()}
-function checkCurrentConflicts(){const warn=document.getElementById("conflictWarning");if(!warn)return;const conflicts=[];const texts=prompts.map(p=>p.text.toLowerCase());CONFLICT_PAIRS.forEach(([a,b])=>{const hasA=texts.some(t=>t.includes(a.toLowerCase()));const hasB=texts.some(t=>t.includes(b.toLowerCase()));if(hasA&&hasB)conflicts.push(`「${a}」と「${b}」が同時`)});if(conflicts.length){warn.innerHTML="<strong>注意：</strong> "+conflicts.slice(0,3).join(" / ");warn.classList.add("show")}else{warn.classList.remove("show");warn.innerHTML=""}}
+
+function buildPositionScene(){
+  const posKeys=["missionary","doggy","cowgirl","mating_press","daisuki_hold","ekiben","sitting_sex","standing_face","spooning","wall_sex","table_sex","full_nelson"];
+  const pos=pickOpt(pick(posKeys));if(!pos)return null;
+  const tags=[pos],titleParts=[pos.label];
+  if(Math.random()<0.9){const t=pickOpt("thrust");if(t){tags.push(t);titleParts.push(t.label)}}
+  if(Math.random()<0.6){const fx=Math.random()<0.55?pickOpt("creampie_fx"):pickOpt("orgasm");if(fx){tags.push(fx);titleParts.push(fx.label)}}
+  if(Math.random()<0.45){const r=Math.random()<0.5?pickOpt("bounce"):pickOpt("convulsion");if(r){tags.push(r);titleParts.push(r.label)}}
+  if(Math.random()<0.3){const e=pick(["ahegao","torogao","orgasmic expression","pleasure face","fucked silly"]);tags.push({prompt:e,label:e,page:"sexyExpressionPage"});titleParts.push(e)}
+  if(Math.random()<0.35){const v=pick(["from behind","pov","low-angle view","high-angle view","close-up"]);tags.push({prompt:v,label:v,page:"viewPage"});titleParts.push(v)}
+  return{title:titleParts.join(" · "),tags};
+}
+function buildForeplayScene(){
+  const keys=["kiss","fellatio","irrumatio","cunnilingus","handjob","paizuri","nipple","fingering","footjob","grinding","teasing","analingus","balls"];
+  const main=pickOpt(pick(keys));if(!main)return null;
+  const tags=[main],titleParts=[main.label];
+  if(Math.random()<0.4){const second=pickOpt(pick(keys.filter(k=>k!==main.key)));if(second){tags.push(second);titleParts.push(second.label)}}
+  if(Math.random()<0.5){const r=Math.random()<0.5?pickOpt("orgasm"):pickOpt("convulsion");if(r){tags.push(r);titleParts.push(r.label)}}
+  if(Math.random()<0.4){const e=pick(["bedroom eyes","parted lips","flushed with arousal","panting","licking lips"]);tags.push({prompt:e,label:e,page:"sexyExpressionPage"});titleParts.push(e)}
+  return{title:titleParts.join(" · "),tags};
+}
+function buildFullSexScene(){
+  const tags=[],titleParts=[];
+  const fp=pickOpt(pick(["kiss","fellatio","cunnilingus","handjob","paizuri","fingering"]));
+  if(fp){tags.push(fp);titleParts.push(fp.label)}
+  const pos=pickOpt(pick(["missionary","doggy","cowgirl","mating_press","ekiben","daisuki_hold","sitting_sex"]));
+  if(pos){tags.push(pos);titleParts.push(pos.label)}
+  const th=pickOpt("thrust");if(th){tags.push(th);titleParts.push(th.label)}
+  if(Math.random()<0.75){const end=Math.random()<0.55?pickOpt("creampie_fx"):pickOpt("orgasm");if(end){tags.push(end);titleParts.push(end.label)}}
+  if(Math.random()<0.4){const b=pickOpt("bounce");if(b){tags.push(b);titleParts.push(b.label)}}
+  if(Math.random()<0.5){const e=pick(["ahegao","torogao","orgasmic expression","ecstasy face","fucked silly","moaning"]);tags.push({prompt:e,label:e,page:"sexyExpressionPage"});titleParts.push(e)}
+  if(!tags.length)return null;
+  return{title:titleParts.join(" · "),tags};
+}
+function buildBodyScene(){
+  const tags=[],titleParts=[];
+  const b=pickOpt(pick(["breasts","ass","pussy","skin","body_focus"]));
+  if(b){tags.push(b);titleParts.push(b.label)}
+  if(Math.random()<0.75){const f=pickOpt(pick(["love_juice","semen","sweat","saliva"]));if(f){tags.push(f);titleParts.push(f.label)}}
+  if(Math.random()<0.4){const s=pickOpt("skin");if(s&&(!b||s.prompt!==b.prompt)){tags.push(s);titleParts.push(s.label)}}
+  if(!tags.length)return null;
+  return{title:titleParts.join(" · "),tags};
+}
+function buildFullRandomScene(){
+  // フルランダム：ベース的なもの＋視点＋場所＋性行＋表情を適当に組み合わせ
+  const tags=[],titleParts=[];
+  // 人数
+  if(Math.random()<0.7){tags.push({prompt:"1boy, 1girl",label:"1boy 1girl",page:"basePage"});titleParts.push("1boy1girl")}
+  // 体位 or 前戯
+  if(Math.random()<0.65){
+    const pos=pickOpt(pick(["missionary","doggy","cowgirl","mating_press","ekiben","sitting_sex","standing_face"]));
+    if(pos){tags.push(pos);titleParts.push(pos.label)}
+  }else{
+    const fp=pickOpt(pick(["fellatio","cunnilingus","paizuri","handjob","fingering"]));
+    if(fp){tags.push(fp);titleParts.push(fp.label)}
+  }
+  // 動き
+  if(Math.random()<0.7){const t=pickOpt("thrust");if(t){tags.push(t);titleParts.push(t.label)}}
+  // 表情
+  if(Math.random()<0.8){const e=pick(["ahegao","torogao","orgasmic expression","pleasure face","fucked silly","bedroom eyes","moaning"]);tags.push({prompt:e,label:e,page:"sexyExpressionPage"});titleParts.push(e)}
+  // 視点
+  if(Math.random()<0.5){const v=pick(["pov","from behind","low-angle view","close-up","three-quarter view"]);tags.push({prompt:v,label:v,page:"viewPage"});titleParts.push(v)}
+  // 場所
+  if(Math.random()<0.4){const pl=pick(["bedroom","on bed","hotel room","bathroom","classroom"]);tags.push({prompt:pl,label:pl,page:"placePage"});titleParts.push(pl)}
+  // 体液
+  if(Math.random()<0.55){const f=pickOpt(pick(["love_juice","semen","sweat"]));if(f){tags.push(f);titleParts.push(f.label)}}
+  if(!tags.length)return null;
+  return{title:titleParts.join(" · "),tags};
+}
+
+function generatePackages(mode,count){
+  const builders={foreplay:buildForeplayScene,position:buildPositionScene,sex:buildFullSexScene,body:buildBodyScene,full:buildFullRandomScene};
+  const fn=builders[mode];if(!fn)return[];
+  const out=[],seen=new Set();let guard=0;
+  while(out.length<count&&guard<120){
+    guard++;
+    const pack=fn();
+    if(!pack||!pack.tags.length)continue;
+    const sig=pack.tags.map(t=>t.prompt).sort().join("|");
+    if(seen.has(sig))continue;
+    seen.add(sig);
+    out.push(pack);
+  }
+  return out;
+}
+function setRandMode(mode){
+  currentRandMode=mode;
+  document.querySelectorAll(".random-options button").forEach(b=>b.classList.remove("active"));
+  const map={foreplay:"randForeplay",position:"randPosition",sex:"randSex",body:"randBody",full:"randFull"};
+  if(map[mode])document.getElementById(map[mode]).classList.add("active");
+  document.getElementById("candidateArea").style.display="none";
+}
+function runRandom(){
+  if(!currentRandMode){alert("先に種類を選んでください");return}
+  const count=+document.getElementById("randCount").value||6;
+  const includeBase=document.getElementById("randIncludeBase").checked;
+  const packs=generatePackages(currentRandMode,count);
+  const area=document.getElementById("candidateArea");
+  if(!packs.length){
+    area.innerHTML="<p style='color:var(--muted);font-size:13px'>候補を生成できませんでした</p>";
+    area.style.display="block";return;
+  }
+  area.innerHTML=packs.map((p,idx)=>{
+    let fullText=p.tags.map(t=>t.prompt).join(", ");
+    if(includeBase)fullText=BASE_QUALITY+", "+fullText;
+    const tagsJson=JSON.stringify(p.tags).replace(/'/g,"&#39;");
+    const fullEsc=fullText.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+    return `<div class="candidate-card">
+      <div class="pack-title">${escapeHtml(p.title)}</div>
+      <div class="pack-tags">${p.tags.map(t=>`<span class="pack-tag">${escapeHtml(t.label)}</span>`).join("")}</div>
+      <div class="pack-actions">
+        <button onclick='addPackage(${tagsJson})'>現在の選択に追加</button>
+        <button onclick="copyText('${fullEsc}')">このプロンプトをコピー</button>
+      </div>
+    </div>`;
+  }).join("");
+  area.style.display="block";
+  checkCurrentConflicts();
+}
+function addPackage(tags){
+  tags.forEach(t=>{
+    if(!prompts.some(p=>p.text===t.prompt)){
+      prompts.push({text:t.prompt,label:t.label,weight:1.0,page:t.page||null});
+    }
+  });
+  hideCopyMsg();updatePrompt();savePrompts();
+}
+function copyText(text){
+  const out=text.endsWith(",")?text:text+",";
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(out).then(()=>{
+      history.unshift({text:out,date:new Date().toLocaleString("ja-JP"),ts:Date.now()});
+      if(history.length>50)history=history.slice(0,50);
+      saveHistory();renderHistory();
+      alert("コピーしました");
+    }).catch(()=>{fallbackCopy(out);alert("コピーしました")});
+  }else{fallbackCopy(out);alert("コピーしました")}
+}
+
+/* ===== バッチ生成 ===== */
+function runBatch(){
+  const count=Math.min(30,Math.max(1,+document.getElementById("batchCount").value||8));
+  const varyPose=document.getElementById("batchVaryPose").checked;
+  const varyExpr=document.getElementById("batchVaryExpr").checked;
+  const varyView=document.getElementById("batchVaryView").checked;
+
+  const baseTags=prompts.map(p=>p.text);
+  const baseText=baseTags.join(", ");
+  const results=[];
+  const poseKeys=["missionary","doggy","cowgirl","mating_press","ekiben","sitting_sex","standing_face","spooning"];
+  const exprList=["ahegao","torogao","orgasmic expression","pleasure face","fucked silly","bedroom eyes","moaning","panting","flushed with arousal"];
+  const viewList=["pov","from behind","low-angle view","high-angle view","close-up","three-quarter view","eye-level view"];
+
+  for(let i=0;i<count;i++){
+    let parts=[...baseTags];
+    if(varyPose){
+      const pos=pickOpt(pick(poseKeys));
+      if(pos)parts.push(pos.prompt);
+      if(Math.random()<0.7){const th=pickOpt("thrust");if(th)parts.push(th.prompt)}
+    }
+    if(varyExpr){parts.push(pick(exprList))}
+    if(varyView){parts.push(pick(viewList))}
+    // 重複除去
+    parts=[...new Set(parts)];
+    results.push(parts.join(", "));
+  }
+
+  const area=document.getElementById("batchArea");
+  area.innerHTML=results.map((txt,i)=>`
+    <div class="batch-item">
+      <div class="batch-num">#${i+1}</div>
+      <div class="batch-text">${escapeHtml(txt)}</div>
+      <div class="batch-actions">
+        <button onclick="copyText('${txt.replace(/'/g,"&#39;").replace(/"/g,"&quot;")}')">コピー</button>
+        <button onclick="loadBatchToCurrent('${txt.replace(/'/g,"&#39;").replace(/"/g,"&quot;")}')">これを現在の選択にする</button>
+      </div>
+    </div>`).join("");
+  area.style.display="block";
+}
+function loadBatchToCurrent(text){
+  const parts=text.split(",").map(s=>s.trim()).filter(Boolean);
+  prompts=parts.map(t=>({text:t,label:t,weight:1.0,page:null}));
+  updatePrompt();savePrompts();
+  alert("現在の選択に読み込みました");
+}
+
+/* ===== 履歴 ===== */
+function renderHistory(){
+  const list=document.getElementById("historyList");
+  if(!history.length){list.innerHTML="<p style='color:var(--muted);font-size:13px'>まだ履歴がありません</p>";return}
+  list.innerHTML=history.map((h,i)=>`
+    <div class="history-item">
+      <div class="hist-date">${escapeHtml(h.date)}</div>
+      <div class="hist-text">${escapeHtml(h.text)}</div>
+      <div class="hist-actions">
+        <button onclick="copyText('${h.text.replace(/'/g,"&#39;").replace(/"/g,"&quot;")}')">再コピー</button>
+        <button onclick="loadHistoryToCurrent(${i})">これを現在の選択にする</button>
+      </div>
+    </div>`).join("");
+}
+function loadHistoryToCurrent(i){
+  const h=history[i];if(!h)return;
+  const parts=h.text.replace(/,$/,"").split(",").map(s=>s.trim()).filter(Boolean);
+  prompts=parts.map(t=>({text:t,label:t,weight:1.0,page:null}));
+  updatePrompt();savePrompts();
+  alert("履歴から読み込みました");
+}
+function clearHistory(){
+  if(!confirm("履歴をすべて消去しますか？"))return;
+  history=[];saveHistory();renderHistory();
+}
+
+/* ===== テンプレート ===== */
+function saveTemplate(){
+  const name=document.getElementById("templateName").value.trim();
+  if(!name){alert("名前を入力してください");return}
+  if(!prompts.length){alert("保存するプロンプトがありません");return}
+  const data={name,prompts:JSON.parse(JSON.stringify(prompts)),ts:Date.now()};
+  const idx=templates.findIndex(t=>t.name===name);
+  if(idx>=0)templates[idx]=data;else templates.unshift(data);
+  saveTemplates();renderTemplates();
+  document.getElementById("templateName").value="";
+  alert("テンプレートを保存しました");
+}
+function renderTemplates(){
+  const list=document.getElementById("templateList");
+  if(!templates.length){list.innerHTML="<p style='color:var(--muted);font-size:13px'>テンプレートはまだありません</p>";return}
+  list.innerHTML=templates.map((t,i)=>`
+    <div class="history-item">
+      <div class="hist-date">${escapeHtml(t.name)}（${t.prompts.length}個）</div>
+      <div class="hist-actions">
+        <button onclick="loadTemplate(${i})">読み込み</button>
+        <button onclick="deleteTemplate(${i})">削除</button>
+      </div>
+    </div>`).join("");
+}
+function loadTemplate(i){
+  const t=templates[i];if(!t)return;
+  prompts=JSON.parse(JSON.stringify(t.prompts));
+  updatePrompt();savePrompts();
+  alert("「"+t.name+"」を読み込みました");
+}
+function deleteTemplate(i){
+  if(!confirm("このテンプレートを削除しますか？"))return;
+  templates.splice(i,1);saveTemplates();renderTemplates();
+}
+
+function checkCurrentConflicts(){
+  const warn=document.getElementById("conflictWarning");
+  if(!warn)return;
+  const conflicts=[];
+  const texts=prompts.map(p=>p.text.toLowerCase());
+  CONFLICT_PAIRS.forEach(([a,b])=>{
+    const hasA=texts.some(t=>t.includes(a.toLowerCase()));
+    const hasB=texts.some(t=>t.includes(b.toLowerCase()));
+    if(hasA&&hasB)conflicts.push(`「${a}」と「${b}」が同時`);
+  });
+  if(conflicts.length){
+    warn.innerHTML="<strong>注意：</strong> "+conflicts.slice(0,3).join(" / ");
+    warn.classList.add("show");
+  }else{
+    warn.classList.remove("show");
+    warn.innerHTML="";
+  }
+}
+
+/* 初期化 */
 updatePrompt();
+renderHistory();
+renderTemplates();
 </script>
 </body>
 </html>
